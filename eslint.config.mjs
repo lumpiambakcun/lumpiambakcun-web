@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Referensi desain lama (HTML + vendor minified), bukan kode aplikasi.
+    "old-example/**",
+    ".playwright-mcp/**",
   ]),
 ]);
 
