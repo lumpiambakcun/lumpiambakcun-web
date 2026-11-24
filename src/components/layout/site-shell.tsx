@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { ArrowDown } from "lucide-react";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
@@ -20,7 +21,9 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <SiteFooter />
-      <ScrollReveal />
+      <Suspense fallback={null}>
+        <ScrollReveal />
+      </Suspense>
     </>
   );
 }

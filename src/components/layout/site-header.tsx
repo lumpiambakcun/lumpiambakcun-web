@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { DeliveryScooterIcon, InstagramIcon } from "@/components/icons/brand-icons";
 import { BrandLogo } from "@/components/layout/brand-logo";
 import { HeaderRow } from "@/components/layout/header-row";
@@ -11,7 +12,9 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 bg-white">
       <HeaderRow>
         <BrandLogo priority />
-        <NavLinks className="hidden lg:block" />
+        <Suspense fallback={<div className="hidden lg:block" />}>
+          <NavLinks className="hidden lg:block" />
+        </Suspense>
         <div className="flex items-center justify-end gap-2.5">
           <a
             href={businessConfig.instagramUrl}
@@ -35,7 +38,9 @@ export function SiteHeader() {
               <span className="font-heading text-xl leading-[1.12] font-bold whitespace-nowrap">{businessConfig.phoneDisplay}</span>
             </span>
           </a>
-          <MobileNav className="lg:hidden" />
+          <Suspense fallback={null}>
+            <MobileNav className="lg:hidden" />
+          </Suspense>
         </div>
       </HeaderRow>
     </header>
