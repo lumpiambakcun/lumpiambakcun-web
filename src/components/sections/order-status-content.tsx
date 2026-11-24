@@ -6,7 +6,6 @@ import { SnapScript } from "@/components/shared/snap-script";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { Button } from "@/components/ui/button";
 import { snapScriptUrl } from "@/lib/midtrans";
-import { absoluteUrl } from "@/lib/seo";
 import { getOrderByCode, isOrderCode, syncOrderStatus } from "@/lib/orders";
 
 type OrderStatusContentProps = {
@@ -23,7 +22,6 @@ export async function OrderStatusContent({ params }: OrderStatusContentProps) {
   const retry = order.status === "failed" || order.status === "expired" || order.status === "cancelled";
 
   const paid = order.status === "paid";
-  const question = `Halo Mbak Cun, saya mau tanya pesanan ${order.code}.`;
 
   return (
     <>
@@ -45,7 +43,13 @@ export async function OrderStatusContent({ params }: OrderStatusContentProps) {
                 <Link href="/menu">Pesan ulang</Link>
               </Button>
             )}
-            <WhatsAppButton variant="outline" size="lg" hideIcon message={paid ? `${question}\n${absoluteUrl(`/pesanan/${order.code}`)}` : question} className="h-10 px-5 text-sm">
+            <WhatsAppButton
+              variant="accent"
+              size="lg"
+              hideIcon
+              message={`Halo Mbak Cun, saya mau tanya pesanan ${order.code}.`}
+              className="h-10 px-5 text-sm font-semibold tracking-normal normal-case"
+            >
               Tanya via WhatsApp
             </WhatsAppButton>
           </>
