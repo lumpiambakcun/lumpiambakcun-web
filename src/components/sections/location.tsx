@@ -36,7 +36,7 @@ export function Location({
   mapImage,
 }: LocationProps) {
   return (
-    <Section doodles={doodleLayout.location} id="lokasi" aria-labelledby="lokasi-judul" className="bg-highlight py-12 lg:py-[72px]">
+    <Section doodles={doodleLayout.location} id="lokasi" aria-labelledby="lokasi-judul" className="bg-highlight py-12 lg:py-18">
 
       <div {...revealItem} className="relative grid items-center gap-8 lg:grid-cols-[minmax(0,560px)_minmax(0,1fr)] lg:gap-16">
         <div className="flex flex-col gap-2">
@@ -85,7 +85,7 @@ export function Location({
           label={mapsLabel}
           image={mapImage}
           sizes="(min-width: 1024px) 640px, (min-width: 768px) 704px, 100vw"
-          className="h-60 md:h-80 lg:h-100 lg:max-w-[640px] lg:justify-self-end"
+          className="h-60 md:h-80 lg:h-100 lg:max-w-160 lg:justify-self-end"
         />
       </div>
     </Section>
