@@ -53,7 +53,7 @@ function FaqList({ items, className, ...props }: FaqListProps) {
           <AccordionTrigger className="items-center px-[22px] py-4 focus-visible:shadow-none focus-visible:outline-none text-[15px] leading-[1.3] font-extrabold text-ink hover:no-underline **:data-[slot=accordion-trigger-icon]:text-brand">
             {item.question}
           </AccordionTrigger>
-          <AccordionContent className="px-[22px] text-[14.5px] leading-[1.32] text-ink">{item.answer}</AccordionContent>
+          <AccordionContent className="px-[22px] pb-[18px] text-[14.5px] leading-[1.32] text-ink">{item.answer}</AccordionContent>
         </AccordionItem>
       ))}
     </Accordion>
