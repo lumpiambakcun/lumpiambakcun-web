@@ -3,7 +3,7 @@
 import { siteConfig } from "@/config/site";
 import { type CheckoutErrors, validateCheckout } from "@/lib/checkout";
 import { createSnapTransaction } from "@/lib/midtrans";
-import { generateOrderCode } from "@/lib/orders";
+import { insertOrder } from "@/lib/orders";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export type CheckoutState = {
@@ -32,30 +32,21 @@ async function placeOrder(formData: FormData): Promise<CheckoutState> {
   const label = `${product.card.name} ${product.card.variant}`;
   const supabase = createAdminClient();
 
-  let code = "";
-  for (let attempt = 0; attempt < 3; attempt++) {
-    code = generateOrderCode();
-    const { error } = await supabase.from("orders").insert({
-      code,
-      product_id: product.id,
-      product_name: product.card.name,
-      variant: product.card.variant,
-      unit_price: unitPrice,
-      quantity,
-      total,
-      customer_name: name,
-      customer_phone: phone,
-      customer_email: email ?? null,
-      pickup_at: pickupAt.toISOString(),
-      notes: notes ?? null,
-      payment_method: method,
-    });
-    if (!error) break;
-    if (error.code !== "23505" || attempt === 2) {
-      console.error("createOrder: gagal menyimpan pesanan", error);
-      return failure("Pesanan belum bisa disimpan. Coba lagi sebentar atau pesan via WhatsApp.");
-    }
-  }
+  const code = await insertOrder({
+    product_id: product.id,
+    product_name: product.card.name,
+    variant: product.card.variant,
+    unit_price: unitPrice,
+    quantity,
+    total,
+    customer_name: name,
+    customer_phone: phone,
+    customer_email: email ?? null,
+    pickup_at: pickupAt.toISOString(),
+    notes: notes ?? null,
+    payment_method: method,
+  });
+  if (!code) return failure("Pesanan belum bisa disimpan. Coba lagi sebentar atau pesan via WhatsApp.");
 
   try {
     const token = await createSnapTransaction({

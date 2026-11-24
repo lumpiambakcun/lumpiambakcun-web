@@ -22,8 +22,12 @@ export type Order = {
   payment_type: string | null;
   snap_token: string | null;
   paid_at: string | null;
+  source: "online" | "manual";
   created_at: string;
 };
+
+export type NewOrder = Omit<Order, "id" | "code" | "status" | "payment_type" | "snap_token" | "paid_at" | "source" | "created_at"> &
+  Partial<Pick<Order, "status" | "paid_at" | "source">>;
 
 const codePattern = /^LMC-[A-Z2-9]{10}$/;
 
@@ -35,6 +39,20 @@ const codeAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 export function generateOrderCode() {
   return `LMC-${Array.from({ length: 10 }, () => codeAlphabet[randomInt(codeAlphabet.length)]).join("")}`;
+}
+
+export async function insertOrder(row: NewOrder) {
+  const supabase = createAdminClient();
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const code = generateOrderCode();
+    const { error } = await supabase.from("orders").insert({ ...row, code });
+    if (!error) return code;
+    if (error.code !== "23505" || attempt === 2) {
+      console.error("insertOrder: gagal menyimpan pesanan", error);
+      return null;
+    }
+  }
+  return null;
 }
 
 export async function getOrderByCode(code: string) {

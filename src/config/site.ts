@@ -10,7 +10,7 @@ export const siteConfig = {
   name: "Lumpia Mbak Cun",
   shortName: "Mbak Cun",
   description:
-    "Lumpia mini khas Semarang buatan rumahan sejak 1998: rebung, telur, dan udang. Kriuk, gurih, tanpa pengawet dan MSG. Pesan mentah atau siap santap lewat WhatsApp.",
+    "Lumpia khas Semarang buatan rumahan sejak 1998: rebung, telur, dan udang. Kriuk, gurih, tanpa pengawet dan MSG. Pesan mentah atau siap santap lewat WhatsApp.",
   language: "id",
   locale: "id_ID",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",

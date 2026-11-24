@@ -12,7 +12,7 @@ import { catalog, faq, features, hero, location, menu, order, testimonials } fro
 import { pageMetadata } from "@/lib/seo";
 import { faqJsonLd, localBusinessJsonLd } from "@/lib/structured-data";
 
-export const metadata = pageMetadata("/", `Lumpia Mini Khas Semarang, Rebungnya Nggak Bau | ${siteConfig.name}`);
+export const metadata = pageMetadata("/", `Lumpia Khas Semarang, Rebungnya Nggak Bau | ${siteConfig.name}`);
 
 export default function BerandaPage() {
   return (

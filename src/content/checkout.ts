@@ -19,6 +19,15 @@ export const paymentMethods = [
   },
 ] as const;
 
+export const manualPaymentMethods = [
+  { id: "cash", label: "Tunai" },
+  { id: "transfer", label: "Transfer" },
+] as const;
+
+export function paymentLabel(id: string) {
+  return [...paymentMethods, ...manualPaymentMethods].find((method) => method.id === id)?.label ?? id;
+}
+
 export type PaymentMethod = (typeof paymentMethods)[number]["id"];
 
 export type OrderStatus = "pending" | "paid" | "failed" | "expired" | "cancelled";

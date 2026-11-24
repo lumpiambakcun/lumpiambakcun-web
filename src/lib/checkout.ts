@@ -29,10 +29,20 @@ export function getPurchasable(productId: unknown) {
   return product?.card.price ? { product, unitPrice: parseRupiah(product.card.price) } : null;
 }
 
+export const nameSchema = z
+  .string("Isi nama lengkap (2 sampai 80 huruf).")
+  .min(2, "Isi nama lengkap (2 sampai 80 huruf).")
+  .max(80, "Isi nama lengkap (2 sampai 80 huruf).");
+
+export const phoneSchema = z
+  .string("Nomor WhatsApp tidak valid. Contoh: 0857-1364-4140.")
+  .transform(normalizePhone)
+  .pipe(z.string("Nomor WhatsApp tidak valid. Contoh: 0857-1364-4140."));
+
 type Purchasable = NonNullable<ReturnType<typeof getPurchasable>>;
 type Method = (typeof paymentMethods)[number];
 
-const purchasableSchema = z
+export const purchasableSchema = z
   .string("Produk tidak valid. Kembali ke menu dan coba lagi.")
   .transform(getPurchasable)
   .refine((value): value is Purchasable => value !== null, "Produk tidak valid. Kembali ke menu dan coba lagi.");
@@ -59,8 +69,8 @@ const checkoutSchema = (now: Date) =>
     .object({
       produk: purchasableSchema,
       jumlah: quantitySchema,
-      nama: z.string("Isi nama lengkap (2 sampai 80 huruf).").min(2, "Isi nama lengkap (2 sampai 80 huruf).").max(80, "Isi nama lengkap (2 sampai 80 huruf)."),
-      whatsapp: z.string("Nomor WhatsApp tidak valid. Contoh: 0857-1364-4140.").transform(normalizePhone).pipe(z.string("Nomor WhatsApp tidak valid. Contoh: 0857-1364-4140.")),
+      nama: nameSchema,
+      whatsapp: phoneSchema,
       email: z.union([z.literal(""), z.email().max(120)], "Format email tidak valid.").optional(),
       catatan: z.string().max(200, "Catatan maksimal 200 karakter.").optional(),
       metode: methodSchema,
