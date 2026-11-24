@@ -112,8 +112,8 @@ export function CheckoutForm({ productId, summary, paymentMethods, pickup, whats
                 {notice}
               </p>
             )}
-            <Button type="submit" form={FORM_ID} variant="brand" size="cta" disabled={pending} className="h-[42px] w-full">
-              {pending ? "Memproses..." : "Bayar sekarang"}
+            <Button type="submit" form={FORM_ID} variant="brand" size="cta" loading={pending} className="h-[42px] w-full">
+              Bayar sekarang
             </Button>
             <WhatsAppButton variant="outline-ink" message={whatsappMessage} className="h-11 w-full bg-white">
               Pesan via WhatsApp

@@ -2,6 +2,7 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
 import { Slot } from "radix-ui"
+import { LoaderCircle } from "lucide-react"
 
 const buttonVariants = cva(
   "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all select-none active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -54,21 +55,38 @@ function Button({
   variant = "default",
   size = "default",
   asChild = false,
+  loading = false,
+  children,
+  disabled,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
+    loading?: boolean
   }) {
   const Comp = asChild ? Slot.Root : "button"
+  const busy = loading && !asChild
 
   return (
     <Comp
       data-slot="button"
       data-variant={variant}
       data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
+      aria-busy={busy || undefined}
+      disabled={disabled || busy}
+      className={cn(buttonVariants({ variant, size, className }), busy && "relative disabled:opacity-100")}
       {...props}
-    />
+    >
+      {busy ? (
+        <>
+          <span className="invisible contents">{children}</span>
+          <LoaderCircle className="absolute size-5 animate-spin motion-reduce:animate-none" aria-hidden="true" />
+          <span className="sr-only">Memproses</span>
+        </>
+      ) : (
+        children
+      )}
+    </Comp>
   )
 }
 

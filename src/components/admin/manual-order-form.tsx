@@ -28,7 +28,6 @@ export function ManualOrderForm({ products, methods, hours, today }: ManualOrder
   const { errors = {} } = state;
   const invalid = (field: string) => (errors[field] ? { "aria-invalid": true as const, "aria-describedby": `${field}-error` } : {});
 
-  // Tanpa <form action>: React 19 mengosongkan semua field setelah aksi selesai, termasuk saat validasi gagal.
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -69,8 +68,8 @@ export function ManualOrderForm({ products, methods, hours, today }: ManualOrder
           {state.message}
         </p>
       )}
-      <Button type="submit" variant="brand" size="cta" disabled={pending} className="h-[42px] md:col-span-2 md:w-fit">
-        {pending ? "Menyimpan..." : "Simpan pesanan"}
+      <Button type="submit" variant="brand" size="cta" loading={pending} className="h-[42px] md:col-span-2 md:w-fit">
+        Simpan pesanan
       </Button>
     </form>
   );

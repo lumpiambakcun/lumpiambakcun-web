@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { cancelOrder, markPaid } from "@/app/admin/(panel)/actions";
 import { OrderStatusBadge } from "@/components/admin/order-status-badge";
+import { SubmitButton } from "@/components/shared/submit-button";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { paymentLabel } from "@/content/checkout";
 import { packagingOf } from "@/content/menu";
@@ -73,15 +73,11 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                   <div className="flex gap-1.5">
                     <form action={markPaid}>
                       <input type="hidden" name="kode" value={order.code} />
-                      <Button type="submit" size="sm">
-                        Tandai lunas
-                      </Button>
+                      <SubmitButton size="sm">Tandai lunas</SubmitButton>
                     </form>
                     <form action={cancelOrder}>
                       <input type="hidden" name="kode" value={order.code} />
-                      <Button type="submit" size="sm" variant="outline">
-                        Batalkan
-                      </Button>
+                      <SubmitButton size="sm" variant="outline">Batalkan</SubmitButton>
                     </form>
                   </div>
                 )}

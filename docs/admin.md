@@ -1,6 +1,6 @@
 # Admin
 
-Halaman pemilik di `/admin`: login, daftar pesanan, dan pesanan manual. Tidak diindeks (`robots.txt` melarang `/admin` dan `/auth`, meta `noindex`).
+Halaman pemilik di `/admin`: login, daftar pesanan, dan pesanan manual, dengan kerangka sidebar + header profil. Tidak diindeks (`robots.txt` melarang `/admin` dan `/auth`, meta `noindex`).
 
 ## Cara kerja
 
@@ -10,13 +10,19 @@ Halaman pemilik di `/admin`: login, daftar pesanan, dan pesanan manual. Tidak di
 - Data dibaca dan ditulis lewat service role (`src/lib/supabase/admin.ts`); tabel `orders` tetap tanpa policy untuk `anon` dan `authenticated`.
 - Halaman yang memakai `requireAdmin()` memanggil `await connection()` dulu. Tanpa itu `next dev` mencatat galat `Date.now()` saat prerender.
 
+## Kerangka panel
+
+`(panel)/layout.tsx`: `SidebarProvider` + `AdminSidebar` + `SidebarInset` (`AdminHeader` + `main`). Menu ada di `src/config/admin.ts` (satu daftar; tambah item di sini). Sidebar ikon + teks, bisa diciutkan jadi ikon (tooltip), di mobile jadi sheet; keadaan buka/tutup tidak disimpan (tanpa cookie, karena `cacheComponents`). Header hanya berisi tombol sidebar dan `ProfileMenu` (avatar + nama; isi: nama/email, **Lihat Situs** di tab baru, **Keluar**). `ProfileMenu` membaca sesi, jadi dibungkus `<Suspense>`. Halaman login/lupa/atur kata sandi memakai `AuthShell` (tanpa sidebar).
+
+Komponen form: `SelectField` (shadcn Select + input tersembunyi lewat `name`, nilai item tidak boleh string kosong), `DatePicker`, `TimeSelect` (slot 30 menit dari `businessConfig.hours`), `PasswordInput`. Form pesanan manual memakai `onSubmit` + `startTransition`, bukan `<form action>`, supaya isian tidak dikosongkan React 19 saat validasi gagal.
+
 ## Halaman
 
 | Path | Fungsi |
 | --- | --- |
-| `/admin/login` | Email dan password. Galat selalu "Email atau password salah." (akun tanpa role admin langsung dikeluarkan). |
+| `/admin/login` | Email dan kata sandi (ikon mata untuk menampilkan). Galat selalu "Email atau kata sandi salah." (akun tanpa role admin langsung dikeluarkan). |
 | `/admin/lupa-password` | Minta tautan reset. Respons sama untuk email terdaftar atau tidak. |
-| `/admin/atur-password` | Password baru (minimal 10 karakter). Hanya dari tautan reset. |
+| `/admin/atur-password` | Kata sandi baru (minimal 10 karakter). Hanya dari tautan reset. |
 | `/admin` | Daftar pesanan: cari (kode, nama, nomor), rentang, status, 25 per halaman. Default: tanggal ambil hari ini dan seterusnya, urut naik. |
 | `/admin/pesanan/baru` | Pesanan manual (tunai atau transfer; Lunas atau Belum bayar). |
 | `/auth/confirm` | Route handler tautan email. Menukar `token_hash` jadi sesi, tujuan (`next`) hanya boleh di dalam `/admin`. |
@@ -46,7 +52,7 @@ Tautan email bisa "terpakai" bila penyedia email memindai tautan; minta tautan b
 
 Buat akun uji lewat Admin API (`POST /auth/v1/admin/users` dengan service role, `email_confirm: true`, `app_metadata: {"role":"admin"}`), hapus setelah selesai. Tautan reset tanpa email: `POST /auth/v1/admin/generate_link` dengan `type: "recovery"`, lalu buka `/auth/confirm?token_hash=<hashed_token>&type=recovery&next=/admin/atur-password`.
 
-Saat menulis tes browser: tombol "Keluar" di navigasi juga `type=submit`; pilih tombol form dengan selektor yang spesifik (mis. `form:has(#produk) button[type=submit]`), atau sesi ikut keluar.
+Saat menulis tes browser: tombol "Keluar" di dropdown profil juga `type=submit`; pilih tombol form dengan selektor yang spesifik (mis. `form:has(#produk) button[type=submit]`), atau sesi ikut keluar.
 
 ## Batasan
 

@@ -62,8 +62,8 @@ export function AuthForm({ action, fields, submitLabel, forgotHref }: AuthFormPr
           {state.notice}
         </p>
       )}
-      <Button type="submit" variant="brand" size="cta" disabled={pending} className="h-14 w-full rounded-xl text-base tracking-normal normal-case">
-        {pending ? "Memproses..." : submitLabel}
+      <Button type="submit" variant="brand" size="cta" loading={pending} className="h-14 w-full rounded-xl text-base tracking-normal normal-case">
+        {submitLabel}
       </Button>
     </form>
   );
