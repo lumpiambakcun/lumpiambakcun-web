@@ -95,7 +95,12 @@ export function SiteFooter() {
           <p>
             &copy; {businessConfig.copyrightYear} {siteConfig.name}
           </p>
-          <p>{businessConfig.halalCertificate}</p>
+          <p className="flex items-center gap-2.5">
+            <span className="flex rounded-md bg-white p-1.5">
+              <Image src={businessConfig.halalLogo.src} width={businessConfig.halalLogo.width} height={businessConfig.halalLogo.height} alt={businessConfig.halalLogo.alt} className="h-10 w-auto" />
+            </span>
+            {businessConfig.halalCertificate}
+          </p>
         </div>
       </Container>
     </footer>

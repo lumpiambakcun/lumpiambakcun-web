@@ -34,4 +34,4 @@ Gunakan kunci sandbox, buat pesanan, lalu bayar lewat simulator Midtrans (QRIS/V
 
 ## Batasan
 
-Satu produk per pesanan, tanpa keranjang, kode promo, antar, atau email konfirmasi. Tidak ada rate limit: bot bisa membuat baris `pending`; tambahkan Turnstile atau rate limit bila perlu.
+Satu produk per pesanan, tanpa keranjang, kode promo, antar, atau email konfirmasi. Checkout online hanya 1 sampai 4 pack; 50 pcs (5 pack) ke atas lewat WhatsApp dengan DP (`bulkOrder` di `src/config/site.ts`, juga ditegakkan server di `quantitySchema`). Tidak ada rate limit: bot bisa membuat baris `pending`; tambahkan Turnstile atau rate limit bila perlu.

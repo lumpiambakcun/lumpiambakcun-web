@@ -34,9 +34,21 @@ export const businessConfig = {
   hours: { opens: "09.00", closes: "20.30", label: "Buka setiap hari, 09.00 sampai 20.30" },
   mapsUrl: "https://maps.app.goo.gl/jigyJhSDkJSNxhyL6",
   instagramUrl: "https://www.instagram.com/lumpiambakcun",
-  halalCertificate: "Halal BPJPH No. ID33110001429391222",
+  halalCertificate: "Halal BPJPH No. ID3511000210992322",
+  halalLogo: { src: "/images/brand/halal.webp", width: 89, height: 160, alt: "Logo Halal Indonesia (BPJPH)" },
   copyrightYear: 2026,
   rating: { value: 4.9, count: 49, source: "Google" },
+} as const;
+
+const packSize = 10;
+const bulkMinPcs = 50;
+
+export const bulkOrder = {
+  packSize,
+  minPcs: bulkMinPcs,
+  minPacks: bulkMinPcs / packSize,
+  maxOnlinePacks: bulkMinPcs / packSize - 1,
+  rule: `${bulkMinPcs} pcs atau lebih lewat WhatsApp, minimal H-1 dengan DP.`,
 } as const;
 
 export const orderChannels: ReadonlyArray<{

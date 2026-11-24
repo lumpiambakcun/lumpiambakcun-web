@@ -1,19 +1,26 @@
 import "server-only";
 import { createHash, timingSafeEqual } from "node:crypto";
 
+import { z } from "zod";
 import type { OrderStatus } from "@/content/checkout";
 
 export type { OrderStatus };
 
-export type MidtransNotification = {
-  order_id: string;
-  status_code: string;
-  gross_amount: string;
-  signature_key: string;
-  transaction_status: string;
-  fraud_status?: string;
-  payment_type?: string;
-};
+const notificationSchema = z.object({
+  order_id: z.string(),
+  status_code: z.string(),
+  gross_amount: z.string(),
+  signature_key: z.string(),
+  transaction_status: z.string(),
+  fraud_status: z.string().optional(),
+  payment_type: z.string().optional(),
+});
+
+const snapResponseSchema = z.object({ token: z.string().optional(), error_messages: z.array(z.string()).optional() });
+
+export type MidtransNotification = z.infer<typeof notificationSchema>;
+
+export const parseNotification = (data: unknown) => notificationSchema.safeParse(data).data ?? null;
 
 type SnapRequest = {
   orderCode: string;
@@ -54,11 +61,11 @@ export async function createSnapTransaction({ orderCode, amount, item, customer,
     }),
     cache: "no-store",
   });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok || typeof data.token !== "string") {
-    throw new Error(`Midtrans menolak transaksi (${response.status}): ${(data.error_messages ?? []).join("; ")}`);
+  const data = snapResponseSchema.safeParse(await response.json().catch(() => null)).data;
+  if (!response.ok || !data?.token) {
+    throw new Error(`Midtrans menolak transaksi (${response.status}): ${(data?.error_messages ?? []).join("; ")}`);
   }
-  return data.token as string;
+  return data.token;
 }
 
 export async function getTransactionStatus(orderCode: string): Promise<MidtransNotification | null> {
@@ -66,14 +73,11 @@ export async function getTransactionStatus(orderCode: string): Promise<MidtransN
     headers: { Accept: "application/json", Authorization: authHeader() },
     cache: "no-store",
   });
-  const data = await response.json().catch(() => null);
-  if (!data || data.status_code === "404" || typeof data.transaction_status !== "string") return null;
-  return data;
+  return parseNotification(await response.json().catch(() => null));
 }
 
 export function verifySignature(notification: MidtransNotification) {
   const { order_id, status_code, gross_amount, signature_key } = notification;
-  if (![order_id, status_code, gross_amount, signature_key].every((value) => typeof value === "string")) return false;
   const expected = createHash("sha512").update(`${order_id}${status_code}${gross_amount}${serverKey()}`).digest();
   const actual = Buffer.from(signature_key, "hex");
   return actual.length === expected.length && timingSafeEqual(actual, expected);

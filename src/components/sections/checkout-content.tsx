@@ -4,7 +4,7 @@ import { CheckoutForm } from "@/components/sections/checkout-form";
 import { SnapScript } from "@/components/shared/snap-script";
 import { businessConfig, siteConfig } from "@/config/site";
 import { paymentMethods } from "@/content/checkout";
-import { getPurchasable, parseQuantity, wibDate } from "@/lib/checkout";
+import { getPurchasable, quantitySchema, wibDate } from "@/lib/checkout";
 import { snapScriptUrl } from "@/lib/midtrans";
 
 type CheckoutContentProps = {
@@ -18,8 +18,10 @@ export async function CheckoutContent({ searchParams }: CheckoutContentProps) {
   const params = await searchParams;
   await connection();
   const purchasable = getPurchasable(first(params.produk));
-  const quantity = parseQuantity(first(params.jumlah));
-  if (!purchasable || !quantity) redirect("/menu");
+  if (!purchasable) redirect("/menu");
+  const parsedQuantity = quantitySchema.safeParse(first(params.jumlah));
+  if (!parsedQuantity.success) redirect(purchasable.product.card.href);
+  const quantity = parsedQuantity.data;
 
   const { product, unitPrice } = purchasable;
   const { card } = product;

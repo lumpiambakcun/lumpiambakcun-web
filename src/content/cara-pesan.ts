@@ -2,7 +2,7 @@ import { BadgeCheck, Globe, MapPin, MessageCircle, Search, ShoppingCart, User, W
 import type { DeliveryOption } from "@/components/sections/delivery-options";
 import type { OrderMethod } from "@/components/sections/order-methods";
 import type { OrderStepsTab } from "@/components/sections/order-steps";
-import { businessConfig } from "@/config/site";
+import { bulkOrder, businessConfig } from "@/config/site";
 import { order } from "@/content/beranda";
 
 const phone = businessConfig.phoneDisplay;
@@ -55,7 +55,7 @@ export const caraPesanPage = {
         items: [
           { icon: Search, title: "Pilih menu", text: "Lihat menu, tentukan frozen atau goreng, lalu hitung jumlah pack yang dibutuhkan." },
           { icon: MessageCircle, title: "Chat WhatsApp", text: `Kirim pesanan ke ${phone}: produk, jumlah, dan mau ambil atau diantar.` },
-          { icon: BadgeCheck, title: "Konfirmasi dan bayar", text: "Mbak Cun konfirmasi total harga. Pesanan di atas 50 pcs: minimal H-1 dengan DP." },
+          { icon: BadgeCheck, title: "Konfirmasi dan bayar", text: `Mbak Cun konfirmasi total harga. Pesanan ${bulkOrder.rule}` },
           { icon: MapPin, title: "Ambil atau diantar", text: "Ambil di Banyumanik, atau diantar lewat GoFood, GrabFood, dan ShopeeFood." },
         ],
       },

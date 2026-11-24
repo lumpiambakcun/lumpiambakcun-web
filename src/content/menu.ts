@@ -1,4 +1,5 @@
 import type { MenuCategory, MenuProduct } from "@/components/sections/menu-browser";
+import { bulkOrder } from "@/config/site";
 
 const frozenText = "Isi 10 pcs, frozen, tinggal goreng.";
 const friedText = "Isi 10 pcs, sudah digoreng.";
@@ -63,7 +64,7 @@ export const menuPage = {
   heading: "Menu Lumpia Mbak Cun",
   cta: {
     title: "Pesan banyak atau untuk acara?",
-    text: "Minimal 50 pcs, pesan H-1 dengan DP. Chat Mbak Cun, nanti dibantu hitung jumlahnya.",
+    text: `Minimal ${bulkOrder.minPcs} pcs, pesan H-1 dengan DP. Chat Mbak Cun, nanti dibantu hitung jumlahnya.`,
     buttonLabel: "Pesan via WhatsApp",
     message: "Halo Mbak Cun, saya mau pesan lumpia untuk acara.",
   },

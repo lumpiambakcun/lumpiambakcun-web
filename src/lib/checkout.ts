@@ -1,9 +1,8 @@
-import { businessConfig } from "@/config/site";
+import { z } from "zod";
+import { bulkOrder, businessConfig } from "@/config/site";
 import { paymentMethods, type PaymentMethod } from "@/content/checkout";
 import { getProduct } from "@/content/menu";
 import { parseRupiah } from "@/lib/currency";
-
-export const quantityLimits = { min: 1, max: 99 } as const;
 
 export type CheckoutField = "nama" | "whatsapp" | "email" | "tanggal" | "jam" | "catatan" | "metode" | "produk";
 export type CheckoutErrors = Partial<Record<CheckoutField, string>>;
@@ -25,67 +24,84 @@ export function normalizePhone(value: string) {
   return /^8\d{8,11}$/.test(national) ? `62${national}` : null;
 }
 
-export function parseQuantity(value: unknown) {
-  const quantity = Number(value);
-  return Number.isInteger(quantity) && quantity >= quantityLimits.min && quantity <= quantityLimits.max ? quantity : null;
-}
-
 export function getPurchasable(productId: unknown) {
   const product = typeof productId === "string" ? getProduct(productId) : undefined;
   return product?.card.price ? { product, unitPrice: parseRupiah(product.card.price) } : null;
 }
 
+type Purchasable = NonNullable<ReturnType<typeof getPurchasable>>;
+type Method = (typeof paymentMethods)[number];
+
+const purchasableSchema = z
+  .string("Produk tidak valid. Kembali ke menu dan coba lagi.")
+  .transform(getPurchasable)
+  .refine((value): value is Purchasable => value !== null, "Produk tidak valid. Kembali ke menu dan coba lagi.");
+
+const methodSchema = z
+  .string("Pilih metode pembayaran.")
+  .transform((id) => paymentMethods.find((method) => method.id === id) ?? null)
+  .refine((value): value is Method => value !== null, "Pilih metode pembayaran.");
+
+export const quantitySchema = z.coerce
+  .number("Jumlah tidak valid.")
+  .int("Jumlah tidak valid.")
+  .min(1, "Jumlah tidak valid.")
+  .max(bulkOrder.maxOnlinePacks, `Pesanan ${bulkOrder.rule}`);
+
+const { opens, closes } = businessConfig.hours;
+const clock = z
+  .string("Pilih jam ambil.")
+  .regex(/^\d{2}:\d{2}$/, "Pilih jam ambil.")
+  .refine((time) => toMinutes(time) >= toMinutes(opens) && toMinutes(time) <= toMinutes(closes), `Jam ambil antara ${opens} dan ${closes}.`);
+
+const checkoutSchema = (now: Date) =>
+  z
+    .object({
+      produk: purchasableSchema,
+      jumlah: quantitySchema,
+      nama: z.string("Isi nama lengkap (2 sampai 80 huruf).").min(2, "Isi nama lengkap (2 sampai 80 huruf).").max(80, "Isi nama lengkap (2 sampai 80 huruf)."),
+      whatsapp: z.string("Nomor WhatsApp tidak valid. Contoh: 0857-1364-4140.").transform(normalizePhone).pipe(z.string("Nomor WhatsApp tidak valid. Contoh: 0857-1364-4140.")),
+      email: z.union([z.literal(""), z.email().max(120)], "Format email tidak valid.").optional(),
+      catatan: z.string().max(200, "Catatan maksimal 200 karakter.").optional(),
+      metode: methodSchema,
+      tanggal: z.string("Pilih tanggal ambil.").regex(/^\d{4}-\d{2}-\d{2}$/, "Pilih tanggal ambil."),
+      jam: clock,
+    })
+    .transform((data, ctx) => {
+      const pickupAt = new Date(`${data.tanggal}T${data.jam}:00${WIB_OFFSET}`);
+      const problem = Number.isNaN(pickupAt.getTime())
+        ? "Pilih tanggal ambil."
+        : pickupAt.getTime() < now.getTime() + MIN_LEAD_MINUTES * 60_000
+          ? "Waktu ambil minimal 1 jam dari sekarang."
+          : pickupAt.getTime() > now.getTime() + MAX_LEAD_DAYS * 86_400_000
+            ? `Waktu ambil maksimal ${MAX_LEAD_DAYS} hari ke depan.`
+            : null;
+      if (problem) {
+        ctx.issues.push({ code: "custom", message: problem, input: data.tanggal, path: ["tanggal"] });
+        return z.NEVER;
+      }
+      return {
+        ...data.produk,
+        quantity: data.jumlah,
+        name: data.nama,
+        phone: data.whatsapp,
+        email: data.email || undefined,
+        notes: data.catatan || undefined,
+        pickupAt,
+        method: data.metode.id as PaymentMethod,
+        enabledPayments: data.metode.enabledPayments,
+      };
+    });
+
 export function validateCheckout(formData: FormData, now: Date) {
-  const text = (key: string) => String(formData.get(key) ?? "").trim();
+  const input = Object.fromEntries([...formData].map(([key, value]) => [key, typeof value === "string" ? value.trim() : value]));
+  const parsed = checkoutSchema(now).safeParse(input);
+  if (parsed.success) return { ok: true as const, value: parsed.data };
+
   const errors: CheckoutErrors = {};
-
-  const purchasable = getPurchasable(text("produk"));
-  const quantity = parseQuantity(text("jumlah"));
-  if (!purchasable || !quantity) errors.produk = "Produk atau jumlah tidak valid. Kembali ke menu dan coba lagi.";
-
-  const name = text("nama");
-  if (name.length < 2 || name.length > 80) errors.nama = "Isi nama lengkap (2 sampai 80 huruf).";
-
-  const phone = normalizePhone(text("whatsapp"));
-  if (!phone) errors.whatsapp = "Nomor WhatsApp tidak valid. Contoh: 0857-1364-4140.";
-
-  const email = text("email");
-  if (email && (email.length > 120 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) errors.email = "Format email tidak valid.";
-
-  const notes = text("catatan");
-  if (notes.length > 200) errors.catatan = "Catatan maksimal 200 karakter.";
-
-  const method = paymentMethods.find((item) => item.id === text("metode"));
-  if (!method) errors.metode = "Pilih metode pembayaran.";
-
-  const date = text("tanggal");
-  const time = text("jam");
-  const pickupAt = new Date(`${date}T${time}:00${WIB_OFFSET}`);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(pickupAt.getTime())) {
-    errors.tanggal = "Pilih tanggal ambil.";
-  } else if (pickupAt.getTime() < now.getTime() + MIN_LEAD_MINUTES * 60_000) {
-    errors.tanggal = "Waktu ambil minimal 1 jam dari sekarang.";
-  } else if (pickupAt.getTime() > now.getTime() + MAX_LEAD_DAYS * 86_400_000) {
-    errors.tanggal = `Waktu ambil maksimal ${MAX_LEAD_DAYS} hari ke depan.`;
+  for (const issue of parsed.error.issues) {
+    const field = issue.path[0] === "jumlah" ? "produk" : (issue.path[0] as CheckoutField);
+    errors[field] ??= issue.message;
   }
-  const { opens, closes } = businessConfig.hours;
-  if (!/^\d{2}:\d{2}$/.test(time) || toMinutes(time) < toMinutes(opens) || toMinutes(time) > toMinutes(closes)) {
-    errors.jam = `Jam ambil antara ${opens} dan ${closes}.`;
-  }
-
-  if (Object.keys(errors).length > 0 || !purchasable || !quantity || !phone || !method) return { ok: false as const, errors };
-  return {
-    ok: true as const,
-    value: {
-      ...purchasable,
-      quantity,
-      name,
-      phone,
-      email: email || undefined,
-      notes: notes || undefined,
-      pickupAt,
-      method: method.id as PaymentMethod,
-      enabledPayments: method.enabledPayments,
-    },
-  };
+  return { ok: false as const, errors };
 }

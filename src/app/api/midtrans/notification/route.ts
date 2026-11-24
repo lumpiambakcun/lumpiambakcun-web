@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { type MidtransNotification, verifySignature } from "@/lib/midtrans";
+import { parseNotification, verifySignature } from "@/lib/midtrans";
 import { applyPaymentStatus, getOrderByCode } from "@/lib/orders";
 
 export async function POST(request: Request) {
-  const notification: MidtransNotification | null = await request.json().catch(() => null);
-  if (!notification || !verifySignature(notification)) {
+  const notification = parseNotification(await request.json().catch(() => null));
+  if (!notification) return NextResponse.json({ error: "Body tidak valid" }, { status: 400 });
+  if (!verifySignature(notification)) {
     return NextResponse.json({ error: "Tanda tangan tidak valid" }, { status: 401 });
   }
 

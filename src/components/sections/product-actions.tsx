@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { Button } from "@/components/ui/button";
+import { bulkOrder } from "@/config/site";
 import { whatsappUrl } from "@/lib/whatsapp";
 
 const MIN_QUANTITY = 1;
@@ -28,6 +29,7 @@ function StepButton({ label, children, ...props }: React.ComponentProps<typeof B
 export function ProductActions({ productId, purchasable, itemLabel, askMessage }: ProductActionsProps) {
   const [quantity, setQuantity] = useState(MIN_QUANTITY);
   const decrease = useCallback(() => setQuantity((value) => Math.max(MIN_QUANTITY, value - 1)), []);
+  const bulk = quantity >= bulkOrder.minPacks;
   const increase = useCallback(() => setQuantity((value) => Math.min(MAX_QUANTITY, value + 1)), []);
 
   return (
@@ -44,24 +46,30 @@ export function ProductActions({ productId, purchasable, itemLabel, askMessage }
             <Plus aria-hidden="true" className="size-5" />
           </StepButton>
         </div>
-        <Button asChild={purchasable} disabled={!purchasable} variant="brand" size="cta" className="h-11 w-full md:flex-1">
-          {purchasable ? (
-            <Link href={`/checkout?${new URLSearchParams({ produk: productId, jumlah: String(quantity) })}`} prefetch={false}>
-              <ShoppingCart aria-hidden="true" />
-              Beli sekarang
-            </Link>
-          ) : (
-            <>
-              <ShoppingCart aria-hidden="true" />
-              Beli sekarang
-            </>
-          )}
-        </Button>
+        {bulk && purchasable ? (
+          <p className="rounded-[10px] bg-cream px-4 py-2.5 text-[13px] leading-[1.28] font-semibold text-ink md:flex-1">
+            Pesanan {bulkOrder.rule}
+          </p>
+        ) : (
+          <Button asChild={purchasable} disabled={!purchasable} variant="brand" size="cta" className="h-11 w-full md:flex-1">
+            {purchasable ? (
+              <Link href={`/checkout?${new URLSearchParams({ produk: productId, jumlah: String(quantity) })}`} prefetch={false}>
+                <ShoppingCart aria-hidden="true" />
+                Beli sekarang
+              </Link>
+            ) : (
+              <>
+                <ShoppingCart aria-hidden="true" />
+                Beli sekarang
+              </>
+            )}
+          </Button>
+        )}
       </div>
       <div className="flex flex-col gap-3 md:flex-row">
         <WhatsAppButton
-          variant="accent"
-          message={`Halo Mbak Cun, saya mau pesan ${quantity} pack ${itemLabel}.`}
+          variant={bulk && purchasable ? "brand" : "accent"}
+          message={`Halo Mbak Cun, saya mau pesan ${quantity} pack ${itemLabel}${bulk ? `, total ${quantity * bulkOrder.packSize} pcs` : ""}.`}
           className="h-11 w-full md:flex-1"
         >
           Pesan via WhatsApp

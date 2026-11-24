@@ -5,7 +5,7 @@ import type { HeroProps } from "@/components/sections/hero";
 import type { PriceCardProps } from "@/components/sections/price-card";
 import type { Testimonial } from "@/components/sections/testimonial-card";
 import type { WhatsAppCardProps } from "@/components/sections/whatsapp-card";
-import { businessConfig } from "@/config/site";
+import { bulkOrder, businessConfig } from "@/config/site";
 import { menuCategories, menuProducts } from "@/content/menu";
 
 export const hero: HeroProps = {
@@ -102,7 +102,7 @@ export const order = {
   steps: [
     "Sebutkan mentah atau goreng, dan jumlah pack",
     "Pilih ambil di tempat atau dikirim, termasuk ke Jakarta dan luar kota",
-    "Pesanan di atas 50 pcs: minimal H-1 dengan DP",
+    `Pesanan ${bulkOrder.rule}`,
   ],
   card: {
     kicker: "Paling cepat!",
@@ -114,7 +114,7 @@ export const order = {
       { value: "2 bulan", label: "Freezer", highlight: true },
     ],
     eventLabel: "Pesan untuk acara",
-    eventText: "Arisan, pengajian, rapat kantor, hajatan? Min. 50 pcs · Pesan H-1 · DP di awal",
+    eventText: `Arisan, pengajian, rapat kantor, hajatan? Min. ${bulkOrder.minPcs} pcs · Pesan H-1 · DP di awal`,
     ctaLabel: `Chat ${businessConfig.phoneDisplay}`,
     ctaMessage: "Halo Mbak Cun, saya mau pesan lumpia.",
   } satisfies WhatsAppCardProps,
@@ -180,7 +180,7 @@ export const faq = {
     { question: "Sudah halal?", answer: `Sudah. ${businessConfig.halalCertificate}.` },
     { question: "Ada sambalnya?", answer: "Setiap pembelian dapat cabai rawit gratis." },
     { question: "Bisa kirim ke Jakarta atau kota lain?", answer: "Bisa. Kami melayani pengiriman ke Jakarta dan luar kota. Tanyakan ongkos kirimnya lewat WhatsApp." },
-    { question: "Bisa pesan banyak untuk acara?", answer: "Bisa. Pesanan di atas 50 pcs minimal H-1 dengan DP, cocok untuk arisan, pengajian, rapat kantor, dan hajatan." },
+    { question: "Bisa pesan banyak untuk acara?", answer: `Bisa. Pesanan ${bulkOrder.rule} Cocok untuk arisan, pengajian, rapat kantor, dan hajatan.` },
   ] satisfies FaqItem[],
 };
 
