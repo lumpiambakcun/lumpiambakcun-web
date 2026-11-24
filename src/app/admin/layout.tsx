@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: { default: "Admin", template: "%s | Admin" },
+  title: { default: `Panel Admin ${siteConfig.name}`, template: `%s | Panel Admin ${siteConfig.name}` },
   robots: { index: false, follow: false },
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <div className="min-h-screen bg-cream text-ink">{children}</div>;
+  return <div className="min-h-screen text-ink">{children}</div>;
 }

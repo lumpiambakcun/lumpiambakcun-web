@@ -12,9 +12,19 @@ Halaman pemilik di `/admin`: login, daftar pesanan, dan pesanan manual, dengan k
 
 ## Kerangka panel
 
-`(panel)/layout.tsx`: `SidebarProvider` + `AdminSidebar` + `SidebarInset` (`AdminHeader` + `main`). Menu ada di `src/config/admin.ts` (satu daftar; tambah item di sini). Sidebar ikon + teks, bisa diciutkan jadi ikon (tooltip), di mobile jadi sheet; keadaan buka/tutup tidak disimpan (tanpa cookie, karena `cacheComponents`). Header hanya berisi tombol sidebar dan `ProfileMenu` (avatar + nama; isi: nama/email, **Lihat Situs** di tab baru, **Keluar**). `ProfileMenu` membaca sesi, jadi dibungkus `<Suspense>`. Halaman login/lupa/atur kata sandi memakai `AuthShell` (tanpa sidebar).
+`(panel)/layout.tsx`: `SidebarProvider` + `AdminSidebar` + `SidebarInset` (`AdminHeader` + `main`). Menu ada di `src/config/admin.ts` (satu daftar; tambah item di sini). Sidebar ikon + teks, bisa diciutkan jadi ikon (tooltip), di mobile jadi sheet; keadaan buka/tutup tidak disimpan (tanpa cookie, karena `cacheComponents`). Header hanya berisi tombol sidebar dan `ProfileMenu` (avatar + nama; isi: nama/email, **Lihat Situs** di tab baru, **Keluar**). `ProfileMenu` (server) membaca sesi, jadi dibungkus `<Suspense>`; tampilannya ada di `ProfileMenuView` (client). **Keluar** membuka `AlertDialog` konfirmasi; saat ditutup, fokus dikembalikan ke pemicu profil lewat `onCloseAutoFocus` (item menu sudah tidak ada saat itu). Halaman login/lupa/atur kata sandi memakai `AuthShell` (tanpa sidebar).
 
-Komponen form: `SelectField` (shadcn Select + input tersembunyi lewat `name`, nilai item tidak boleh string kosong), `DatePicker`, `TimeSelect` (slot 30 menit dari `businessConfig.hours`), `PasswordInput`. Form pesanan manual memakai `onSubmit` + `startTransition`, bukan `<form action>`, supaya isian tidak dikosongkan React 19 saat validasi gagal.
+Komponen form: `SelectField` (shadcn Select + input tersembunyi lewat `name`, nilai item tidak boleh string kosong), `DatePicker`, `TimeSelect` (slot 30 menit dari `businessConfig.hours`), `PasswordInput`. Form pesanan manual memakai `onSubmit` + `startTransition`, bukan `<form action>`, supaya isian tidak dikosongkan React 19 saat validasi gagal. Label form panel memakai `FormField tone="admin"` (sentence case, netral); tone `brand` (kapital merah) tetap untuk checkout publik.
+
+**Gaya panel.** Latar `bg-canvas` (netral hangat), card putih `border-border` + `shadow-card`, merek hanya untuk aksi utama, item menu aktif (tint + garis kiri), dan teks galat. Warna status lewat token `--status-paid|pending|void|failed` (titik di `OrderStatusBadge`). Tombol panel memakai variant `default` (sentence case); variant `brand`/`accent` (kapital) khusus situs publik. Tinggi kontrol panel: 40px (toolbar) dan 45px (form); `SelectField` memaksa `data-[size=default]:h-[45px]` karena `SelectTrigger` punya tinggi sendiri.
+
+**Header halaman** memakai `PageHeader` (H1, deskripsi, aksi di kanan). Judul tab: template `%s | Panel Admin Lumpia Mbak Cun` di `app/admin/layout.tsx`.
+
+**Daftar pesanan.** `OrdersContent` (server) mengambil data; `OrdersLiveFilters` (client) memegang pencarian. Pencarian debounce 300 ms, dropdown dan Enter langsung berlaku, state di URL lewat `router.replace(..., { scroll: false })` di dalam `useTransition` (tanpa riwayat per ketikan; React menahan hasil lama sambil memuat dan hanya menerapkan navigasi terakhir, jadi tidak ada flash kosong atau hasil basi). Jumlah hasil diumumkan lewat `role=status aria-live=polite`. Ringkasan (`OrdersStats`) dihitung dari baris yang sudah dimuat, tanpa query tambahan, dan diberi catatan bila total lebih banyak dari satu halaman. Header tabel sticky dengan scroll di dalam card (`Table containerClassName`). Aksi baris: `OrderRowActions` (menu ⋯: detail, chat WhatsApp, tandai lunas, batalkan dengan `AlertDialog`).
+
+**Tambah pesanan.** Tombol di header halaman Pesanan membuka `AddOrderDialog`: Dialog di layar lebar, Sheet dari bawah di layar kecil (`useIsMobile`). Form `ManualOrderForm` memakai ulang server action `addManualOrder`; setelah tersimpan: toast (`sonner`), dialog menutup, tabel refresh lewat `revalidatePath("/admin")` (aksi tidak lagi `redirect`). Tanggal awal dihitung saat dialog dibuka, bukan saat render.
+
+Halaman auth (`(auth)/layout.tsx`) menengahkan form secara vertikal dengan `min-h-dvh` + `my-auto`, dan mengekspor `viewport.interactiveWidget = "resizes-content"` agar keyboard mobile/tablet mengecilkan area layout (Chrome Android); bila konten lebih tinggi dari area terlihat, halaman bisa digulir. iOS Safari mengabaikan `interactive-widget`, tetapi menggulir input yang fokus ke area terlihat.
 
 ## Halaman
 
@@ -23,11 +33,18 @@ Komponen form: `SelectField` (shadcn Select + input tersembunyi lewat `name`, ni
 | `/admin/login` | Email dan kata sandi (ikon mata untuk menampilkan). Galat selalu "Email atau kata sandi salah." (akun tanpa role admin langsung dikeluarkan). |
 | `/admin/lupa-password` | Minta tautan reset. Respons sama untuk email terdaftar atau tidak. |
 | `/admin/atur-password` | Kata sandi baru (minimal 10 karakter). Hanya dari tautan reset. |
-| `/admin` | Daftar pesanan: cari (kode, nama, nomor), rentang, status, 25 per halaman. Default: tanggal ambil hari ini dan seterusnya, urut naik. |
-| `/admin/pesanan/baru` | Pesanan manual (tunai atau transfer; Lunas atau Belum bayar). |
+| `/admin` | Daftar pesanan: cari (kode, nama, nomor), rentang, status, 25 per halaman, ringkasan, dan tombol Tambah pesanan (pesanan manual: tunai atau transfer; Lunas atau Belum bayar). Default: tanggal ambil hari ini dan seterusnya, urut naik. |
 | `/auth/confirm` | Route handler tautan email. Menukar `token_hash` jadi sesi, tujuan (`next`) hanya boleh di dalam `/admin`. |
 
 Pesanan manual disimpan di tabel `orders` yang sama dengan `source = 'manual'` dan harga katalog. Tombol "Tandai lunas" dan "Batalkan" hanya muncul untuk pesanan **manual** yang masih belum bayar; pesanan online diselesaikan Midtrans.
+
+## Membuat akun admin
+
+```bash
+bun run admin:create email@anda.com "Nama Lengkap"
+```
+
+Kata sandi ditanya di terminal (tidak tampil, minimal 10 karakter, diulang dua kali). Bila email sudah terdaftar, akun itu dijadikan admin (kata sandi hanya diganti jika diisi). Skrip memakai service role dari `.env` (`scripts/create-admin.ts`), membuat akun tanpa konfirmasi email, dan mengisi `app_metadata.role = "admin"`; profil terisi otomatis lewat trigger. Tanpa terminal interaktif, isi kata sandi lewat env `ADMIN_PASSWORD`. Jalankan hanya dari mesin tepercaya karena memakai kunci service role.
 
 ## Setup di dashboard Supabase (sekali, tidak bisa lewat kode)
 

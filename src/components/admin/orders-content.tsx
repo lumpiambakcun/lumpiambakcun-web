@@ -1,6 +1,7 @@
 import { connection } from "next/server";
-import { OrderFilterBar } from "@/components/admin/order-filters";
+import { OrdersLiveFilters } from "@/components/admin/orders-live-filters";
 import { OrdersPagination } from "@/components/admin/orders-pagination";
+import { OrdersStats } from "@/components/admin/orders-stats";
 import { OrdersTable } from "@/components/admin/orders-table";
 import { requireAdmin } from "@/lib/admin-auth";
 import { listOrders, parseOrderFilters } from "@/lib/admin-orders";
@@ -14,12 +15,12 @@ export async function OrdersContent({ searchParams }: OrdersContentProps) {
   await requireAdmin();
   const filters = parseOrderFilters(await searchParams);
   const { orders, total } = await listOrders(filters);
+  const filtered = Boolean(filters.q || filters.status || filters.rentang === "semua");
 
   return (
-    <div className="flex flex-col gap-4">
-      <OrderFilterBar filters={filters} />
-      <OrdersTable orders={orders} />
+    <OrdersLiveFilters filters={filters} total={total} stats={<OrdersStats orders={orders} total={total} />}>
+      <OrdersTable orders={orders} filtered={filtered} />
       <OrdersPagination filters={filters} total={total} />
-    </div>
+    </OrdersLiveFilters>
   );
 }

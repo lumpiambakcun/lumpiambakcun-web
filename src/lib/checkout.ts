@@ -3,6 +3,7 @@ import { bulkOrder, businessConfig } from "@/config/site";
 import { paymentMethods, type PaymentMethod } from "@/content/checkout";
 import { getProduct } from "@/content/menu";
 import { parseRupiah } from "@/lib/currency";
+import { wibDate } from "@/lib/format";
 
 export type CheckoutField = "nama" | "whatsapp" | "email" | "tanggal" | "jam" | "catatan" | "metode" | "produk";
 export type CheckoutErrors = Partial<Record<CheckoutField, string>>;
@@ -11,7 +12,7 @@ const MIN_LEAD_MINUTES = 60;
 const MAX_LEAD_DAYS = 30;
 const WIB_OFFSET = "+07:00";
 
-export const wibDate = (date: Date) => new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Jakarta" }).format(date);
+export { wibDate };
 
 const toMinutes = (clock: string) => {
   const [hours, minutes] = clock.split(/[.:]/).map(Number);

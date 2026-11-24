@@ -17,7 +17,7 @@ export function AdminSidebarNav() {
             asChild
             isActive={pathname === href}
             tooltip={label}
-            className="h-10 text-[15px] data-active:bg-highlight data-active:font-semibold data-active:text-ink"
+            className="relative h-9 text-sm text-ink-muted data-active:bg-brand/8 data-active:font-semibold data-active:text-brand data-active:before:absolute data-active:before:inset-y-1.5 data-active:before:left-0 data-active:before:w-[3px] data-active:before:rounded-full data-active:before:bg-brand"
           >
             <Link href={href} onClick={() => setOpenMobile(false)} aria-current={pathname === href ? "page" : undefined}>
               <Icon aria-hidden="true" />

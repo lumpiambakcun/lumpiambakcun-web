@@ -52,6 +52,12 @@
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
   --color-whatsapp: #25d366;
+  --color-canvas: var(--canvas);
+  --color-status-paid: var(--status-paid);
+  --color-status-pending: var(--status-pending);
+  --color-status-void: var(--status-void);
+  --color-status-failed: var(--status-failed);
+  --shadow-card: 0 1px 2px 0 rgb(10 10 10 / 0.05), 0 1px 3px 0 rgb(10 10 10 / 0.04);
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -82,6 +88,13 @@
   --ink: #0a0a0a;
   --ink-muted: #0a0a0aa6;
 
+  /* Panel admin: kanvas netral hangat dan warna status pesanan */
+  --canvas: #f6f5f1;
+  --status-paid: #16803c;
+  --status-pending: #d97706;
+  --status-void: #8b8b86;
+  --status-failed: #c2410c;
+
   --background: #ffffff;
   --foreground: var(--ink);
   --card: #ffffff;
@@ -110,9 +123,9 @@
   --sidebar-foreground: var(--ink);
   --sidebar-primary: var(--brand);
   --sidebar-primary-foreground: var(--highlight);
-  --sidebar-accent: var(--cream);
+  --sidebar-accent: var(--canvas);
   --sidebar-accent-foreground: var(--ink);
-  --sidebar-border: var(--cream-line);
+  --sidebar-border: var(--border);
   --sidebar-ring: var(--ink);
 
   --header-offset: 5.5rem;

@@ -39,7 +39,7 @@ export function AuthForm({ action, fields, submitLabel, forgotHref }: AuthFormPr
             id={name}
             label={label}
             error={errors[name]}
-            plain
+            tone="plain"
             labelAction={
               forgotHref && type === "password" ? (
                 <Link href={forgotHref} className="text-sm font-bold text-brand underline-offset-4 hover:underline">

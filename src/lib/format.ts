@@ -16,3 +16,5 @@ export function formatPickupTime(iso: string) {
 export function maskPhone(phone: string) {
   return `+${phone.slice(0, 5)}••••${phone.slice(-3)}`;
 }
+
+export const wibDate = (date: Date) => new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Jakarta" }).format(date);

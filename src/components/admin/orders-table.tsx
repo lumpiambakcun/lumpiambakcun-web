@@ -1,8 +1,9 @@
+import { SearchX } from "lucide-react";
 import Link from "next/link";
-import { cancelOrder, markPaid } from "@/app/admin/(panel)/actions";
+import { OrderRowActions } from "@/components/admin/order-row-actions";
 import { OrderStatusBadge } from "@/components/admin/order-status-badge";
-import { SubmitButton } from "@/components/shared/submit-button";
-import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/shared/empty-state";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { paymentLabel } from "@/content/checkout";
 import { packagingOf } from "@/content/menu";
@@ -12,80 +13,81 @@ import type { Order } from "@/lib/orders";
 
 type OrdersTableProps = {
   orders: readonly Order[];
+  filtered: boolean;
 };
 
-export function OrdersTable({ orders }: OrdersTableProps) {
-  if (orders.length === 0) {
-    return <p className="rounded-card border border-cream-line bg-white px-5 py-10 text-center text-sm text-ink-muted">Belum ada pesanan yang cocok.</p>;
-  }
+const head = "sticky top-0 z-10 h-10 bg-card px-3 text-xs font-semibold text-ink-muted shadow-[inset_0_-1px_0_var(--border)]";
 
+export function OrdersTable({ orders, filtered }: OrdersTableProps) {
   return (
-    <div className="rounded-card border border-cream-line bg-white">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="px-4">Kode</TableHead>
-            <TableHead>Pemesan</TableHead>
-            <TableHead>Pesanan</TableHead>
-            <TableHead>Ambil</TableHead>
-            <TableHead className="text-right">Total</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="px-4">Aksi</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {orders.map((order) => (
-            <TableRow key={order.id} className="align-top">
-              <TableCell className="px-4 py-3">
-                <Link href={`/pesanan/${order.code}`} className="font-mono text-xs font-semibold tabular-nums hover:underline">
-                  {order.code}
-                </Link>
-                {order.source === "manual" && (
-                  <Badge variant="outline" className="mt-1 block text-[11px]">
-                    Manual
-                  </Badge>
-                )}
-              </TableCell>
-              <TableCell className="py-3 whitespace-normal">
-                <div className="font-semibold">{order.customer_name}</div>
-                <a
-                  href={`https://wa.me/${order.customer_phone}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-mono text-xs text-brand tabular-nums underline-offset-2 hover:underline"
-                >
-                  +{order.customer_phone}
-                </a>
-              </TableCell>
-              <TableCell className="py-3 whitespace-normal">
-                <div>{`${order.product_name} ${order.variant}`}</div>
-                <div className="text-xs text-ink-muted">{`${order.quantity} ${packagingOf(order.variant)}`}</div>
-                {order.notes && <div className="mt-1 max-w-48 text-xs text-ink-muted italic">{order.notes}</div>}
-              </TableCell>
-              <TableCell className="py-3 whitespace-normal">{formatPickupTime(order.pickup_at)}</TableCell>
-              <TableCell className="py-3 text-right font-mono tabular-nums">{formatRupiah(order.total)}</TableCell>
-              <TableCell className="py-3">
-                <OrderStatusBadge status={order.status} />
-                <div className="mt-1 text-xs text-ink-muted">{paymentLabel(order.payment_method)}</div>
-              </TableCell>
-              <TableCell className="px-4 py-3">
-                {order.source === "manual" && order.status === "pending" && (
-                  <div className="flex gap-1.5">
-                    <form action={markPaid}>
-                      <input type="hidden" name="kode" value={order.code} />
-                      <SubmitButton size="sm">Tandai lunas</SubmitButton>
-                    </form>
-                    <form action={cancelOrder}>
-                      <input type="hidden" name="kode" value={order.code} />
-                      <SubmitButton size="sm" variant="outline">Batalkan</SubmitButton>
-                    </form>
-                  </div>
-                )}
-              </TableCell>
+    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
+      {orders.length === 0 ? (
+        <EmptyState
+          icon={SearchX}
+          title={filtered ? "Tidak ada pesanan yang cocok" : "Belum ada pesanan"}
+          description={filtered ? "Coba kata kunci lain atau longgarkan filter." : "Pesanan dari checkout dan yang Anda tambah manual akan muncul di sini."}
+          action={
+            filtered && (
+              <Button asChild variant="outline" size="lg">
+                <Link href="/admin">Reset filter</Link>
+              </Button>
+            )
+          }
+        />
+      ) : (
+        <Table containerClassName="max-h-[min(70dvh,760px)] overflow-auto">
+          <TableHeader>
+            <TableRow className="border-0 hover:bg-transparent">
+              <TableHead className={head}>Kode</TableHead>
+              <TableHead className={head}>Pemesan</TableHead>
+              <TableHead className={head}>Pesanan</TableHead>
+              <TableHead className={head}>Ambil</TableHead>
+              <TableHead className={`${head} text-right`}>Total</TableHead>
+              <TableHead className={head}>Status</TableHead>
+              <TableHead className={`${head} w-12`}>
+                <span className="sr-only">Aksi</span>
+              </TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {orders.map((order) => (
+              <TableRow key={order.id} className="align-top hover:bg-canvas">
+                <TableCell className="px-3 py-2.5">
+                  <Link href={`/pesanan/${order.code}`} target="_blank" className="font-mono text-xs font-medium tabular-nums hover:underline">
+                    {order.code}
+                  </Link>
+                  {order.source === "manual" && <div className="mt-1 text-[11px] font-medium text-ink-muted">Manual</div>}
+                </TableCell>
+                <TableCell className="px-3 py-2.5 whitespace-normal">
+                  <div className="font-medium">{order.customer_name}</div>
+                  <a
+                    href={`https://wa.me/${order.customer_phone}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-mono text-xs text-ink-muted tabular-nums underline-offset-2 hover:text-ink hover:underline"
+                  >
+                    {`+${order.customer_phone}`}
+                  </a>
+                </TableCell>
+                <TableCell className="px-3 py-2.5 whitespace-normal">
+                  <div>{`${order.product_name} ${order.variant}`}</div>
+                  <div className="text-xs text-ink-muted">{`${order.quantity} ${packagingOf(order.variant)}`}</div>
+                  {order.notes && <div className="mt-1 max-w-48 text-xs text-ink-muted italic">{order.notes}</div>}
+                </TableCell>
+                <TableCell className="px-3 py-2.5 whitespace-normal">{formatPickupTime(order.pickup_at)}</TableCell>
+                <TableCell className="px-3 py-2.5 text-right font-mono tabular-nums">{formatRupiah(order.total)}</TableCell>
+                <TableCell className="px-3 py-2.5">
+                  <OrderStatusBadge status={order.status} />
+                  <div className="mt-1 text-xs text-ink-muted">{paymentLabel(order.payment_method)}</div>
+                </TableCell>
+                <TableCell className="px-2 py-2">
+                  <OrderRowActions code={order.code} phone={order.customer_phone} canChangeStatus={order.source === "manual" && order.status === "pending"} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
     </div>
   );
 }
