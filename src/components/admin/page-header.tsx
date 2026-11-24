@@ -1,6 +1,5 @@
 type PageHeaderProps = {
   title: string;
-  /** Area aksi di kanan (mis. tombol utama halaman). */
   actions?: React.ReactNode;
 };
 

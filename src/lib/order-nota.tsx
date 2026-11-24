@@ -19,7 +19,6 @@ const tornEdge = `data:image/svg+xml;utf8,${encodeURIComponent(
   ).join("")}Z"/></svg>`,
 )}`;
 
-// null bila kode salah, pesanan tidak ada, atau belum lunas: nota hanya untuk pesanan lunas.
 export async function renderOrderNota(code: string) {
   if (!isOrderCode(code)) return null;
   const found = await getOrderByCode(code);
@@ -129,7 +128,6 @@ export async function renderOrderNota(code: string) {
             </div>
           </div>
         </div>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={tornEdge} alt="" width={PAPER_WIDTH} height={16} />
       </div>
     ),

@@ -1,6 +1,3 @@
-// Buat akun admin, atau jadikan akun yang sudah ada sebagai admin.
-// Pakai: bun run admin:create <email> [nama lengkap]
-// Kata sandi ditanya tanpa tampil di layar; untuk CI/otomasi pakai env ADMIN_PASSWORD.
 import { createClient } from "@supabase/supabase-js";
 
 const MIN_PASSWORD = 10;

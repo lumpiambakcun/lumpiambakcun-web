@@ -3,10 +3,8 @@ import { SelectField } from "@/components/shared/select-field";
 type TimeSelectProps = {
   id: string;
   name: string;
-  /** Jam buka dan tutup, format "09.00" atau "09:00". */
   opens: string;
   closes: string;
-  /** Selang antar pilihan, menit. */
   step?: number;
   placeholder?: string;
 } & Pick<React.ComponentProps<typeof SelectField>, "aria-invalid" | "aria-describedby">;

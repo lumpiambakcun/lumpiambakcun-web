@@ -45,7 +45,6 @@ export async function listOrders({ status, rentang, q, halaman }: OrderFilters) 
 
   const from = (halaman - 1) * ORDER_PAGE_SIZE;
   const { data, count, error } = await query.range(from, from + ORDER_PAGE_SIZE - 1);
-  // PGRST103: nomor halaman di luar jumlah data (URL diketik tangan), bukan kegagalan.
   if (error?.code === "PGRST103") return { orders: [], total: 0 };
   if (error) throw new Error(`listOrders: ${error.message}`);
   return { orders: (data ?? []) as Order[], total: count ?? 0 };

@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 type DatePickerProps = {
   id: string;
   name: string;
-  /** yyyy-mm-dd */
   defaultValue?: string;
   placeholder?: string;
   className?: string;
@@ -19,7 +18,6 @@ type DatePickerProps = {
 
 const toIso = (date: Date) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-// Tengah hari supaya tidak bergeser ke hari lain oleh zona waktu.
 const fromIso = (value: string) => new Date(`${value}T12:00:00`);
 
 const longDate = new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });

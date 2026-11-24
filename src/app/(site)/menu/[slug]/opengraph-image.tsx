@@ -47,7 +47,6 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             display: "flex",
           }}
         />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={photo}
           alt=""
@@ -83,7 +82,6 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           </div>
         )}
         <div style={{ position: "absolute", left: 64, top: 52, display: "flex", alignItems: "center", gap: 18 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={emblem} alt="" width={96} height={88} />
           <div style={{ display: "flex", fontSize: 30, fontWeight: 700, color: brandColors.brand }}>{siteConfig.name}</div>
         </div>

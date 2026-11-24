@@ -5,14 +5,19 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  // Override default ignores of eslint-config-next.
+  {
+    files: ["src/app/opengraph-image.tsx", "src/app/(site)/menu/[[]slug]/opengraph-image.tsx", "src/lib/order-nota.tsx"],
+    rules: { "@next/next/no-img-element": "off" },
+  },
+  {
+    files: ["src/components/ui/carousel.tsx"],
+    rules: { "react-hooks/set-state-in-effect": "off" },
+  },
   globalIgnores([
-    // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Referensi desain lama (HTML + vendor minified), bukan kode aplikasi.
     "old-example/**",
     ".playwright-mcp/**",
   ]),

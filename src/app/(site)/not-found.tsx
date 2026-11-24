@@ -8,7 +8,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-// Layout (site) sudah memasang SiteShell; app/not-found.tsx hanya untuk URL di luar grup ini.
 export default function SiteNotFound() {
   return <NotFoundHero {...notFoundPage} doodles={doodleLayout.notFound} />;
 }

@@ -37,10 +37,8 @@ export default async function Image() {
             display: "flex",
           }}
         />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={plate} alt="" width={640} height={407} style={{ position: "absolute", top: 118, right: 4 }} />
         <div style={{ position: "absolute", left: 64, top: 52, display: "flex", alignItems: "center", gap: 20 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={emblem} alt="" width={96} height={88} />
           <div
             style={{

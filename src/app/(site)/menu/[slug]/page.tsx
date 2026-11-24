@@ -10,7 +10,6 @@ import { getProduct, getRelated, getDetails, getVariants, menuGallery, menuProdu
 import { shareMetadata } from "@/lib/seo";
 import { breadcrumbJsonLd, productJsonLd } from "@/lib/structured-data";
 
-// Semua slug sudah diprerender lewat generateStaticParams; validasi instant dev tidak tahu itu.
 export const instant = false;
 
 export function generateStaticParams() {

@@ -31,7 +31,6 @@ begin
     )
     on conflict (id) do nothing;
   else
-    -- Nama, nomor HP, dan foto sengaja tidak ditimpa: itu diedit pengguna di halaman profil.
     update public.profiles
     set email = coalesce(new.email, ''), role = new.raw_app_meta_data ->> 'role', updated_at = now()
     where id = new.id;

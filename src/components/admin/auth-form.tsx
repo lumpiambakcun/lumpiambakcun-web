@@ -12,7 +12,6 @@ type AuthFormProps = {
   action: (state: AuthState, formData: FormData) => Promise<AuthState>;
   fields: readonly { name: string; label: string; type: "email" | "password"; autoComplete: string }[];
   submitLabel: string;
-  /** Bila diisi, tautan "Lupa kata sandi?" tampil di sisi kanan label kolom kata sandi. */
   forgotHref?: string;
 };
 
