@@ -4,15 +4,11 @@ import { bulkOrder } from "@/config/site";
 const frozenText = "Isi 10 pcs, frozen, tinggal goreng.";
 const friedText = "Isi 10 pcs, sudah digoreng.";
 
-function product(
-  id: string,
-  category: string,
-  variant: "Frozen" | "Goreng",
-  name: string,
-  price: string,
-  photo: string,
-  discount?: string,
-): MenuProduct {
+const packaging = { Frozen: "mika", Goreng: "box" } as const;
+
+export const packagingOf = (variant: string) => packaging[variant as keyof typeof packaging] ?? "pack";
+
+function product(id: string, category: string, variant: "Frozen" | "Goreng", name: string, price: string): MenuProduct {
   return {
     id,
     category,
@@ -22,9 +18,8 @@ function product(
       name,
       description: variant === "Frozen" ? frozenText : friedText,
       price,
-      unit: "/10 pcs",
-      discount,
-      image: { src: `/images/menu/${photo}.webp`, alt: `${name} ${variant.toLowerCase()}` },
+      unit: `/ ${packaging[variant]}`,
+      image: { src: `/images/menu/${id}.webp`, alt: `${name} ${variant.toLowerCase()}` },
       whatsappMessage: `Halo Mbak Cun, saya mau pesan ${name} ${variant} (isi 10).`,
     },
   };
@@ -33,31 +28,19 @@ function product(
 export const menuCategories = [
   { id: "lumpia", label: "Lumpia" },
   { id: "tahu-rebung", label: "Tahu Rebung" },
-  { id: "piscok", label: "Piscok" },
   { id: "tahu-bakso", label: "Tahu Bakso" },
-  { id: "pisang-karamel", label: "Pisang Karamel" },
+  { id: "pisang-coklat", label: "Pisang Coklat" },
 ] satisfies MenuCategory[];
 
 export const menuProducts = [
-  product("lumpia-frozen", "lumpia", "Frozen", "Lumpia", "Rp25.000", "lumpia-frozen"),
-  product("lumpia-goreng", "lumpia", "Goreng", "Lumpia", "Rp30.000", "lumpia"),
-  product("tahu-rebung-frozen", "tahu-rebung", "Frozen", "Tahu Rebung", "Rp25.000", "tahu-rebung", "Diskon 10%"),
-  product("tahu-rebung-goreng", "tahu-rebung", "Goreng", "Tahu Rebung", "Rp30.000", "tahu-rebung"),
-  product("piscok-frozen", "piscok", "Frozen", "Piscok", "Rp20.000", "piscok"),
-  product("piscok-goreng", "piscok", "Goreng", "Piscok", "Rp25.000", "piscok", "Diskon 10%"),
-  product("tahu-bakso-frozen", "tahu-bakso", "Frozen", "Tahu Bakso", "Rp22.000", "tahu-bakso", "Diskon 10%"),
-  {
-    id: "pisang-karamel-frozen",
-    category: "pisang-karamel",
-    card: {
-      href: "/menu/pisang-karamel-frozen",
-      variant: "Frozen",
-      name: "Pisang Karamel",
-      description: "Tanya ketersediaan dan harga lewat WhatsApp.",
-      image: { src: "/images/menu/pisang-karamel.webp", alt: "Pisang karamel" },
-      whatsappMessage: "Halo Mbak Cun, saya mau tanya ketersediaan dan harga Pisang Karamel.",
-    },
-  },
+  product("lumpia-frozen", "lumpia", "Frozen", "Lumpia", "Rp25.000"),
+  product("lumpia-goreng", "lumpia", "Goreng", "Lumpia", "Rp30.000"),
+  product("tahu-rebung-frozen", "tahu-rebung", "Frozen", "Tahu Rebung", "Rp27.000"),
+  product("tahu-rebung-goreng", "tahu-rebung", "Goreng", "Tahu Rebung", "Rp35.000"),
+  product("tahu-bakso-frozen", "tahu-bakso", "Frozen", "Tahu Bakso", "Rp22.000"),
+  product("tahu-bakso-goreng", "tahu-bakso", "Goreng", "Tahu Bakso", "Rp26.000"),
+  product("pisang-coklat-frozen", "pisang-coklat", "Frozen", "Pisang Coklat", "Rp20.000"),
+  product("pisang-coklat-goreng", "pisang-coklat", "Goreng", "Pisang Coklat", "Rp25.000"),
 ] satisfies MenuProduct[];
 
 export const menuPage = {
@@ -70,22 +53,34 @@ export const menuPage = {
   },
 };
 
-const rumahan = ["Isi 10 pcs per pack", "Buatan rumahan Mbak Cun sejak 1998", "Pesan lewat WhatsApp, ambil di Banyumanik atau diantar"];
+const fillings = "rebung segar 100%, udang, telur, dan bumbu khas Lumpia Mbak Cun";
 
-export const menuDetails: Record<string, { description: string; highlights: readonly string[] }> = {
+const menuDetails: Record<string, { description: string; ingredients: string; chili: boolean }> = {
   lumpia: {
     description:
       "Lumpia mini khas Semarang berisi rebung, telur, dan udang. Kulitnya tipis, kriuk saat digoreng, dan gurih tanpa pengawet maupun MSG.",
-    highlights: ["Isi: rebung, telur, dan udang", "Panjang ±10 cm, 10 pcs per pack", "Gratis cabai rawit di setiap pembelian"],
+    ingredients: fillings,
+    chili: true,
   },
-  "tahu-rebung": { description: "Tahu isi rebung buatan rumahan Mbak Cun, renyah saat digoreng.", highlights: rumahan },
-  piscok: { description: "Piscok (pisang coklat) buatan rumahan Mbak Cun.", highlights: rumahan },
-  "tahu-bakso": { description: "Tahu bakso buatan rumahan Mbak Cun.", highlights: rumahan },
-  "pisang-karamel": {
-    description: "Pisang karamel buatan rumahan Mbak Cun. Tanya ketersediaan dan harga lewat WhatsApp.",
-    highlights: ["Buatan rumahan Mbak Cun sejak 1998", "Pesan lewat WhatsApp, ambil di Banyumanik atau diantar"],
+  "tahu-rebung": { description: "Tahu isi rebung buatan rumahan Mbak Cun, renyah saat digoreng.", ingredients: fillings, chili: true },
+  "tahu-bakso": { description: "Tahu bakso buatan rumahan Mbak Cun, berisi daging sapi.", ingredients: "daging sapi 100%", chili: true },
+  "pisang-coklat": {
+    description: "Pisang coklat buatan rumahan Mbak Cun, manis dan renyah.",
+    ingredients: "pisang raja, gula murni 100%, dan meses",
+    chili: false,
   },
 };
+
+export function getDetails({ category, card }: MenuProduct) {
+  const { description, ingredients, chili } = menuDetails[category];
+  const highlights = [
+    `Isi 10 pcs per ${packagingOf(card.variant)}`,
+    `Isi: ${ingredients}`,
+    ...(chili ? ["Gratis cabai rawit di setiap pembelian"] : []),
+    "Buatan rumahan Mbak Cun sejak 1998",
+  ];
+  return { description, highlights };
+}
 
 export const getProduct = (id: string) => menuProducts.find((product) => product.id === id);
 
@@ -97,12 +92,12 @@ export function getRelated(id: string, count = 4) {
   return [...others.filter((p) => p.category === category), ...others.filter((p) => p.category !== category)].slice(0, count);
 }
 
-const galleryCount: Record<string, number> = { lumpia: 3, "tahu-rebung": 3, piscok: 3, "tahu-bakso": 3, "pisang-karamel": 2 };
+const GALLERY_COUNT = 3;
 
 export const menuGallery: Record<string, { src: string; alt: string }[]> = Object.fromEntries(
   menuCategories.map(({ id, label }) => [
     id,
-    Array.from({ length: galleryCount[id] }, (_, index) => ({
+    Array.from({ length: GALLERY_COUNT }, (_, index) => ({
       src: `/images/menu/detail/${id}-${index + 1}.webp`,
       alt: `${label}, foto ${index + 1}`,
     })),

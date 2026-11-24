@@ -23,35 +23,25 @@ export type PaymentMethod = (typeof paymentMethods)[number]["id"];
 
 export type OrderStatus = "pending" | "paid" | "failed" | "expired" | "cancelled";
 
-export const orderStatusInfo: Record<OrderStatus, { label: string; title: string; description: string; tone: "pending" | "paid" | "failed" }> = {
+export const orderStatusInfo: Record<OrderStatus, { label: string; description: string }> = {
   pending: {
-    label: "Menunggu pembayaran",
-    title: "Selesaikan pembayaranmu",
-    description: "Pesanan sudah tersimpan. Bayar sebelum waktunya habis supaya pesanan diproses.",
-    tone: "pending",
+    label: "Belum dibayar",
+    description: "Pesananmu sudah kami catat. Selesaikan pembayaran supaya langsung kami siapkan.",
   },
   paid: {
     label: "Lunas",
-    title: "Pembayaran diterima",
-    description: "Terima kasih! Pesananmu akan disiapkan. Tunjukkan kode pesanan saat mengambil.",
-    tone: "paid",
+    description: "Pesananmu sedang disiapkan. Sebutkan nomor ini saat ambil ya.",
   },
   failed: {
-    label: "Pembayaran gagal",
-    title: "Pembayaran belum berhasil",
-    description: "Pembayaran ditolak atau gagal diproses. Silakan pesan ulang atau hubungi Mbak Cun.",
-    tone: "failed",
+    label: "Gagal",
+    description: "Pembayaran belum berhasil. Coba pesan ulang, atau tanya Mbak Cun.",
   },
   expired: {
     label: "Kedaluwarsa",
-    title: "Waktu pembayaran habis",
-    description: "Pesanan ini tidak dibayar tepat waktu. Silakan pesan ulang dari menu.",
-    tone: "failed",
+    description: "Waktu bayar habis dan pesanan ini ditutup. Silakan pesan ulang.",
   },
   cancelled: {
     label: "Dibatalkan",
-    title: "Pesanan dibatalkan",
-    description: "Pembayaran dibatalkan. Silakan pesan ulang atau hubungi Mbak Cun.",
-    tone: "failed",
+    description: "Pembayaran dibatalkan. Silakan pesan ulang, atau tanya Mbak Cun.",
   },
 };

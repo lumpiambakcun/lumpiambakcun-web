@@ -4,7 +4,7 @@ Pembayaran "Beli sekarang" memakai Midtrans Snap (popup). Tidak ada paket npm: `
 
 ## Alur
 
-1. Detail Menu → `Link /checkout?produk={id}&jumlah={n}` (`product-actions.tsx`). Produk tanpa harga (Pisang Karamel) tidak bisa dibeli.
+1. Detail Menu → `Link /checkout?produk={id}&jumlah={n}` (`product-actions.tsx`). Produk tanpa harga tidak bisa dibeli (saat ini semua 8 produk punya harga).
 2. `/checkout` (noindex, tidak masuk sitemap) → form → server action `createOrder` (`src/app/(site)/checkout/actions.ts`): validasi (`src/lib/checkout.ts`), harga dihitung ulang di server dari `menuProducts` (klien tidak mengirim nominal), baris `orders` berstatus `pending`, lalu transaksi Snap dibuat dan `snap_token` disimpan.
 3. Klien memanggil `window.snap.pay(token)` (`src/lib/snap.ts`; skrip dimuat `SnapScript`). Sukses atau pending → `/pesanan/{kode}`. Popup ditutup → tombol "Bayar sekarang" memakai token yang sama (tidak membuat pesanan baru).
 4. Status diperbarui dua arah: webhook `POST /api/midtrans/notification` dan sinkronisasi saat `/pesanan/{kode}` dibuka (Status API, hanya bila masih `pending`), jadi tetap benar walau webhook belum sampai.
@@ -30,7 +30,28 @@ Pilihan di form dipetakan ke `enabled_payments` Snap di `src/content/checkout.ts
 
 ## Tes sandbox
 
-Gunakan kunci sandbox, buat pesanan, lalu bayar lewat simulator Midtrans (QRIS/VA/e-wallet). Pindah ke production: ganti kunci, set `MIDTRANS_IS_PRODUCTION=true`, dan isi Notification URL production.
+Gunakan kunci sandbox, buat pesanan, lalu bayar lewat simulator Midtrans. Pindah ke production: ganti kunci, ubah `MIDTRANS_IS_PRODUCTION` menjadi `true`, dan isi Notification URL production.
+
+### QRIS: pakai simulator v2
+
+Buka **https://simulator.sandbox.midtrans.com/v2/qris/index**, tempel *QR Code Image Url*, klik Scan QR, lalu Pay (issuer GoPay). Status berubah jadi PAID.
+
+Jangan pakai `https://simulator.sandbox.midtrans.com/qris/index` (versi lama, hasilnya di `/qris/payment/gopay`): untuk akun sandbox ini selalu menjawab **"Transaction is unsuccessful."**, dengan URL QR yang sama persis. Versi lama hanya berlaku untuk akun yang dikonfigurasi sebelum 4 Nov 2024 ([dokumen resmi](https://docs.midtrans.com/docs/testing-payment-on-sandbox)). Terbukti dengan pesanan uji: URL gambar QR yang sama berhasil (`settlement`) di `/v2/qris/index` dan gagal di `/qris/index`; kegagalan itu tidak membatalkan transaksi (tetap `pending`).
+
+Cara mendapat URL gambar QR:
+- Dari popup Snap: klik kanan gambar QR, salin alamat gambar (bentuknya `https://merchants-app.sbx.midtrans.com/v4/qris/gopay/{referenceId}/qr-code`), atau
+- dari Status API: `https://api.sandbox.midtrans.com/v2/qris/{transaction_id}/qr-code` (host sandbox; `api.midtrans.com` memberi galat JSON). `transaction_id` ada di `GET https://api.sandbox.midtrans.com/v2/{order_id}/status` (Basic auth `serverKey:`).
+
+### Status tanpa webhook di localhost
+
+Midtrans tidak bisa memanggil `localhost`, jadi webhook tidak datang saat dev. Status baru ikut berubah ketika `/pesanan/{kode}` dibuka (sinkron lewat Status API); sebelum itu baris `orders` tetap `pending` walau di Midtrans sudah `settlement`. Terbukti: setelah bayar di simulator, halaman status menampilkan "LUNAS".
+
+### Hal lain yang terukur
+
+- Menutup popup lalu menekan "Bayar sekarang" memakai transaksi yang sama (tidak membuat charge baru dan tidak membatalkan).
+- Dua pesanan beruntun dengan nomor yang sama tidak saling membatalkan.
+- Pesan galat CSP dan Clipboard di konsol saat popup terbuka berasal dari halaman internal Midtrans, bukan dari situs ini.
+- Pesanan yang popup-nya belum sempat memuat (ditinggalkan dalam beberapa detik pertama) belum punya transaksi di Midtrans (Status API 404) sampai popup dibuka lagi lewat "Bayar sekarang".
 
 ## Batasan
 

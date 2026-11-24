@@ -43,7 +43,7 @@ export const caraPesanPage = {
         id: "website",
         label: "Via website",
         items: [
-          { icon: Search, title: "Pilih menu", text: "Buka halaman Menu, pilih Lumpia, Piscok, Tahu, atau Pisang Karamel." },
+          { icon: Search, title: "Pilih menu", text: "Buka halaman Menu, pilih Lumpia, Tahu Rebung, Tahu Bakso, atau Pisang Coklat." },
           { icon: ShoppingCart, title: "Masukkan keranjang", text: "Tentukan frozen atau goreng, atur jumlah, lalu tekan Beli sekarang." },
           { icon: User, title: "Isi data pesanan", text: "Isi nama dan nomor HP, lalu pilih ambil di tempat atau diantar." },
           { icon: Wallet, title: "Bayar online", text: "Bayar lewat metode yang tersedia. Pesanan diproses setelah pembayaran masuk." },

@@ -28,11 +28,11 @@ export function ResumePayment({ token }: ResumePaymentProps) {
   return (
     <>
       {notice && (
-        <p role="alert" className="text-[13px] leading-[1.28] font-semibold text-brand">
+        <p role="alert" className="basis-full text-[13px] leading-[1.28] font-semibold text-brand">
           {notice}
         </p>
       )}
-      <Button type="button" onClick={pay} variant="brand" size="cta" className="h-[42px] w-full">
+      <Button type="button" onClick={pay} size="lg" className="h-10 px-5 text-sm">
         Lanjutkan pembayaran
       </Button>
     </>

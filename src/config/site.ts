@@ -76,7 +76,7 @@ export const sitePages = [
     path: "/menu",
     title: "Menu",
     description:
-      "Menu Lumpia Mbak Cun: lumpia, tahu rebung, piscok, tahu bakso, dan pisang karamel, frozen atau siap santap. Pesan lewat WhatsApp.",
+      "Menu Lumpia Mbak Cun: lumpia, tahu rebung, tahu bakso, dan pisang coklat, frozen atau siap santap. Pesan lewat WhatsApp.",
   },
   {
     path: "/cara-pesan",

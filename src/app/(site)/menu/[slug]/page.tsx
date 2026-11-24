@@ -6,9 +6,12 @@ import { RelatedProducts } from "@/components/sections/related-products";
 import { JsonLd } from "@/components/seo/json-ld";
 import { businessConfig, siteConfig } from "@/config/site";
 import { doodleLayout } from "@/content/doodles";
-import { getProduct, getRelated, getVariants, menuDetails, menuGallery, menuProducts } from "@/content/menu";
+import { getProduct, getRelated, getDetails, getVariants, menuGallery, menuProducts } from "@/content/menu";
 import { shareMetadata } from "@/lib/seo";
 import { breadcrumbJsonLd, productJsonLd } from "@/lib/structured-data";
+
+// Semua slug sudah diprerender lewat generateStaticParams; validasi instant dev tidak tahu itu.
+export const instant = false;
 
 export function generateStaticParams() {
   return menuProducts.map(({ id }) => ({ slug: id }));
@@ -20,7 +23,7 @@ export async function generateMetadata({ params }: PageProps<"/menu/[slug]">): P
   if (!product) return {};
   const { card } = product;
   const title = `${card.name} ${card.variant}`;
-  const description = `${menuDetails[product.category].description} ${card.price ? `${card.price} ${card.unit}. ` : ""}Pesan lewat WhatsApp.`;
+  const description = `${getDetails(product).description} ${card.price ? `${card.price} ${card.unit}. ` : ""}Pesan lewat WhatsApp.`;
   return {
     title,
     description,
@@ -35,7 +38,7 @@ export default async function MenuDetailPage({ params }: PageProps<"/menu/[slug]
   if (!product) notFound();
 
   const { card } = product;
-  const details = menuDetails[product.category];
+  const details = getDetails(product);
   const label = `${card.name} ${card.variant}`;
   const crumbs = [
     { label: "Beranda", href: "/" },

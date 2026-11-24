@@ -17,7 +17,7 @@ const crumbs = [
 
 export default function OrderPage({ params }: PageProps<"/pesanan/[kode]">) {
   return (
-    <PageShell crumbs={crumbs} title="Status pesanan" doodles={doodleLayout.checkout}>
+    <PageShell crumbs={crumbs} title="Status pesanan" hideTitle doodles={doodleLayout.checkout}>
       <Suspense fallback={<div className="min-h-[420px]" />}>
         <OrderStatusContent params={params} />
       </Suspense>

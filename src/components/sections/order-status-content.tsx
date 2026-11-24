@@ -32,11 +32,11 @@ export async function OrderStatusContent({ params }: OrderStatusContentProps) {
           <>
             {order.status === "pending" && order.snap_token && <ResumePayment token={order.snap_token} />}
             {retry && (
-              <Button asChild variant="brand" size="cta" className="h-[42px] w-full">
+              <Button asChild size="lg" className="h-10 px-5 text-sm">
                 <Link href="/menu">Pesan ulang</Link>
               </Button>
             )}
-            <WhatsAppButton variant="outline-ink" message={`Halo Mbak Cun, saya mau tanya pesanan ${order.code}.`} className="h-11 w-full bg-white">
+            <WhatsAppButton variant="outline" size="lg" hideIcon message={`Halo Mbak Cun, saya mau tanya pesanan ${order.code}.`} className="h-10 px-5 text-sm">
               Tanya via WhatsApp
             </WhatsAppButton>
           </>

@@ -2,7 +2,7 @@ import Image from "next/image";
 import { formatRupiah } from "@/lib/currency";
 
 type OrderSummaryProps = {
-  item: { name: string; variant: string; quantity: number; image: { src: string; alt: string }; lineTotal: number };
+  item: { name: string; variant: string; quantity: number; unit?: string; image: { src: string; alt: string }; lineTotal: number };
   actions: React.ReactNode;
   note?: string;
 };
@@ -21,7 +21,7 @@ export function OrderSummary({ item, actions, note }: OrderSummaryProps) {
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="font-heading text-base leading-[1.12] font-bold text-ink">{item.name}</p>
           <p className="text-[13px] leading-[1.28] text-ink">
-            {item.variant} · {item.quantity} pack
+            {item.variant} · {item.quantity} {item.unit ?? "pack"}
           </p>
         </div>
         <p className="font-heading text-base leading-[1.3] font-bold text-brand">{formatRupiah(item.lineTotal)}</p>

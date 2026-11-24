@@ -12,13 +12,13 @@ export const hero: HeroProps = {
   label: "Lumpia mini khas Semarang",
   titleTop: "Lumpia Semarang,",
   titleAccent: "Rebungnya Nggak Bau",
-  ribbon: { price: "Rp 23 ribu", note: "isi 10, mentah atau siap santap" },
+  ribbon: { price: "Rp 25 ribu", note: "isi 10, mentah atau siap santap" },
   body: "Isi rebung, telur, dan udang. Kriuk, gurih, tanpa pengawet & MSG. Buatan rumahan Mbak Cun dari resep keluarga sejak 1998.",
   whatsappLabel: "Pesan via WhatsApp",
   whatsappMessage: "Halo Mbak Cun, saya mau pesan lumpia.",
   menuLabel: "Lihat Menu",
   rating: businessConfig.rating,
-  sticker: { prefix: "Cuma", price: "Rp 2.300", suffix: "per biji" },
+  sticker: { prefix: "Cuma", price: "Rp 2.500", suffix: "per biji" },
   image: { src: "/images/hero/piring-lumpia.webp", alt: "Sepiring lumpia mini goreng dengan cabai rawit dan selada" },
 };
 
@@ -33,7 +33,7 @@ export const catalog = {
       title: "Lumpia Mentah",
       price: "Rp 25.000",
       unit: "/ isi 10",
-      features: ["Siap goreng di rumah, sekitar 7 menit", "Tahan 2 bulan di freezer", "Rp 2.300 per biji"],
+      features: ["Siap goreng di rumah, sekitar 7 menit", "Tahan 2 bulan di freezer", "Rp 2.500 per biji"],
       ctaLabel: "Pesan Mentah",
       ctaMessage: "Halo Mbak Cun, saya mau pesan Lumpia Mentah (isi 10).",
       image: { src: "/images/katalog/mentah.webp", alt: "Lumpia mini mentah siap goreng, bersama lumpia goreng di piring" },
@@ -44,7 +44,7 @@ export const catalog = {
       title: "Lumpia Goreng",
       price: "Rp 30.000",
       unit: "/ isi 10",
-      features: ["Siap santap, kriuk dari dapur", "Pas untuk camilan, arisan, dan rapat", "Rp 2.700 per biji"],
+      features: ["Siap santap, kriuk dari dapur", "Pas untuk camilan, arisan, dan rapat", "Rp 3.000 per biji"],
       ctaLabel: "Pesan Goreng",
       ctaMessage: "Halo Mbak Cun, saya mau pesan Lumpia Goreng (isi 10).",
       image: { src: "/images/katalog/goreng.webp", alt: "Lumpia mini goreng kriuk di atas selada dengan saus" },
@@ -71,7 +71,7 @@ export const features = {
     {
       number: "03",
       title: "Harga bersahabat",
-      description: "Mulai Rp 2.300 per biji. Enak dibeli banyak untuk keluarga atau acara.",
+      description: "Mulai Rp 2.000 per biji. Enak dibeli banyak untuk keluarga atau acara.",
       icon: Tag,
     },
     {

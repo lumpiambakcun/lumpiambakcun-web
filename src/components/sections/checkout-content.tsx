@@ -4,6 +4,7 @@ import { CheckoutForm } from "@/components/sections/checkout-form";
 import { SnapScript } from "@/components/shared/snap-script";
 import { businessConfig, siteConfig } from "@/config/site";
 import { paymentMethods } from "@/content/checkout";
+import { packagingOf } from "@/content/menu";
 import { getPurchasable, quantitySchema, wibDate } from "@/lib/checkout";
 import { snapScriptUrl } from "@/lib/midtrans";
 
@@ -32,7 +33,7 @@ export async function CheckoutContent({ searchParams }: CheckoutContentProps) {
       <SnapScript src={snapScriptUrl} clientKey={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY} />
       <CheckoutForm
         productId={product.id}
-        summary={{ name: card.name, variant: card.variant, quantity, image: card.image, lineTotal: unitPrice * quantity }}
+        summary={{ name: card.name, variant: card.variant, quantity, unit: packagingOf(card.variant), image: card.image, lineTotal: unitPrice * quantity }}
         paymentMethods={paymentMethods}
         pickup={{
           address: `${businessConfig.address.fullLine}. ${businessConfig.hours.label}.`,
