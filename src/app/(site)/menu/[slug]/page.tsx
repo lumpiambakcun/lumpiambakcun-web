@@ -68,6 +68,8 @@ export default async function MenuDetailPage({ params }: PageProps<"/menu/[slug]
         doodles={doodleLayout.menuPage}
         actions={
           <ProductActions
+            productId={product.id}
+            purchasable={Boolean(card.price)}
             itemLabel={card.price ? `${label} (isi 10)` : label}
             askMessage={`Halo Mbak Cun, saya mau tanya tentang ${label}.`}
           />

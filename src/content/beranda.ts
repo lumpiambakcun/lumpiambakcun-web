@@ -10,7 +10,7 @@ import { menuCategories, menuProducts } from "@/content/menu";
 
 export const hero: HeroProps = {
   label: "Lumpia mini khas Semarang",
-  titleTop: "Lumpia Mini Semarang,",
+  titleTop: "Lumpia Semarang,",
   titleAccent: "Rebungnya Nggak Bau",
   ribbon: { price: "Rp 23 ribu", note: "isi 10, mentah atau siap santap" },
   body: "Isi rebung, telur, dan udang. Kriuk, gurih, tanpa pengawet & MSG. Buatan rumahan Mbak Cun dari resep keluarga sejak 1998.",
@@ -36,7 +36,7 @@ export const catalog = {
       features: ["Siap goreng di rumah, sekitar 7 menit", "Tahan 2 bulan di freezer", "Rp 2.300 per biji"],
       ctaLabel: "Pesan Mentah",
       ctaMessage: "Halo Mbak Cun, saya mau pesan Lumpia Mentah (isi 10).",
-      image: { src: "/images/katalog/lumpia.webp", alt: "Lumpia mini mentah siap goreng" },
+      image: { src: "/images/katalog/mentah.webp", alt: "Lumpia mini mentah siap goreng, bersama lumpia goreng di piring" },
     },
     {
       badge: "Langsung hap",
@@ -47,7 +47,7 @@ export const catalog = {
       features: ["Siap santap, kriuk dari dapur", "Pas untuk camilan, arisan, dan rapat", "Rp 2.700 per biji"],
       ctaLabel: "Pesan Goreng",
       ctaMessage: "Halo Mbak Cun, saya mau pesan Lumpia Goreng (isi 10).",
-      image: { src: "/images/katalog/lumpia.webp", alt: "Lumpia mini goreng yang kriuk" },
+      image: { src: "/images/katalog/goreng.webp", alt: "Lumpia mini goreng kriuk di atas selada dengan saus" },
     },
   ] satisfies PriceCardProps[],
 };

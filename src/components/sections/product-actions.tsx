@@ -1,6 +1,7 @@
 "use client";
 
 import { Minus, Plus, ShoppingCart } from "lucide-react";
+import Link from "next/link";
 import { useCallback, useState } from "react";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,8 @@ const MIN_QUANTITY = 1;
 const MAX_QUANTITY = 99;
 
 type ProductActionsProps = {
+  productId: string;
+  purchasable: boolean;
   itemLabel: string;
   askMessage: string;
 };
@@ -22,7 +25,7 @@ function StepButton({ label, children, ...props }: React.ComponentProps<typeof B
   );
 }
 
-export function ProductActions({ itemLabel, askMessage }: ProductActionsProps) {
+export function ProductActions({ productId, purchasable, itemLabel, askMessage }: ProductActionsProps) {
   const [quantity, setQuantity] = useState(MIN_QUANTITY);
   const decrease = useCallback(() => setQuantity((value) => Math.max(MIN_QUANTITY, value - 1)), []);
   const increase = useCallback(() => setQuantity((value) => Math.min(MAX_QUANTITY, value + 1)), []);
@@ -41,9 +44,18 @@ export function ProductActions({ itemLabel, askMessage }: ProductActionsProps) {
             <Plus aria-hidden="true" className="size-5" />
           </StepButton>
         </div>
-        <Button type="button" aria-disabled="true" variant="brand" size="cta" className="h-11 w-full md:flex-1">
-          <ShoppingCart aria-hidden="true" />
-          Beli sekarang
+        <Button asChild={purchasable} disabled={!purchasable} variant="brand" size="cta" className="h-11 w-full md:flex-1">
+          {purchasable ? (
+            <Link href={`/checkout?${new URLSearchParams({ produk: productId, jumlah: String(quantity) })}`} prefetch={false}>
+              <ShoppingCart aria-hidden="true" />
+              Beli sekarang
+            </Link>
+          ) : (
+            <>
+              <ShoppingCart aria-hidden="true" />
+              Beli sekarang
+            </>
+          )}
         </Button>
       </div>
       <div className="flex flex-col gap-3 md:flex-row">

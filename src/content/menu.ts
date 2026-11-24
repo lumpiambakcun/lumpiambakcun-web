@@ -38,7 +38,7 @@ export const menuCategories = [
 ] satisfies MenuCategory[];
 
 export const menuProducts = [
-  product("lumpia-frozen", "lumpia", "Frozen", "Lumpia", "Rp25.000", "lumpia"),
+  product("lumpia-frozen", "lumpia", "Frozen", "Lumpia", "Rp25.000", "lumpia-frozen"),
   product("lumpia-goreng", "lumpia", "Goreng", "Lumpia", "Rp30.000", "lumpia"),
   product("tahu-rebung-frozen", "tahu-rebung", "Frozen", "Tahu Rebung", "Rp25.000", "tahu-rebung", "Diskon 10%"),
   product("tahu-rebung-goreng", "tahu-rebung", "Goreng", "Tahu Rebung", "Rp30.000", "tahu-rebung"),

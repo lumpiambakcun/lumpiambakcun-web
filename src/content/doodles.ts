@@ -27,6 +27,9 @@ export const doodleLayout = {
     { name: "doodle-07", width: 250, height: 167, rotate: -6, opacity: 0.12, position: { base: [30, 6], md: [30, 6], lg: [30, 6] } },
     { name: "doodle-04", width: 260, height: 183, rotate: 4, opacity: 0.12, position: { lg: [1150, 6] } },
   ],
+  checkout: [
+    { name: "doodle-lumpia-oval", width: 260, height: 166, opacity: 0.1, position: { md: [560, 19], lg: [1150, 19] } },
+  ],
   lokasiInfo: [
     { name: "doodle-07", width: 250, height: 167, rotate: -4, opacity: 0.12, position: { base: [-40, 470], md: [-40, 470], lg: [-40, 470] } },
     { name: "doodle-04", width: 260, height: 183, rotate: 6, opacity: 0.12, position: { lg: [1180, -25] } },
