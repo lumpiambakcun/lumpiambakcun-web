@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Pesanan" };
 export default function AdminOrdersPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   return (
     <>
-      <PageHeader title="Pesanan" description="Pesanan online dan manual, diurutkan menurut tanggal ambil." actions={<AddOrderButton />} />
+      <PageHeader title="Pesanan" actions={<AddOrderButton />} />
       <Suspense fallback={<OrdersSkeleton />}>
         <OrdersContent searchParams={searchParams} />
       </Suspense>

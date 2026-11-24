@@ -1,7 +1,6 @@
 import { connection } from "next/server";
 import { OrdersLiveFilters } from "@/components/admin/orders-live-filters";
 import { OrdersPagination } from "@/components/admin/orders-pagination";
-import { OrdersStats } from "@/components/admin/orders-stats";
 import { OrdersTable } from "@/components/admin/orders-table";
 import { requireAdmin } from "@/lib/admin-auth";
 import { listOrders, parseOrderFilters } from "@/lib/admin-orders";
@@ -18,7 +17,7 @@ export async function OrdersContent({ searchParams }: OrdersContentProps) {
   const filtered = Boolean(filters.q || filters.status || filters.rentang === "semua");
 
   return (
-    <OrdersLiveFilters filters={filters} total={total} stats={<OrdersStats orders={orders} total={total} />}>
+    <OrdersLiveFilters filters={filters}>
       <OrdersTable orders={orders} filtered={filtered} />
       <OrdersPagination filters={filters} total={total} />
     </OrdersLiveFilters>

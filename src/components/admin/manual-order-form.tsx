@@ -89,7 +89,7 @@ export function ManualOrderForm({ products, methods, hours, today, onSaved, onCa
       <FormField id="catatan" label="Catatan (opsional)" error={errors.catatan} tone="admin">
         <Input id="catatan" name="catatan" maxLength={200} className={fieldControlClass} {...invalid("catatan")} />
       </FormField>
-      <div className="flex items-baseline justify-between gap-3 rounded-lg bg-canvas px-4 py-3 sm:col-span-2" aria-live="polite">
+      <div className="flex items-baseline justify-between gap-3 border-t border-border pt-3.5 sm:col-span-2" aria-live="polite">
         <span className="text-sm text-ink-muted">{total > 0 ? `${count} × ${formatRupiah(unitPrice)}` : "Pilih produk dan jumlah"}</span>
         <span className="text-sm font-semibold">
           Total <span className="ml-1 font-mono text-lg tabular-nums">{formatRupiah(total)}</span>

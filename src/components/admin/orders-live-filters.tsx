@@ -25,12 +25,10 @@ const controlHeight = "data-[size=default]:h-10";
 
 type OrdersLiveFiltersProps = {
   filters: OrderFilters;
-  total: number;
-  stats: React.ReactNode;
   children: React.ReactNode;
 };
 
-export function OrdersLiveFilters({ filters, total, stats, children }: OrdersLiveFiltersProps) {
+export function OrdersLiveFilters({ filters, children }: OrdersLiveFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [pending, startTransition] = useTransition();
@@ -65,15 +63,14 @@ export function OrdersLiveFilters({ filters, total, stats, children }: OrdersLiv
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className={cn("transition-opacity", pending && "opacity-60")}>{stats}</div>
+    <div className="flex min-h-0 flex-1 flex-col gap-4">
       <form
         role="search"
         onSubmit={(event) => {
           event.preventDefault();
           apply({ q });
         }}
-        className="flex flex-col gap-2 sm:flex-row sm:items-center"
+        className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center"
       >
         <div className="relative sm:w-72">
           <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-muted" aria-hidden="true" />
@@ -119,11 +116,11 @@ export function OrdersLiveFilters({ filters, total, stats, children }: OrdersLiv
           onValueChange={(value) => apply({ status: value })}
           className={cn(controlHeight, "sm:w-auto")}
         />
-        <p role="status" aria-live="polite" className="text-sm text-ink-muted sm:ml-auto">
-          {pending ? "Memuat pesanan..." : `${total} pesanan ditemukan`}
+        <p role="status" className="sr-only">
+          {pending ? "Memuat pesanan..." : ""}
         </p>
       </form>
-      <div aria-busy={pending} className={cn("flex flex-col gap-4 transition-opacity", pending && "opacity-60")}>
+      <div aria-busy={pending} className={cn("flex min-h-0 flex-1 flex-col gap-4 transition-opacity", pending && "opacity-60")}>
         {children}
       </div>
     </div>

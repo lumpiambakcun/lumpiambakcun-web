@@ -20,7 +20,7 @@ const head = "sticky top-0 z-10 h-10 bg-card px-3 text-xs font-semibold text-ink
 
 export function OrdersTable({ orders, filtered }: OrdersTableProps) {
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
+    <div className="flex min-h-0 flex-col overflow-hidden rounded-xl border border-border bg-card shadow-card">
       {orders.length === 0 ? (
         <EmptyState
           icon={SearchX}
@@ -35,7 +35,7 @@ export function OrdersTable({ orders, filtered }: OrdersTableProps) {
           }
         />
       ) : (
-        <Table containerClassName="max-h-[min(70dvh,760px)] overflow-auto">
+        <Table containerClassName="min-h-0 flex-1 overflow-auto">
           <TableHeader>
             <TableRow className="border-0 hover:bg-transparent">
               <TableHead className={head}>Kode</TableHead>

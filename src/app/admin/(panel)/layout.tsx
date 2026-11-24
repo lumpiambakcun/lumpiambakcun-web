@@ -9,11 +9,11 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
     <TooltipProvider>
       <SidebarProvider>
         <AdminSidebar />
-        <SidebarInset className="bg-canvas">
+        <SidebarInset className="h-svh overflow-hidden bg-canvas">
           <AdminHeader />
-          <main className="flex-1 px-4 py-6 md:px-6">
-            <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-6">{children}</div>
-          </main>
+          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-6 md:px-6">
+            <div className="mx-auto flex min-h-0 w-full max-w-[1100px] flex-1 flex-col gap-3">{children}</div>
+          </div>
         </SidebarInset>
       </SidebarProvider>
       <Toaster position="top-center" />

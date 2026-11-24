@@ -17,8 +17,8 @@ export function OrdersPagination({ filters, total }: OrdersPaginationProps) {
   };
 
   return (
-    <nav aria-label="Halaman" className="flex items-center justify-between gap-3 text-sm text-ink-muted">
-      <span>{`${total} pesanan · halaman ${filters.halaman} dari ${pages}`}</span>
+    <nav aria-label="Halaman" className="flex shrink-0 items-center justify-between gap-3 text-sm text-ink-muted">
+      <span role="status" aria-live="polite">{`${total} pesanan · halaman ${filters.halaman} dari ${pages}`}</span>
       <span className="flex gap-2">
         {filters.halaman > 1 && (
           <Button asChild variant="outline" size="sm">
