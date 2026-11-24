@@ -1,5 +1,5 @@
 import { businessConfig } from "@/config/site";
-import { orderStatusInfo } from "@/content/checkout";
+import { orderStages, orderStatusInfo } from "@/content/checkout";
 import { packagingOf } from "@/content/menu";
 import { formatRupiah } from "@/lib/currency";
 import { formatPickupTime, maskPhone } from "@/lib/format";
@@ -14,19 +14,13 @@ type OrderStatusCardProps = {
   actions: React.ReactNode;
 };
 
-const stages: Partial<Record<Order["status"], string>> = {
-  pending: "Tahap 2 dari 3 · Menunggu pembayaran",
-  paid: "Tahap 3 dari 3 · Ambil di tempat",
-};
-
 const dashed = "border-dashed border-ink/25";
 const figure = "font-mono tabular-nums";
-// Gigi kertas di tepi bawah: segitiga menghadap bawah, diulang tiap 20px.
 const tornEdge = "[mask:conic-gradient(from_-45deg_at_bottom,transparent,black_1deg_89deg,transparent_90deg)_50%/20px_100%]";
 
 export function OrderStatusCard({ order, actions }: OrderStatusCardProps) {
   const info = orderStatusInfo[order.status];
-  const stage = stages[order.status];
+  const stage = orderStages[order.status];
 
   return (
     <article aria-label={`Nota pesanan ${order.code}`} className="drop-shadow-md">

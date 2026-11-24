@@ -6,7 +6,9 @@ const friedText = "Isi 10 pcs, sudah digoreng.";
 
 const packaging = { Frozen: "mika", Goreng: "box" } as const;
 
-export const packagingOf = (variant: string) => packaging[variant as keyof typeof packaging] ?? "pack";
+export function packagingOf(variant: string) {
+  return packaging[variant as keyof typeof packaging] ?? "pack";
+}
 
 function product(id: string, category: string, variant: "Frozen" | "Goreng", name: string, price: string): MenuProduct {
   return {

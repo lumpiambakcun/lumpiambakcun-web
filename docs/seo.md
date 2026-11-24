@@ -17,6 +17,7 @@ Catatan setup. Dokumen ini diperbarui seiring fitur ditambah; bagian "Belum dike
 | Detail menu | `src/app/(site)/menu/[slug]/page.tsx` | JSON-LD `Product` (+ `Offer` bila ada harga) dan `BreadcrumbList` dari `src/lib/structured-data.ts` |
 | Helper | `src/lib/seo.ts` | `absoluteUrl()`, `serializeJsonLd()`, `pageMetadata(path, absoluteTitle?)` (title, description, canonical, Open Graph per halaman) |
 | Share preview | `src/app/opengraph-image.tsx` (global) dan `src/app/(site)/menu/[slug]/opengraph-image.tsx` (per produk) | 1200x630 hasil `ImageResponse`; helper font dan aset di `src/lib/og.tsx`, aset PNG/JPEG di `src/assets/og/`; metadata dirakit `shareMetadata()` di `src/lib/seo.ts` |
+| Nota pesanan | `src/lib/order-nota.tsx`, `src/app/(site)/pesanan/[kode]/opengraph-image.tsx`, `nota/route.ts` | Satu gambar 1200x630 untuk preview WhatsApp (og:image) dan tombol "Simpan bukti pembayaran" (`/pesanan/{kode}/nota`, unduhan PNG). Hanya ada untuk pesanan **lunas** (selain itu 404), tanpa cache. Isinya sama dengan halaman: nama depan dan nomor tersamar |
 | Ikon | `src/app/favicon.ico` (16/32/48), `icon.png` (512), `apple-icon.png` (180, tanpa alpha) | Tag `<link>` dibuat otomatis oleh Next |
 | Manifest | `src/app/manifest.ts`, `public/icons/icon-192.png`, `icon-512.png` | Android, Chrome, dan Edge/Windows modern |
 | Windows tile | `public/browserconfig.xml`, `public/icons/mstile-150x150.png` | Tile Windows lama; dirujuk lewat `metadata.other` |

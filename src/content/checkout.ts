@@ -23,6 +23,11 @@ export type PaymentMethod = (typeof paymentMethods)[number]["id"];
 
 export type OrderStatus = "pending" | "paid" | "failed" | "expired" | "cancelled";
 
+export const orderStages: Partial<Record<OrderStatus, string>> = {
+  pending: "Tahap 2 dari 3 · Menunggu pembayaran",
+  paid: "Tahap 3 dari 3 · Ambil di tempat",
+};
+
 export const orderStatusInfo: Record<OrderStatus, { label: string; description: string }> = {
   pending: {
     label: "Belum dibayar",

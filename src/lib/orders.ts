@@ -25,6 +25,12 @@ export type Order = {
   created_at: string;
 };
 
+const codePattern = /^LMC-[A-Z2-9]{10}$/;
+
+export function isOrderCode(code: string) {
+  return codePattern.test(code);
+}
+
 const codeAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 export function generateOrderCode() {
