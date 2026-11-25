@@ -40,7 +40,7 @@ export async function OrderStatusContent({ params }: OrderStatusContentProps) {
             )}
             {retry && (
               <Button asChild size="lg" className="h-10 px-5 text-sm">
-                <Link href="/menu">Pesan ulang</Link>
+                <Link href="/#menu">Pesan ulang</Link>
               </Button>
             )}
             <WhatsAppButton

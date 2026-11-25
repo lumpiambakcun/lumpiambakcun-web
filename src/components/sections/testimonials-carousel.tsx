@@ -9,29 +9,25 @@ import { TestimonialCard, type Testimonial } from "./testimonial-card";
 const emblaOpts = { align: "start", loop: true, slidesToScroll: "auto" } as const;
 
 const navButton =
-  "flex size-10 items-center justify-center rounded-full border-[1.5px] border-ink text-ink transition-colors hover:bg-ink hover:text-highlight active:scale-95 motion-reduce:transition-none";
+  "absolute top-1/2 z-10 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full border-[1.5px] border-ink bg-white text-ink shadow-card transition-colors hover:bg-ink hover:text-highlight active:scale-95 motion-reduce:transition-none lg:flex";
 
-function useEmblaState(api: CarouselApi) {
+function useSnapCount(api: CarouselApi) {
   const subscribe = useCallback(
     (notify: () => void) => {
-      api?.on("select", notify).on("reInit", notify);
+      api?.on("reInit", notify);
       return () => {
-        api?.off("select", notify).off("reInit", notify);
+        api?.off("reInit", notify);
       };
     },
     [api],
   );
-  const getSnapshot = useCallback(
-    () => (api ? `${api.scrollSnapList().length}|${api.selectedScrollSnap()}` : "0|0"),
-    [api],
-  );
-  const [snaps, selected] = useSyncExternalStore(subscribe, getSnapshot, () => "0|0").split("|");
-  return { snaps: Number(snaps), selected: Number(selected) };
+  const getSnapshot = useCallback(() => (api ? api.scrollSnapList().length : 0), [api]);
+  return useSyncExternalStore(subscribe, getSnapshot, () => 0);
 }
 
 export function TestimonialsCarousel({ reviews }: { reviews: readonly Testimonial[] }) {
   const [api, setApi] = useState<CarouselApi>();
-  const { snaps, selected } = useEmblaState(api);
+  const snaps = useSnapCount(api);
   const scrollPrev = useCallback(() => api?.scrollPrev(), [api]);
   const scrollNext = useCallback(() => api?.scrollNext(), [api]);
 
@@ -51,43 +47,24 @@ export function TestimonialsCarousel({ reviews }: { reviews: readonly Testimonia
       </div>
 
       {snaps > 1 && (
-        <div className="flex items-center justify-center gap-4 pt-[26px]">
+        <>
           <button
             type="button"
             aria-label="Ulasan sebelumnya"
-            className={navButton}
+            className={cn(navButton, "left-0 -translate-x-1/2 xl:-left-4 xl:-translate-x-full")}
             onClick={scrollPrev}
           >
             <ArrowLeft aria-hidden="true" className="size-[18px]" strokeWidth={1.8} />
           </button>
-          <div className="flex items-center">
-            {Array.from({ length: snaps }, (_, index) => (
-              <button
-                key={index}
-                type="button"
-                aria-label={`Ke ulasan ${index + 1}`}
-                aria-current={index === selected ? "true" : undefined}
-                onClick={() => api?.scrollTo(index)}
-                className="flex h-6 items-center justify-center rounded-full px-1"
-              >
-                <span
-                  className={cn(
-                    "block h-2 rounded-full transition-all duration-200 motion-reduce:transition-none",
-                    index === selected ? "w-[22px] bg-brand" : "w-2 bg-ink/20 hover:bg-ink/40",
-                  )}
-                />
-              </button>
-            ))}
-          </div>
           <button
             type="button"
             aria-label="Ulasan berikutnya"
-            className={navButton}
+            className={cn(navButton, "right-0 translate-x-1/2 xl:-right-4 xl:translate-x-full")}
             onClick={scrollNext}
           >
             <ArrowRight aria-hidden="true" className="size-[18px]" strokeWidth={1.8} />
           </button>
-        </div>
+        </>
       )}
     </Carousel>
   );

@@ -17,7 +17,7 @@ type FaqListProps = {
 };
 
 type FaqProps = {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   items: readonly FaqItem[];
 };
@@ -26,12 +26,12 @@ export function Faq({ eyebrow, title, items }: FaqProps) {
   const tallestIndex = items.reduce((best, item, index) => (item.answer.length > items[best].answer.length ? index : best), 0);
 
   return (
-    <Section doodles={doodleLayout.faq} aria-labelledby="faq-judul" className="bg-cream py-12 lg:pt-16 lg:pb-[72px]">
+    <Section doodles={doodleLayout.faq} id="faq" aria-labelledby="faq-judul" className="bg-cream py-24 lg:pt-28 lg:pb-28">
 
       <SectionHeading id="faq-judul" eyebrow={eyebrow} title={title} />
       <div {...revealItem}>
         <StableHeight
-          className="relative mx-auto mt-7 max-w-[760px]"
+          className="relative mx-auto mt-5 max-w-[760px]"
           reserve={<FaqList items={items} value={`faq-${tallestIndex}`} className="**:data-[slot=accordion-content]:animate-none" />}
         >
           <FaqList items={items} collapsible defaultValue="faq-0" />

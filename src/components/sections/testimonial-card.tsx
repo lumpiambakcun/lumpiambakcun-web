@@ -14,7 +14,7 @@ export const TestimonialCard = memo(function TestimonialCard({ name, source, quo
   return (
     <figure className="flex h-full min-h-[250px] flex-col justify-between gap-6 rounded-card border-[1.5px] border-cream-line bg-white px-[26px] pt-[26px] pb-6">
       <div className="flex flex-col gap-3">
-        <RatingStars value={rating} />
+        <RatingStars value={rating} tone="highlight" />
         <blockquote className="text-[15px] leading-[1.32] text-ink">&ldquo;{quote}&rdquo;</blockquote>
       </div>
       <figcaption className="flex items-center gap-2.5">

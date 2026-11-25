@@ -2,10 +2,10 @@ import type { DoodleSpec } from "@/components/shared/doodle";
 
 export const doodleLayout = {
   hero: [
-    { name: "doodle-09", width: 240, height: 191, rotate: -10, opacity: 0.18, position: { base: [230, 480], md: [560, 335], lg: [1210, 480] } },
-    { name: "doodle-06", width: 230, height: 175, rotate: -8, opacity: 0.18, position: { base: [-70, 500], md: [-20, 325], lg: [287, 535] } },
-    { name: "doodle-03", width: 260, height: 169, rotate: 12, opacity: 0.18, position: { base: [240, -34], md: [540, -34], lg: [1250, -34] } },
-    { name: "doodle-01", width: 290, height: 182, rotate: 10, opacity: 0.18, position: { lg: [356, -94] } },
+    { name: "doodle-03", width: 260, height: 169, rotate: 12, opacity: 0.14, position: { base: [240, -34], md: [540, -34], lg: [1250, -40] } },
+    { name: "doodle-01", width: 290, height: 182, rotate: 10, opacity: 0.14, position: { lg: [-70, -60] } },
+    { name: "doodle-06", width: 230, height: 175, rotate: -8, opacity: 0.14, position: { lg: [-50, 520] } },
+    { name: "doodle-09", width: 240, height: 191, rotate: -10, opacity: 0.14, position: { lg: [1240, 500] } },
   ],
   catalog: [
     { name: "doodle-10", width: 240, height: 182, rotate: 8, opacity: 0.16, position: { base: [-30, 400], md: [20, 400], lg: [90, 400] } },

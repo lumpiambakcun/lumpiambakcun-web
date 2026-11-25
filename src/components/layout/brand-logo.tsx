@@ -22,7 +22,7 @@ export function BrandLogo({ className, priority }: { className?: string; priorit
         <span className="font-heading text-[22px] leading-[0.9] font-bold whitespace-nowrap text-brand">
           {siteConfig.name}
         </span>
-        <span className="text-xs leading-[0.9] whitespace-nowrap text-ink">{businessConfig.tagline}</span>
+        <span className="text-xs leading-[0.9] whitespace-nowrap text-ink">{businessConfig.brandLine}</span>
       </span>
     </Link>
   );

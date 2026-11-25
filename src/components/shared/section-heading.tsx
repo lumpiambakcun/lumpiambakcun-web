@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { revealItem } from "@/lib/reveal";
 
 type SectionHeadingProps = {
-  eyebrow: string;
+  eyebrow?: string;
   title: React.ReactNode;
   id?: string;
   align?: "center" | "left";
@@ -29,9 +29,11 @@ export function SectionHeading({
         className,
       )}
     >
-      <p className="text-xs leading-[1.2] font-extrabold tracking-[0.08em] text-brand uppercase">
-        {eyebrow}
-      </p>
+      {eyebrow && (
+        <p className="text-xs leading-[1.2] font-extrabold tracking-[0.08em] text-brand uppercase">
+          {eyebrow}
+        </p>
+      )}
       <h2
         id={id}
         className={cn(

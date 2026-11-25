@@ -51,6 +51,7 @@
   --color-cream-tint: var(--cream-tint);
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
+  --color-ink-soft: var(--ink-soft);
   --color-whatsapp: #25d366;
   --color-canvas: var(--canvas);
   --color-status-paid: var(--status-paid);
@@ -71,7 +72,7 @@
   --radius-tile: 1rem;
   --radius-panel: 1.25rem;
 
-  --container-site: 90rem;
+  --container-site: 80rem;
   --container-content: 80.625rem;
 }
 
@@ -87,6 +88,7 @@
   --cream-tint: #fff1b8;
   --ink: #0a0a0a;
   --ink-muted: #0a0a0aa6;
+  --ink-soft: #141414;
 
   --canvas: #f6f5f1;
   --status-paid: #16803c;
@@ -245,5 +247,11 @@
     from {
       opacity: 0;
     }
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
   }
 }

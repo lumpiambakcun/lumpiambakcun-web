@@ -1,4 +1,4 @@
-import { Flame, ShieldCheck, Smile, Package, Tag } from "lucide-react";
+import { ChefHat, Leaf, ShieldCheck, Snowflake } from "lucide-react";
 import type { FaqItem } from "@/components/sections/faq";
 import type { FeatureCardProps } from "@/components/sections/feature-card";
 import type { HeroProps } from "@/components/sections/hero";
@@ -6,19 +6,17 @@ import type { PriceCardProps } from "@/components/sections/price-card";
 import type { Testimonial } from "@/components/sections/testimonial-card";
 import type { WhatsAppCardProps } from "@/components/sections/whatsapp-card";
 import { bulkOrder, businessConfig } from "@/config/site";
-import { menuCategories, menuProducts } from "@/content/menu";
+import { getProduct } from "@/content/menu";
+import { parseRupiah } from "@/lib/currency";
 
 export const hero: HeroProps = {
-  label: "Lumpia mini khas Semarang",
-  titleTop: "Lumpia Semarang,",
-  titleAccent: "Rebungnya Nggak Bau",
-  ribbon: { price: "Rp 25 ribu", note: "isi 10, mentah atau siap santap" },
-  body: "Isi rebung, telur, dan udang. Kriuk, gurih, tanpa pengawet & MSG. Buatan rumahan Mbak Cun dari resep keluarga sejak 1998.",
-  whatsappLabel: "Pesan via WhatsApp",
+  label: "Khas Semarang",
+  titleTop: "Lumpia Semarang",
+  titleAccent: "Khas Legendaris",
+  body: "Lumpia isi rebung, telur, dan udang dengan rasa gurih, renyah, dan autentik khas Semarang.",
+  whatsappLabel: "Pesan Sekarang",
   whatsappMessage: "Halo Mbak Cun, saya mau pesan lumpia.",
-  menuLabel: "Lihat Menu",
-  rating: businessConfig.rating,
-  sticker: { prefix: "Cuma", price: "Rp 2.500", suffix: "per biji" },
+  menuLabel: "Lihat Paket",
   image: { src: "/images/hero/piring-lumpia.webp", alt: "Sepiring lumpia mini goreng dengan cabai rawit dan selada" },
 };
 
@@ -53,47 +51,52 @@ export const catalog = {
 };
 
 export const features = {
-  eyebrow: "Kenapa Lumpia Mbak Cun",
-  title: "Kecil ukurannya, besar ketagihannya",
+  title: "Kenapa pilih Lumpia Mbak Cun?",
   items: [
     {
-      number: "01",
-      title: "Rebung tanpa bau menyengat",
-      description: "Banyak pelanggan yang awalnya tidak suka rebung justru jadi langganan.",
-      icon: Smile,
+      title: "Bahan Berkualitas",
+      description: "Rebung segar, telur, dan udang pilihan.",
+      icon: Leaf,
     },
     {
-      number: "02",
-      title: "Ukuran pas, sekali hap",
-      description: "Panjang ±10 cm. Praktis untuk camilan, suguhan tamu, atau bekal anak.",
-      icon: Package,
+      title: "Rasa Khas Semarang",
+      description: "Resep turun-temurun dengan cita rasa autentik.",
+      icon: ChefHat,
     },
     {
-      number: "03",
-      title: "Harga bersahabat",
-      description: "Mulai Rp 2.000 per biji. Enak dibeli banyak untuk keluarga atau acara.",
-      icon: Tag,
+      title: "Fresh & Frozen",
+      description: "Tersedia dalam kondisi siap santap dan frozen (tahan lebih lama).",
+      icon: Snowflake,
     },
     {
-      number: "04",
-      title: "Bisa digoreng sendiri",
-      description: "Pilih yang mentah, goreng saat mau disajikan. Kriuknya tetap seperti baru beli.",
-      icon: Flame,
-    },
-    {
-      number: "05",
-      title: "Resep keluarga sejak 1998",
-      description: "Dibuat di dapur rumahan Banyumanik. Tanpa pengawet, tanpa MSG, bersertifikat halal BPJPH.",
+      title: "Bersertifikat Halal",
+      description: `Terjamin halal oleh BPJPH dengan No. ${businessConfig.halalNumber}.`,
       icon: ShieldCheck,
     },
   ] satisfies Omit<FeatureCardProps, "className">[],
 };
 
+const quickOrderProducts = [
+  { id: "lumpia-frozen", variant: "Mentah" },
+  { id: "lumpia-goreng", variant: "Goreng" },
+].map(({ id, variant }) => {
+  const { card } = getProduct(id)!;
+  const name = `${card.name} ${variant}`;
+  return {
+    id,
+    name,
+    description: card.description,
+    price: parseRupiah(card.price ?? ""),
+    unit: card.unit ?? "",
+    pcs: bulkOrder.packSize,
+    image: { src: card.image.src, alt: `${name}, isi ${bulkOrder.packSize} pcs` },
+  };
+});
+
 export const menu = {
-  eyebrow: "Menu lainnya",
-  title: "Mau coba hidangan lainnya?",
-  categories: menuCategories,
-  products: menuProducts,
+  title: "Pilih paket lumpia favoritmu",
+  text: "Atur jumlahnya, lalu kirim lewat WhatsApp. Isi pesananmu sudah tertulis otomatis, tinggal kirim.",
+  products: quickOrderProducts,
 };
 
 export const order = {
@@ -120,67 +123,62 @@ export const order = {
   } satisfies WhatsAppCardProps,
 };
 
+export const orderBanner = {
+  title: "Ada rapat, arisan, atau acara?",
+  highlight: "Pesan lumpia dalam jumlah banyak!",
+  text: "Kami siap melayani pesanan untuk berbagai acara, dengan harga spesial.",
+  tags: ["Rapat Kantor", "Arisan", "Ulang Tahun", "Acara Keluarga"],
+  ctaLabel: order.card.ctaLabel,
+  ctaMessage: order.card.ctaMessage,
+};
+
 export const testimonials = {
-  eyebrow: "Kata pelanggan",
-  title: "Yang sudah coba, jadi langganan",
+  title: "Kata pelanggan kami",
   rating: businessConfig.rating,
-  allReviewsLabel: "Lihat semua ulasan di Google",
-  allReviewsHref: businessConfig.mapsUrl,
   reviews: [
     {
-      name: "Nurlia E.",
-      source: "Ulasan Google",
-      quote:
-        "Sebagai orang yang nggak suka makan rebung, entah kenapa makan lumpia satu ini kerasa beda. Rebungnya juga bukan tipikal yang bau menyengat. Kriuknya mantep. Selalu jadi pilihan oleh-oleh kalau pulang kampung.",
-    },
-    {
-      name: "Ria R.",
-      source: "Ulasan Google",
-      quote:
-        "Home made product. Walaupun ukurannya lebih kecil dari lumpia pada umumnya, rasa tetap enak. Murah tapi rasa nggak murahan. Kulitnya setelah digoreng renyah, seimbang dengan isiannya. Pas banget buat oleh-oleh.",
-    },
-    {
-      name: "Ekka N.",
-      avatar: "/images/reviewers/ekka-n.webp",
-      source: "Ulasan Google",
-      quote:
-        "Awalnya coba karena direkomendasiin teman, ternyata memang enak. Rebungnya nggak bau, bumbunya pas, dan packingnya rapi. Buat warga Semarang wajib coba sih ini.",
-    },
-    {
-      name: "Inggit N.",
-      avatar: "/images/reviewers/inggit-n.webp",
-      source: "Ulasan Google",
-      quote:
-        "Lumpianya enak banget, isi rebungnya kerasa dan nggak pelit. Kulitnya juga nggak terlalu tebal. Sudah beberapa kali beli dan rasanya konsisten.",
-    },
-    {
-      name: "Chrisna N.",
+      name: "Chrisna Nafis",
       avatar: "/images/reviewers/chrisna-n.webp",
       source: "Ulasan Google",
       quote:
-        "Lunpianya enak banget, tahu rebungnya juga mantap, piscoknya gurih manis. Pelayanan admin juga sangat ramah. Sudah beberapa kali beli di sini, nggak pernah nggak enak.",
+        "Lunpia nya enakkk bgtt, tahu rebungnya jg enakmantapp, piscoknya enak gurih manis bisa request manisnyaaa.. cocok untuk oleh2 atau cemilan di sore harii. Sangat recomended👍👍👍 pelayanan admin jg sangat ramah sekaliiii udah bbrp kali beli disini ga pernah ga enakk❤️",
     },
     {
-      name: "Mita V.",
+      name: "Goe Ss",
       source: "Ulasan Google",
-      quote: "Lumpianya enak sekali, ownernya ramah dan baik banget. Jauh-jauh dari Blora tidak mengecewakan.",
+      quote:
+        "Enak dan mantab..murmer.. tp rasa gk kalah dg yang up highclass.. enak banget pokoknya.. cocok untuk dikirim luar kota buat oleh2",
+    },
+    {
+      name: "Ekka Nuraini",
+      avatar: "/images/reviewers/ekka-n.webp",
+      source: "Ulasan Google",
+      quote:
+        "Awalnya coba karena direkomendasiin temen, ternyata emang enak. Rebungnya nggak bau, bumbunya pas, dan packingnya rapi. Dateng masih hangat. Mantap 👍 buat warga semarang wajib coba sih ini .",
+    },
+    {
+      name: "Inggit Novitasari",
+      avatar: "/images/reviewers/inggit-n.webp",
+      source: "Ulasan Google",
+      quote:
+        "Lumpianya enak banget, isi rebungnya kerasa dan nggak pelit. Kulitnya juga nggak terlalu tebal. Udah beberapa kali beli dan rasanya konsisten 👍",
+    },
+    {
+      name: "Visca Fitriani",
+      source: "Ulasan Google",
+      quote:
+        "Pelayanan sangat ramah dan responsif. Produk yang diberikan berkualitas, rasa terjaga, dan pengemasan rapi. Sangat direkomendasikan untuk yang mencari kualitas dan konsistensi.",
     },
   ] satisfies Testimonial[],
 };
 
 export const faq = {
-  eyebrow: "Pertanyaan umum",
-  title: "Sebelum pesan",
+  title: "Pertanyaan yang sering ditanyakan",
   items: [
-    { question: "Ukurannya seberapa?", answer: "Panjang ±10 cm, isi 10 pcs per pack. Pas untuk camilan, suguhan tamu, atau bekal anak." },
-    { question: "Isinya apa?", answer: "Rebung, telur, dan udang. Dibuat rumahan dari resep keluarga, tanpa pengawet dan tanpa MSG." },
-    { question: "Yang mentah tahan berapa lama?", answer: "Di suhu ruang 24 jam, di kulkas 7 hari, dan di freezer sampai 2 bulan." },
-    { question: "Yang goreng tahan berapa lama?", answer: "Paling enak disantap di hari yang sama. Simpan di wadah tertutup, lalu hangatkan sebentar agar kriuknya kembali." },
-    { question: "Bagaimana cara menggoreng yang mentah?", answer: "Goreng langsung dari freezer dengan minyak panas sekitar 7 menit sampai kuning keemasan." },
-    { question: "Sudah halal?", answer: `Sudah. ${businessConfig.halalCertificate}.` },
-    { question: "Ada sambalnya?", answer: "Setiap pembelian dapat cabai rawit gratis." },
-    { question: "Bisa kirim ke Jakarta atau kota lain?", answer: "Bisa. Kami melayani pengiriman ke Jakarta dan luar kota. Tanyakan ongkos kirimnya lewat WhatsApp." },
-    { question: "Bisa pesan banyak untuk acara?", answer: `Bisa. Pesanan ${bulkOrder.rule} Cocok untuk arisan, pengajian, rapat kantor, dan hajatan.` },
+    { question: "Apa itu lumpia Semarang?", answer: "Lumpia khas Semarang berisi rebung, telur, dan udang dengan cita rasa gurih dan renyah." },
+    { question: "Bisa pesan untuk acara atau dalam jumlah banyak?", answer: "Bisa. Kirim jumlah dan tanggal acaranya lewat WhatsApp, lalu kami bantu hitung kebutuhannya." },
+    { question: "Bisa diambil di tempat atau diantar?", answer: "Bisa ambil di tempat. Untuk pengantaran, tanyakan langsung lewat WhatsApp." },
+    { question: "Berapa lama lumpia bisa disimpan?", answer: "Lumpia fresh paling enak dikonsumsi di hari yang sama. Untuk frozen, simpan di freezer dan goreng langsung dari beku kapan saja dibutuhkan." },
   ] satisfies FaqItem[],
 };
 

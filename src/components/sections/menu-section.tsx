@@ -1,21 +1,21 @@
 import { Section } from "@/components/shared/section";
 import { doodleLayout } from "@/content/doodles";
 import { SectionHeading } from "@/components/shared/section-heading";
-import { MenuBrowser, type MenuCategory, type MenuProduct } from "./menu-browser";
+import { QuickOrder } from "./quick-order";
+import type { QuickOrderProduct } from "./quick-order-product-card";
 
 type MenuSectionProps = {
-  eyebrow: string;
   title: string;
-  categories: readonly MenuCategory[];
-  products: readonly MenuProduct[];
+  text: string;
+  products: readonly QuickOrderProduct[];
 };
 
-export function MenuSection({ eyebrow, title, categories, products }: MenuSectionProps) {
+export function MenuSection({ title, text, products }: MenuSectionProps) {
   return (
-    <Section doodles={doodleLayout.menu} id="menu" aria-labelledby="menu-judul" className="bg-cream py-10">
-
-      <SectionHeading id="menu-judul" eyebrow={eyebrow} title={title} size="md" />
-      <MenuBrowser categories={categories} products={products} />
+    <Section doodles={doodleLayout.menu} id="menu" aria-labelledby="menu-judul" className="bg-cream pt-28 pb-24 lg:pt-36 lg:pb-28">
+      <SectionHeading id="menu-judul" title={title} size="md" />
+      <p className="relative mx-auto mt-3 max-w-[560px] text-center text-base leading-[1.45] text-ink-muted">{text}</p>
+      <QuickOrder products={products} />
     </Section>
   );
 }

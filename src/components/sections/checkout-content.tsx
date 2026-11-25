@@ -19,7 +19,7 @@ export async function CheckoutContent({ searchParams }: CheckoutContentProps) {
   const params = await searchParams;
   await connection();
   const purchasable = getPurchasable(first(params.produk));
-  if (!purchasable) redirect("/menu");
+  if (!purchasable) redirect("/");
   const parsedQuantity = quantitySchema.safeParse(first(params.jumlah));
   if (!parsedQuantity.success) redirect(purchasable.product.card.href);
   const quantity = parsedQuantity.data;

@@ -98,15 +98,15 @@ export function MobileNav({ className }: { className?: string }) {
           </ul>
         </nav>
 
-        <div className="flex flex-col gap-2.5 px-5 pt-3 pb-5 md:px-8">
+        <div className="flex flex-col gap-3 px-5 pt-4 pb-6 md:px-8">
           <SheetClose asChild>
-            <WhatsAppButton message="Halo Mbak Cun, saya mau pesan lumpia." className="h-11 w-full">
+            <WhatsAppButton message="Halo Mbak Cun, saya mau pesan lumpia." className="h-14 w-full rounded-full text-base">
               Pesan via WhatsApp
             </WhatsAppButton>
           </SheetClose>
           <SheetClose asChild>
-            <Button asChild variant="outline-ink" size="cta" className="h-11 w-full">
-              <Link href="/menu">Lihat Menu</Link>
+            <Button asChild variant="outline-ink" size="cta" className="h-14 w-full rounded-full text-base">
+              <Link href="/#menu">Lihat Paket</Link>
             </Button>
           </SheetClose>
         </div>

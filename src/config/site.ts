@@ -20,6 +20,7 @@ export const siteConfig = {
 
 export const businessConfig = {
   tagline: "Lumpia khas Semarang",
+  brandLine: "Lumpia Khas Semarang Sejak 1998",
   phoneDisplay: "0857-1364-4140",
   phoneIntl: "6285713644140",
   address: {
@@ -34,6 +35,8 @@ export const businessConfig = {
   hours: { opens: "09.00", closes: "20.30", label: "Buka setiap hari, 09.00 sampai 20.30" },
   mapsUrl: "https://maps.app.goo.gl/jigyJhSDkJSNxhyL6",
   instagramUrl: "https://www.instagram.com/lumpiambakcun",
+  tiktokUrl: "https://www.tiktok.com/@lumpiambakcun",
+  halalNumber: "ID3511000210992322",
   halalCertificate: "Halal BPJPH No. ID3511000210992322",
   halalLogo: { src: "/images/brand/halal.webp", width: 89, height: 160, alt: "Logo Halal Indonesia (BPJPH)" },
   copyrightYear: 2026,
@@ -65,9 +68,9 @@ export const orderChannels: ReadonlyArray<{
 
 export const navLinks = [
   { label: "Beranda", href: "/" },
-  { label: "Menu", href: "/menu" },
-  { label: "Cara Pesan", href: "/cara-pesan" },
-  { label: "Lokasi", href: "/lokasi" },
+  { label: "Paket Lumpia", href: "/#menu" },
+  { label: "Keunggulan", href: "/#keunggulan" },
+  { label: "Testimoni", href: "/#testimoni" },
 ] as const;
 
 export const sitePages = [
@@ -89,5 +92,11 @@ export const sitePages = [
     title: "Lokasi",
     description:
       "Alamat, jam buka, dan peta Lumpia Mbak Cun di Srondol Wetan, Banyumanik, Semarang. Buka setiap hari 09.00 sampai 20.30.",
+  },
+  {
+    path: "/artikel",
+    title: "Artikel",
+    description:
+      "Artikel Lumpia Mbak Cun: cerita lumpia khas Semarang, resep keluarga sejak 1998, dan tips menikmati lumpia.",
   },
 ] as const;

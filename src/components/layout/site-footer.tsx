@@ -1,148 +1,147 @@
 import { Clock, MapPin } from "lucide-react";
 import Image from "next/image";
-import { WhatsAppIcon } from "@/components/icons/brand-icons";
+import { InstagramIcon, TikTokIcon, WhatsAppIcon } from "@/components/icons/brand-icons";
+import { FooterLinkColumn, type FooterLink } from "@/components/layout/footer-link-column";
+import { footerColumnLabel, footerRowLink, footerRowText } from "@/components/layout/footer-styles";
 import { Container } from "@/components/shared/container";
-import { businessConfig, orderChannels, siteConfig } from "@/config/site";
+import { businessConfig, siteConfig } from "@/config/site";
+import { menuCategories, menuPage } from "@/content/menu";
 import { whatsappUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 import { revealItem } from "@/lib/reveal";
 
-const columnLabel = "text-xs leading-[1.2] font-extrabold tracking-[0.08em] text-highlight uppercase";
-const rowText = "text-[13px] leading-[1.32] text-white";
-const rowLink = "rounded-sm underline-offset-4 transition-colors hover:text-highlight hover:underline motion-reduce:transition-none";
+const socialLinks = [
+  { label: "Instagram", href: businessConfig.instagramUrl, Icon: InstagramIcon },
+  { label: "TikTok", href: businessConfig.tiktokUrl, Icon: TikTokIcon },
+];
+
+const pageLinks: FooterLink[] = [
+  { label: "Paket Lumpia", href: "/#menu" },
+  { label: "Keunggulan", href: "/#keunggulan" },
+  { label: "Testimoni", href: "/#testimoni" },
+  { label: "FAQ", href: "/#faq" },
+  { label: "Artikel", href: "/artikel" },
+];
+
+const inquiry = (item: string) => whatsappUrl(`Halo Mbak Cun, saya mau tanya ketersediaan dan harga ${item}.`);
+
+const menuLinks: FooterLink[] = [
+  { label: "Lumpia Mentah", href: "/#menu" },
+  { label: "Lumpia Goreng", href: "/#menu" },
+  ...menuCategories
+    .filter(({ id }) => id !== "lumpia")
+    .map(({ label }) => ({ label, href: inquiry(label), external: true })),
+  { label: "Pesanan Acara", href: whatsappUrl(menuPage.cta.message), external: true },
+];
 
 export function SiteFooter() {
   return (
     <footer className="bg-brand-deep text-cream">
-      <div aria-hidden="true" className="h-1 bg-highlight" />
-      <Container {...revealItem} className="flex flex-col gap-[26px] pt-11 pb-[26px]">
-        <div className="grid gap-9 md:grid-cols-2 lg:grid-cols-[minmax(0,330px)_minmax(0,330px)_1fr] lg:gap-x-12 xl:gap-x-[110px]">
-          <div className="flex flex-col gap-3">
-            <Image
-              src="/images/brand/emblem.webp"
-              alt={siteConfig.name}
-              width={110}
-              height={101}
-              className="h-[101px] w-[110px]"
-            />
-            <p className="max-w-[250px] text-[13px] leading-[1.28]">
-              {businessConfig.tagline}. Resep keluarga sejak 1998, halal, tanpa pengawet &amp; MSG.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <h2 className={columnLabel}>Kunjungi</h2>
-            <ul className="flex flex-col gap-2.5">
-              <li>
-                <a
-                  href={businessConfig.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    rowText,
-                    rowLink,
-                    "flex max-w-[308px] items-start gap-2.5",
-                  )}
-                >
-                  <MapPin aria-hidden="true" className="mt-px size-[18px] shrink-0 text-highlight" />
-                  <span>{businessConfig.address.fullLine}</span>
-                </a>
-              </li>
-              <li className={cn(rowText, "flex items-start gap-2.5")}>
-                <Clock aria-hidden="true" className="mt-px size-[18px] shrink-0 text-highlight" />
-                <span>Setiap hari, {businessConfig.hours.opens} sampai {businessConfig.hours.closes}</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <h2 className={columnLabel}>Pesan</h2>
-            <ul className="flex flex-col gap-2.5">
-              <li>
-                <FooterChannel
-                  href={whatsappUrl()}
-                  label={`WhatsApp ${businessConfig.phoneDisplay}`}
-                  chipClassName="bg-white"
-                  icon={<WhatsAppIcon className="size-4 text-whatsapp" />}
+      <div className="relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[url('/images/brand/pattern.webp')] bg-cover bg-center opacity-[0.035]"
+        />
+        <Container {...revealItem} className="relative py-14 md:py-20">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:gap-y-9 lg:grid-cols-[minmax(0,330px)_1fr_1fr_1.3fr] lg:gap-x-12">
+            <div className="col-span-2 flex flex-col gap-5 md:col-span-1">
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/images/brand/logo-footer.webp"
+                  alt={siteConfig.name}
+                  width={500}
+                  height={458}
+                  className="h-[66px] w-[72px] shrink-0"
                 />
-              </li>
-              {orderChannels.map((channel) => (
-                <li key={channel.id}>
-                  <FooterChannel
-                    href={channel.href}
-                    label={channel.label}
-                    chipClassName={channel.chipClass}
-                    icon={
-                      <Image
-                        src={channel.icon.src}
-                        alt=""
-                        width={channel.icon.width}
-                        height={channel.icon.height}
-                        className="object-contain"
-                        style={{ width: channel.icon.width, height: channel.icon.height }}
-                      />
-                    }
-                  />
+                <div className="flex min-w-0 flex-col">
+                  <span className="font-heading text-[22px] leading-none font-bold text-cream">{siteConfig.name}</span>
+                  <span className="text-xs leading-[1.28] font-semibold whitespace-nowrap text-cream/80">
+                    {businessConfig.brandLine}
+                  </span>
+                </div>
+              </div>
+              <p className="max-w-[280px] text-sm leading-[1.32]">
+                Lumpia isi rebung, telur, dan udang dengan rasa gurih, renyah, dan autentik khas Semarang.
+              </p>
+              <p className="flex items-center gap-2.5 text-xs leading-[1.28] opacity-70">
+                <Image
+                  src={businessConfig.halalLogo.src}
+                  width={businessConfig.halalLogo.width}
+                  height={businessConfig.halalLogo.height}
+                  alt={businessConfig.halalLogo.alt}
+                  className="h-8 w-auto shrink-0 brightness-0 invert"
+                />
+                <span className="flex flex-col gap-0.5">
+                  <span>Halal BPJPH No.</span>
+                  <span>{businessConfig.halalNumber}</span>
+                </span>
+              </p>
+              <ul className="mt-3 flex flex-wrap gap-2.5">
+                {socialLinks.map(({ label, href, Icon }) => (
+                  <li key={label}>
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-9 items-center gap-2 rounded-full border-[1.5px] border-highlight px-3.5 text-[13px] font-bold text-highlight transition-colors hover:bg-highlight hover:text-ink motion-reduce:transition-none"
+                    >
+                      <Icon className="size-4" />
+                      {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+  
+            <FooterLinkColumn title="Halaman" links={pageLinks} />
+            <FooterLinkColumn title="Menu" links={menuLinks} />
+  
+            <div className="col-span-2 flex flex-col gap-4 md:col-span-1">
+              <h2 className={footerColumnLabel}>Kontak</h2>
+              <ul className="flex flex-col gap-5">
+                <li>
+                  <a
+                    href={businessConfig.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(footerRowText, footerRowLink, "flex max-w-[308px] items-start gap-2.5")}
+                  >
+                    <MapPin aria-hidden="true" className="mt-px size-[18px] shrink-0 text-highlight" />
+                    <span>{businessConfig.address.postalLine}</span>
+                  </a>
                 </li>
-              ))}
-            </ul>
+                <li>
+                  <a
+                    href={whatsappUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(footerRowText, footerRowLink, "flex w-fit items-center gap-2.5")}
+                  >
+                    <WhatsAppIcon className="size-[18px] shrink-0 text-highlight" />
+                    <span>Chat via WhatsApp</span>
+                  </a>
+                </li>
+                <li className={cn(footerRowText, "flex items-start gap-2.5")}>
+                  <Clock aria-hidden="true" className="mt-px size-[18px] shrink-0 text-highlight" />
+                  <span>
+                    {businessConfig.hours.opens} – {businessConfig.hours.closes} WIB
+                    <br />
+                    Setiap hari
+                  </span>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
+        </Container>
+      </div>
 
-        <div aria-hidden="true" className="h-px bg-white/15" />
-
-        <div className="flex flex-col gap-1 text-xs leading-[1.28] sm:flex-row sm:items-center sm:justify-between">
-          <p>
+      <div className="flex h-[70px] items-center bg-ink-soft">
+        <Container>
+          <p className="text-center text-xs leading-[1.28]">
             &copy; {businessConfig.copyrightYear} {siteConfig.name}
           </p>
-          <p className="flex items-center gap-2.5">
-            <span className="flex rounded bg-white p-1">
-              <Image src={businessConfig.halalLogo.src} width={businessConfig.halalLogo.width} height={businessConfig.halalLogo.height} alt={businessConfig.halalLogo.alt} className="h-6 w-auto" />
-            </span>
-            {businessConfig.halalCertificate}
-          </p>
-        </div>
-      </Container>
+        </Container>
+      </div>
     </footer>
-  );
-}
-
-function FooterChannel({
-  href,
-  label,
-  icon,
-  chipClassName,
-}: {
-  href?: string;
-  label: string;
-  icon: React.ReactNode;
-  chipClassName: string;
-}) {
-  const content = (
-    <>
-      <span className={cn("flex size-[26px] shrink-0 items-center justify-center rounded-[7px]", chipClassName)}>
-        {icon}
-      </span>
-      <span>{label}</span>
-    </>
-  );
-
-  if (!href) {
-    return <span className={cn(rowText, "flex items-center gap-2.5")}>{content}</span>;
-  }
-
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cn(
-        rowText,
-        rowLink,
-        "flex w-fit items-center gap-2.5",
-      )}
-    >
-      {content}
-    </a>
   );
 }

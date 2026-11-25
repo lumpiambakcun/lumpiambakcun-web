@@ -1,61 +1,45 @@
-import { MapPin, Phone } from "lucide-react";
-import { InstagramIcon, WhatsAppIcon } from "@/components/icons/brand-icons";
+import { CircleCheck, Truck } from "lucide-react";
 import { Container } from "@/components/shared/container";
 import { businessConfig } from "@/config/site";
-import { whatsappUrl } from "@/lib/whatsapp";
 
-const infoLink =
-  " -mx-1 flex items-center gap-1.5 rounded-sm px-1 text-[11px] leading-[1.28] text-white transition-colors hover:text-highlight md:text-xs";
+const item = "inline-flex items-center gap-1.5";
 
-const socialLink =
-  "flex size-6 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-highlight hover:text-ink active:scale-95";
+function Messages({ divider }: { divider?: React.ReactNode }) {
+  return (
+    <>
+      <span className={item}>
+        <Truck aria-hidden="true" className="size-[15px] shrink-0" />
+        Pesan hari ini sebelum 14.00 – Dikirim hari yang sama di area Semarang
+      </span>
+      {divider}
+      <span className={item}>
+        <CircleCheck aria-hidden="true" className="size-[15px] shrink-0" />
+        Terjamin Halal oleh BPJPH No. {businessConfig.halalNumber}
+      </span>
+    </>
+  );
+}
 
 export function TopBar() {
   return (
-    <div className="bg-ink">
-      <Container className="flex items-center gap-3 py-1.5 md:gap-4 md:py-[9px] lg:gap-6">
-        <a href={`tel:+${businessConfig.phoneIntl}`} className={infoLink}>
-          <Phone aria-hidden="true" className="size-3.5 shrink-0" />
-          <span>Pesan: {businessConfig.phoneDisplay}</span>
-        </a>
-        <a
-          href={businessConfig.mapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`${infoLink} hidden md:flex`}
-        >
-          <MapPin aria-hidden="true" className="size-3.5 shrink-0" />
-          <span>{businessConfig.address.shortLine}</span>
-        </a>
-        <div className="ml-auto flex items-center gap-2">
-          <a
-            href={businessConfig.instagramUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram Lumpia Mbak Cun"
-            className={socialLink}
-          >
-            <InstagramIcon className="size-3" />
-          </a>
-          <a
-            href={whatsappUrl()}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="WhatsApp Lumpia Mbak Cun"
-            className={socialLink}
-          >
-            <WhatsAppIcon className="size-3.5" />
-          </a>
-          <a
-            href={businessConfig.mapsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Lokasi di Google Maps"
-            className={socialLink}
-          >
-            <MapPin aria-hidden="true" className="size-3" />
-          </a>
+    <div className="bg-brand text-cream">
+      <div className="overflow-hidden py-2.5 text-xs leading-[1.4] font-semibold whitespace-nowrap md:hidden">
+        <div className="flex w-max items-center gap-10 pr-10 [animation:marquee_28s_linear_infinite] motion-reduce:w-full motion-reduce:flex-col motion-reduce:gap-1 motion-reduce:pr-0 motion-reduce:whitespace-normal motion-reduce:[animation:none]">
+          <Messages />
+          <span aria-hidden="true" className="contents motion-reduce:hidden">
+            <Messages />
+          </span>
         </div>
+      </div>
+
+      <Container className="hidden flex-wrap items-center justify-center gap-x-5 gap-y-1 py-2.5 text-center text-[13px] leading-[1.4] font-semibold md:flex">
+        <Messages
+          divider={
+            <span aria-hidden="true" className="opacity-40">
+              |
+            </span>
+          }
+        />
       </Container>
     </div>
   );
