@@ -60,3 +60,13 @@ Tidak ada package tambahan; semua memakai fitur bawaan Next.
 ## SEO lokal (area layanan)
 
 Belum ada data bisnis, jadi belum diimplementasi. Untuk bisnis jasa lokal, tambahkan `LocalBusiness` (atau subtipe) JSON-LD dengan `address`, `geo`, `areaServed`, `openingHoursSpecification`, `telephone`. Datanya harus sama persis dengan Google Business Profile. Letakkan di halaman terkait (bukan layout), memakai komponen `JsonLd`.
+
+## Reset cache produksi
+
+`POST /api/revalidate` dengan header `Authorization: Bearer <REVALIDATE_SECRET>` menandai semua halaman basi (`revalidatePath("/", "layout")`); render ulang terjadi di kunjungan berikutnya. Isi `REVALIDATE_SECRET` di env server.
+
+```bash
+curl -X POST https://lumpiambakcun.allfilldev.com/api/revalidate -H "Authorization: Bearer $REVALIDATE_SECRET"
+```
+
+Endpoint ini tidak memperbaiki proses lama: jika `next start` tidak di-restart setelah build, render ulang memakai kode build lama. Setelah build, selalu restart proses.
