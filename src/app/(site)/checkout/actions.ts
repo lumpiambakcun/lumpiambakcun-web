@@ -24,7 +24,7 @@ export async function createOrder(formData: FormData): Promise<CheckoutState> {
 }
 
 async function placeOrder(formData: FormData): Promise<CheckoutState> {
-  const result = validateCheckout(formData, new Date());
+  const result = await validateCheckout(formData, new Date());
   if (!result.ok) return { errors: result.errors };
 
   const { product, unitPrice, quantity, name, phone, email, notes, pickupAt, method, enabledPayments } = result.value;
@@ -36,6 +36,7 @@ async function placeOrder(formData: FormData): Promise<CheckoutState> {
     product_id: product.id,
     product_name: product.card.name,
     variant: product.card.variant,
+    unit: product.pack.unit,
     unit_price: unitPrice,
     quantity,
     total,

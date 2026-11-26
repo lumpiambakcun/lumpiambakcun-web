@@ -23,6 +23,7 @@ type FaqProps = {
 };
 
 export function Faq({ eyebrow, title, items }: FaqProps) {
+  if (items.length === 0) return null;
   const tallestIndex = items.reduce((best, item, index) => (item.answer.length > items[best].answer.length ? index : best), 0);
 
   return (

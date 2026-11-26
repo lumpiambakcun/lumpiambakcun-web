@@ -6,19 +6,20 @@ import { RelatedProducts } from "@/components/sections/related-products";
 import { JsonLd } from "@/components/seo/json-ld";
 import { businessConfig, siteConfig } from "@/config/site";
 import { doodleLayout } from "@/content/doodles";
-import { getProduct, getRelated, getDetails, getVariants, menuGallery, menuProducts } from "@/content/menu";
+import { getDetails, getGallery } from "@/content/menu";
+import { getProduct, getRelated, getVariants, listProducts } from "@/lib/products";
 import { shareMetadata } from "@/lib/seo";
 import { breadcrumbJsonLd, productJsonLd } from "@/lib/structured-data";
 
 export const instant = false;
 
-export function generateStaticParams() {
-  return menuProducts.map(({ id }) => ({ slug: id }));
+export async function generateStaticParams() {
+  return (await listProducts()).map(({ id }) => ({ slug: id }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/menu/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await getProduct(slug);
   if (!product) return {};
   const { card } = product;
   const title = `${card.name} ${card.variant}`;
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: PageProps<"/menu/[slug]">): P
 
 export default async function MenuDetailPage({ params }: PageProps<"/menu/[slug]">) {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await getProduct(slug);
   if (!product) notFound();
 
   const { card } = product;
@@ -54,10 +55,10 @@ export default async function MenuDetailPage({ params }: PageProps<"/menu/[slug]
       <ProductDetail
         crumbs={crumbs}
         name={card.name}
-        gallery={menuGallery[product.category]}
+        gallery={getGallery(product)}
         rating={businessConfig.rating}
         variantsLabel="Pilihan"
-        variants={getVariants(product.category).map((item) => ({
+        variants={(await getVariants(product.category)).map((item) => ({
           href: item.card.href,
           label: item.card.variant,
           active: item.id === product.id,
@@ -71,13 +72,14 @@ export default async function MenuDetailPage({ params }: PageProps<"/menu/[slug]
         actions={
           <ProductActions
             productId={product.id}
+            pcs={product.pack.pcs}
             purchasable={Boolean(card.price)}
-            itemLabel={card.price ? `${label} (isi 10)` : label}
+            itemLabel={card.price ? `${label} (isi ${product.pack.pcs})` : label}
             askMessage={`Halo Mbak Cun, saya mau tanya tentang ${label}.`}
           />
         }
       />
-      <RelatedProducts eyebrow="Coba juga" title="Menu lainnya" products={getRelated(product.id)} doodles={doodleLayout.menu} />
+      <RelatedProducts eyebrow="Coba juga" title="Menu lainnya" products={await getRelated(product.id)} doodles={doodleLayout.menu} />
     </>
   );
 }

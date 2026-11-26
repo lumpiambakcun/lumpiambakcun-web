@@ -1,26 +1,26 @@
 import { ImageResponse } from "next/og";
 import { brandColors, businessConfig, siteConfig } from "@/config/site";
-import { getProduct, menuCategories, menuProducts } from "@/content/menu";
 import { ogAsset, ogContentType, ogFonts, ogSize } from "@/lib/og";
+import { getProduct, listProducts } from "@/lib/products";
 
 export const alt = siteConfig.name;
 export const size = ogSize;
 export const contentType = ogContentType;
 
-export function generateStaticParams() {
-  return menuProducts.map(({ id }) => ({ slug: id }));
+export async function generateStaticParams() {
+  return (await listProducts()).map(({ id }) => ({ slug: id }));
 }
 
 const emblemAsset = ogAsset("emblem.png");
-const photoAssets = Object.fromEntries(menuCategories.map(({ id }) => [id, ogAsset(`menu-${id}.jpg`)]));
+const photoAssets = Object.fromEntries(["lumpia", "tahu-rebung", "tahu-bakso", "pisang-coklat"].map((id) => [id, ogAsset(`menu-${id}.jpg`)]));
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await getProduct(slug);
   if (!product) return new Response(null, { status: 404 });
 
   const { card } = product;
-  const [emblem, photo, fonts] = await Promise.all([emblemAsset, photoAssets[product.category], ogFonts]);
+  const [emblem, photo, fonts] = await Promise.all([emblemAsset, photoAssets[product.category] ?? photoAssets.lumpia, ogFonts]);
 
   return new ImageResponse(
     (

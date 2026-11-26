@@ -3,6 +3,9 @@ import { cn } from "@/lib/utils";
 
 export const fieldControlClass = "h-[45px] rounded-lg border-border bg-white px-4 text-sm placeholder:text-ink-muted md:text-sm";
 
+export const fieldTextareaClass =
+  "w-full min-w-0 rounded-lg border border-border bg-white px-4 py-3 text-sm leading-[1.4] transition-colors outline-none placeholder:text-ink-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20";
+
 const labelTone = {
   brand: "text-[11px] leading-[1.2] font-extrabold tracking-[0.08em] text-brand uppercase",
   plain: "text-[15px] leading-[1.3] font-semibold text-ink",

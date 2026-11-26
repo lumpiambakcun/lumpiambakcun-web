@@ -9,6 +9,7 @@ export type Order = {
   product_id: string;
   product_name: string;
   variant: string;
+  unit: string;
   unit_price: number;
   quantity: number;
   total: number;

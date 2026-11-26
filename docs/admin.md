@@ -34,6 +34,8 @@ Halaman auth (`(auth)/layout.tsx`) menengahkan form secara vertikal dengan `min-
 | `/admin/lupa-password` | Minta tautan reset. Respons sama untuk email terdaftar atau tidak. |
 | `/admin/atur-password` | Kata sandi baru (minimal 10 karakter). Hanya dari tautan reset. |
 | `/admin` | Daftar pesanan: cari (kode, nama, nomor), rentang, status, 25 per halaman, dan tombol Tambah pesanan (pesanan manual: tunai atau transfer; Lunas atau Belum bayar). Default: tanggal ambil hari ini dan seterusnya, urut naik. |
+| `/admin/produk` | Daftar produk (foto, kategori, harga, status). Tambah/ubah lewat dialog (termasuk unggah foto). Varian, satuan jual (mika/box/pack), dan isi per satuan (mis. 20 pcs) diisi terpisah, menu aksi (tiga titik) berlabel: Ubah produk, Sembunyikan dari situs / Tampilkan di situs, Hapus produk (dengan konfirmasi; pesanan lama aman karena menyimpan salinan nama, varian, satuan, dan harga). Semua produk aktif tampil di paket cepat beranda; situs ini single page dengan 2 produk (Lumpia Frozen dan Goreng). |
+| `/admin/faq` | Daftar FAQ: tambah, ubah, hapus, naik/turun urutan, status aktif/nonaktif. Tampil di beranda dan JSON-LD `FAQPage`. |
 | `/auth/confirm` | Route handler tautan email. Menukar `token_hash` jadi sesi, tujuan (`next`) hanya boleh di dalam `/admin`. |
 
 Pesanan manual disimpan di tabel `orders` yang sama dengan `source = 'manual'` dan harga katalog. Tombol "Tandai lunas" dan "Batalkan" hanya muncul untuk pesanan **manual** yang masih belum bayar; pesanan online diselesaikan Midtrans.

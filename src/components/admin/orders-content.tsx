@@ -18,8 +18,7 @@ export async function OrdersContent({ searchParams }: OrdersContentProps) {
 
   return (
     <OrdersLiveFilters filters={filters}>
-      <OrdersTable orders={orders} filtered={filtered} />
-      <OrdersPagination filters={filters} total={total} />
+      <OrdersTable orders={orders} filtered={filtered} footer={<OrdersPagination filters={filters} total={total} />} />
     </OrdersLiveFilters>
   );
 }

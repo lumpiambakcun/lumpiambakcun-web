@@ -1,13 +1,10 @@
 import { ChefHat, Leaf, ShieldCheck, Snowflake } from "lucide-react";
-import type { FaqItem } from "@/components/sections/faq";
 import type { FeatureCardProps } from "@/components/sections/feature-card";
 import type { HeroProps } from "@/components/sections/hero";
 import type { PriceCardProps } from "@/components/sections/price-card";
 import type { Testimonial } from "@/components/sections/testimonial-card";
 import type { WhatsAppCardProps } from "@/components/sections/whatsapp-card";
 import { bulkOrder, businessConfig } from "@/config/site";
-import { getProduct } from "@/content/menu";
-import { parseRupiah } from "@/lib/currency";
 
 export const hero: HeroProps = {
   label: "Khas Semarang",
@@ -76,27 +73,9 @@ export const features = {
   ] satisfies Omit<FeatureCardProps, "className">[],
 };
 
-const quickOrderProducts = [
-  { id: "lumpia-frozen", variant: "Mentah" },
-  { id: "lumpia-goreng", variant: "Goreng" },
-].map(({ id, variant }) => {
-  const { card } = getProduct(id)!;
-  const name = `${card.name} ${variant}`;
-  return {
-    id,
-    name,
-    description: card.description,
-    price: parseRupiah(card.price ?? ""),
-    unit: card.unit ?? "",
-    pcs: bulkOrder.packSize,
-    image: { src: card.image.src, alt: `${name}, isi ${bulkOrder.packSize} pcs` },
-  };
-});
-
 export const menu = {
   title: "Pilih paket lumpia favoritmu",
   text: "Atur jumlahnya, lalu kirim lewat WhatsApp. Isi pesananmu sudah tertulis otomatis, tinggal kirim.",
-  products: quickOrderProducts,
 };
 
 export const order = {
@@ -174,12 +153,6 @@ export const testimonials = {
 
 export const faq = {
   title: "Pertanyaan yang sering ditanyakan",
-  items: [
-    { question: "Apa itu lumpia Semarang?", answer: "Lumpia khas Semarang berisi rebung, telur, dan udang dengan cita rasa gurih dan renyah." },
-    { question: "Bisa pesan untuk acara atau dalam jumlah banyak?", answer: "Bisa. Kirim jumlah dan tanggal acaranya lewat WhatsApp, lalu kami bantu hitung kebutuhannya." },
-    { question: "Bisa diambil di tempat atau diantar?", answer: "Bisa ambil di tempat. Untuk pengantaran, tanyakan langsung lewat WhatsApp." },
-    { question: "Berapa lama lumpia bisa disimpan?", answer: "Lumpia fresh paling enak dikonsumsi di hari yang sama. Untuk frozen, simpan di freezer dan goreng langsung dari beku kapan saja dibutuhkan." },
-  ] satisfies FaqItem[],
 };
 
 export const location = {

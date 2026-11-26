@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 import { brandColors, businessConfig, siteConfig } from "@/config/site";
 import { orderStages, orderStatusInfo } from "@/content/checkout";
-import { packagingOf } from "@/content/menu";
 import { formatRupiah } from "@/lib/currency";
 import { formatPickupTime, maskPhone } from "@/lib/format";
 import { ogFonts, ogSize } from "@/lib/og";
@@ -95,7 +94,7 @@ export async function renderOrderNota(code: string) {
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", fontSize: 32, fontWeight: 700, lineHeight: 1.15 }}>{`${order.product_name} ${order.variant}`}</div>
                 <div style={{ display: "flex", marginTop: 6, fontSize: 24, fontWeight: 500, color: muted }}>
-                  {`${order.quantity} ${packagingOf(order.variant)} × ${formatRupiah(order.unit_price)}`}
+                  {`${order.quantity} ${order.unit} × ${formatRupiah(order.unit_price)}`}
                 </div>
               </div>
               <div style={{ display: "flex", fontSize: 30, fontWeight: 500 }}>{formatRupiah(order.total)}</div>

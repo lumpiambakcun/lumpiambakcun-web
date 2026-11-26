@@ -4,8 +4,8 @@ import { CheckoutForm } from "@/components/sections/checkout-form";
 import { SnapScript } from "@/components/shared/snap-script";
 import { businessConfig, siteConfig } from "@/config/site";
 import { paymentMethods } from "@/content/checkout";
-import { packagingOf } from "@/content/menu";
-import { getPurchasable, quantitySchema, wibDate } from "@/lib/checkout";
+import { quantitySchema, wibDate } from "@/lib/checkout";
+import { getPurchasable } from "@/lib/products";
 import { snapScriptUrl } from "@/lib/midtrans";
 
 type CheckoutContentProps = {
@@ -18,9 +18,9 @@ const clock = (value: string) => value.replace(".", ":");
 export async function CheckoutContent({ searchParams }: CheckoutContentProps) {
   const params = await searchParams;
   await connection();
-  const purchasable = getPurchasable(first(params.produk));
+  const purchasable = await getPurchasable(first(params.produk));
   if (!purchasable) redirect("/");
-  const parsedQuantity = quantitySchema.safeParse(first(params.jumlah));
+  const parsedQuantity = quantitySchema(purchasable.product.pack.pcs).safeParse(first(params.jumlah));
   if (!parsedQuantity.success) redirect(purchasable.product.card.href);
   const quantity = parsedQuantity.data;
 
@@ -33,7 +33,7 @@ export async function CheckoutContent({ searchParams }: CheckoutContentProps) {
       <SnapScript src={snapScriptUrl} clientKey={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY} />
       <CheckoutForm
         productId={product.id}
-        summary={{ name: card.name, variant: card.variant, quantity, unit: packagingOf(card.variant), image: card.image, lineTotal: unitPrice * quantity }}
+        summary={{ name: card.name, variant: card.variant, quantity, unit: product.pack.unit, image: card.image, lineTotal: unitPrice * quantity }}
         paymentMethods={paymentMethods}
         pickup={{
           address: `${businessConfig.address.fullLine}. ${businessConfig.hours.label}.`,
@@ -41,7 +41,7 @@ export async function CheckoutContent({ searchParams }: CheckoutContentProps) {
           opens: clock(opens),
           closes: clock(closes),
         }}
-        whatsappMessage={`Halo Mbak Cun, saya mau pesan ${quantity} pack ${card.name} ${card.variant} (isi 10).`}
+        whatsappMessage={`Halo Mbak Cun, saya mau pesan ${quantity} ${product.pack.unit} ${card.name} ${card.variant} (isi ${product.pack.pcs}).`}
         note={`Dengan membayar, kamu menyetujui syarat dan ketentuan ${siteConfig.name}.`}
       />
     </>

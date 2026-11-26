@@ -8,7 +8,13 @@ import { ProductGrid } from "./product-grid";
 import { useDragScroll } from "./use-drag-scroll";
 
 export type MenuCategory = { id: string; label: string };
-export type MenuProduct = { id: string; category: string; card: ProductCardProps };
+export type MenuProduct = {
+  id: string;
+  category: string;
+  detail: { description: string; ingredients: string; chili: boolean };
+  pack: { unit: string; pcs: number };
+  card: ProductCardProps;
+};
 
 type MenuBrowserProps = {
   categories: readonly MenuCategory[];

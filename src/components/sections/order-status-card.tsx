@@ -1,6 +1,5 @@
 import { businessConfig } from "@/config/site";
 import { orderStages, orderStatusInfo } from "@/content/checkout";
-import { packagingOf } from "@/content/menu";
 import { formatRupiah } from "@/lib/currency";
 import { formatPickupTime, maskPhone } from "@/lib/format";
 import type { Order } from "@/lib/orders";
@@ -9,7 +8,7 @@ import { cn } from "@/lib/utils";
 type OrderStatusCardProps = {
   order: Pick<
     Order,
-    "code" | "status" | "product_name" | "variant" | "unit_price" | "quantity" | "total" | "customer_name" | "customer_phone" | "pickup_at"
+    "code" | "status" | "product_name" | "variant" | "unit" | "unit_price" | "quantity" | "total" | "customer_name" | "customer_phone" | "pickup_at"
   >;
   actions: React.ReactNode;
 };
@@ -61,7 +60,7 @@ export function OrderStatusCard({ order, actions }: OrderStatusCardProps) {
                   {order.product_name} {order.variant}
                 </p>
                 <p className={cn(figure, "text-sm text-ink-muted")}>
-                  {order.quantity} {packagingOf(order.variant)} × {formatRupiah(order.unit_price)}
+                  {order.quantity} {order.unit} × {formatRupiah(order.unit_price)}
                 </p>
               </div>
               <p className={cn(figure, "text-base text-ink")}>{formatRupiah(order.total)}</p>

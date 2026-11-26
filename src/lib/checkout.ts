@@ -1,8 +1,7 @@
 import { z } from "zod";
-import { bulkOrder, businessConfig } from "@/config/site";
+import { bulkOrder, businessConfig, maxOnlinePacks } from "@/config/site";
 import { paymentMethods, type PaymentMethod } from "@/content/checkout";
-import { getProduct } from "@/content/menu";
-import { parseRupiah } from "@/lib/currency";
+import { getPurchasable } from "@/lib/products";
 import { wibDate } from "@/lib/format";
 
 export type CheckoutField = "nama" | "whatsapp" | "email" | "tanggal" | "jam" | "catatan" | "metode" | "produk";
@@ -25,11 +24,6 @@ export function normalizePhone(value: string) {
   return /^8\d{8,11}$/.test(national) ? `62${national}` : null;
 }
 
-export function getPurchasable(productId: unknown) {
-  const product = typeof productId === "string" ? getProduct(productId) : undefined;
-  return product?.card.price ? { product, unitPrice: parseRupiah(product.card.price) } : null;
-}
-
 export const nameSchema = z
   .string("Isi nama lengkap (2 sampai 80 huruf).")
   .min(2, "Isi nama lengkap (2 sampai 80 huruf).")
@@ -40,12 +34,12 @@ export const phoneSchema = z
   .transform(normalizePhone)
   .pipe(z.string("Nomor WhatsApp tidak valid. Contoh: 0857-1364-4140."));
 
-type Purchasable = NonNullable<ReturnType<typeof getPurchasable>>;
+type Purchasable = NonNullable<Awaited<ReturnType<typeof getPurchasable>>>;
 type Method = (typeof paymentMethods)[number];
 
 export const purchasableSchema = z
   .string("Produk tidak valid. Kembali ke menu dan coba lagi.")
-  .transform(getPurchasable)
+  .transform((id) => getPurchasable(id))
   .refine((value): value is Purchasable => value !== null, "Produk tidak valid. Kembali ke menu dan coba lagi.");
 
 const methodSchema = z
@@ -53,11 +47,12 @@ const methodSchema = z
   .transform((id) => paymentMethods.find((method) => method.id === id) ?? null)
   .refine((value): value is Method => value !== null, "Pilih metode pembayaran.");
 
-export const quantitySchema = z.coerce
-  .number("Jumlah tidak valid.")
-  .int("Jumlah tidak valid.")
-  .min(1, "Jumlah tidak valid.")
-  .max(bulkOrder.maxOnlinePacks, `Pesanan ${bulkOrder.rule}`);
+export const quantitySchema = (pcs: number) =>
+  z.coerce
+    .number("Jumlah tidak valid.")
+    .int("Jumlah tidak valid.")
+    .min(1, "Jumlah tidak valid.")
+    .max(maxOnlinePacks(pcs), `Pesanan ${bulkOrder.rule}`);
 
 const { opens, closes } = businessConfig.hours;
 const clock = z
@@ -69,7 +64,7 @@ const checkoutSchema = (now: Date) =>
   z
     .object({
       produk: purchasableSchema,
-      jumlah: quantitySchema,
+      jumlah: quantitySchema(1),
       nama: nameSchema,
       whatsapp: phoneSchema,
       email: z.union([z.literal(""), z.email().max(120)], "Format email tidak valid.").optional(),
@@ -79,6 +74,10 @@ const checkoutSchema = (now: Date) =>
       jam: clock,
     })
     .transform((data, ctx) => {
+      if (data.jumlah > maxOnlinePacks(data.produk.product.pack.pcs)) {
+        ctx.issues.push({ code: "custom", message: `Pesanan ${bulkOrder.rule}`, input: data.jumlah, path: ["jumlah"] });
+        return z.NEVER;
+      }
       const pickupAt = new Date(`${data.tanggal}T${data.jam}:00${WIB_OFFSET}`);
       const problem = Number.isNaN(pickupAt.getTime())
         ? "Pilih tanggal ambil."
@@ -104,9 +103,9 @@ const checkoutSchema = (now: Date) =>
       };
     });
 
-export function validateCheckout(formData: FormData, now: Date) {
+export async function validateCheckout(formData: FormData, now: Date) {
   const input = Object.fromEntries([...formData].map(([key, value]) => [key, typeof value === "string" ? value.trim() : value]));
-  const parsed = checkoutSchema(now).safeParse(input);
+  const parsed = await checkoutSchema(now).safeParseAsync(input);
   if (parsed.success) return { ok: true as const, value: parsed.data };
 
   const errors: CheckoutErrors = {};

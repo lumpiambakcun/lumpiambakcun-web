@@ -4,7 +4,7 @@ Toast, dipasang lewat `bunx shadcn@latest add sonner` (komponen `src/components/
 
 ## Pemakaian di repo
 
-- `<Toaster position="top-center" />` ada di `src/app/admin/(panel)/layout.tsx`, jadi toast hanya tersedia di panel admin. Pasang di layout lain bila halaman lain butuh.
+- `<Toaster position="bottom-right" />` ada di `src/app/admin/(panel)/layout.tsx`, jadi toast hanya tersedia di panel admin. Pasang di layout lain bila halaman lain butuh.
 - Panggil dari komponen client: `import { toast } from "sonner"; toast.success("Pesanan disimpan.")`. Contoh: `order-row-actions.tsx`, `add-order-dialog.tsx`.
 
 ## Hal yang perlu diketahui

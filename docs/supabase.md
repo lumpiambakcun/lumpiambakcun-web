@@ -26,6 +26,18 @@ Migrasi `20261125010000_profiles.sql`. Satu baris per user Auth (`id` = `auth.us
 
 Akses seperti `orders`: RLS aktif, `anon`/`authenticated` dicabut, hanya `service_role` (`src/lib/profiles.ts`). Edit profil nanti lewat server action yang memanggil `requireAdmin()` lalu mengubah baris milik `user.id` saja.
 
+## Tabel `faqs` dan `products` (CMS)
+
+Migrasi `20261126020000_product_unit_pcs.sql` menambah `unit`, `pcs`, `summary` ke `products` dan `unit` ke `orders` (salinan satuan saat pesanan dibuat, jadi mengubah satuan produk tidak mengubah pesanan lama; diisi dari varian lama). **Terapkan migrasi ini sebelum men-deploy kodenya**, karena insert pesanan menulis kolom `unit`. Batas pesanan online mengikuti isi: maksimal `floor((50 - 1) / pcs)` satuan, sisanya lewat WhatsApp (`maxOnlinePacks` di `src/config/site.ts`).
+
+Migrasi `20261126000000_cms.sql` (seed 4 FAQ dan 8 produk dari konten lama), lalu `20261126010000_products_single_page.sql` yang menyisakan 2 produk (`lumpia-frozen`, `lumpia-goreng`) dan membuang kolom `featured`: semua produk aktif tampil di paket cepat beranda. Akses seperti `orders`: RLS aktif tanpa policy, hanya `service_role`.
+
+- `faqs`: `question`, `answer`, `sort`, `active`. Situs hanya menampilkan yang `active`, urut `sort`.
+- `products`: satu baris per item jual. `id` = slug (huruf kecil, angka, tanda hubung; tidak diubah setelah dibuat karena `orders.product_id` merujuk teksnya tanpa FK), `category` (label), `variant` (label bebas, mis. Frozen/Goreng; hanya nama), `unit` (satuan jual: mika, box, pack, atau lainnya), `pcs` (isi per satuan), `summary` (keterangan singkat kartu; kosong = otomatis "Isi N pcs per satuan"), `name`, `description`, `ingredients`, `chili`, `price` (rupiah, integer), `image_url`, `active` (hanya produk aktif yang bisa dibeli), `sort`.
+- Bucket Storage publik `products` (JPG/PNG/WebP, maks 2 MB). Foto diunggah dari form produk lewat service role; `image_url` berisi URL publik. Host Supabase didaftarkan di `images.remotePatterns` (`next.config.ts`), jadi `NEXT_PUBLIC_SUPABASE_URL` harus terisi saat build. Server action menerima badan sampai 3 MB (`serverActions.bodySizeLimit`).
+
+Pembacaan publik ada di `src/lib/products.ts` dan `src/lib/faqs.ts` memakai `'use cache'` dengan tag `products` dan `faqs`. Server action admin memanggil `updateTag(...)` setelah menulis, jadi halaman statis ikut berubah. **Build butuh akses database** karena beranda dan footer membaca tabel ini saat prerender.
+
 ## Menerapkan migrasi
 
 Proyek sudah ter-link (`supabase/.temp`). Perintah:

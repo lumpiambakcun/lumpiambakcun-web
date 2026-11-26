@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { Button } from "@/components/ui/button";
-import { bulkOrder } from "@/config/site";
+import { bulkOrder, isBulk } from "@/config/site";
 import { whatsappUrl } from "@/lib/whatsapp";
 
 const MIN_QUANTITY = 1;
@@ -13,6 +13,7 @@ const MAX_QUANTITY = 99;
 
 type ProductActionsProps = {
   productId: string;
+  pcs: number;
   purchasable: boolean;
   itemLabel: string;
   askMessage: string;
@@ -26,10 +27,10 @@ function StepButton({ label, children, ...props }: React.ComponentProps<typeof B
   );
 }
 
-export function ProductActions({ productId, purchasable, itemLabel, askMessage }: ProductActionsProps) {
+export function ProductActions({ productId, pcs, purchasable, itemLabel, askMessage }: ProductActionsProps) {
   const [quantity, setQuantity] = useState(MIN_QUANTITY);
   const decrease = useCallback(() => setQuantity((value) => Math.max(MIN_QUANTITY, value - 1)), []);
-  const bulk = quantity >= bulkOrder.minPacks;
+  const bulk = isBulk(quantity, pcs);
   const increase = useCallback(() => setQuantity((value) => Math.min(MAX_QUANTITY, value + 1)), []);
 
   return (
@@ -69,7 +70,7 @@ export function ProductActions({ productId, purchasable, itemLabel, askMessage }
       <div className="flex flex-col gap-3 md:flex-row">
         <WhatsAppButton
           variant={bulk && purchasable ? "brand" : "accent"}
-          message={`Halo Mbak Cun, saya mau pesan ${quantity} pack ${itemLabel}${bulk ? `, total ${quantity * bulkOrder.packSize} pcs` : ""}.`}
+          message={`Halo Mbak Cun, saya mau pesan ${quantity} pack ${itemLabel}${bulk ? `, total ${quantity * pcs} pcs` : ""}.`}
           className="h-11 w-full md:flex-1"
         >
           Pesan via WhatsApp

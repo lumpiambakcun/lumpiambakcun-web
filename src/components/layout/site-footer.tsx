@@ -5,7 +5,8 @@ import { FooterLinkColumn, type FooterLink } from "@/components/layout/footer-li
 import { footerColumnLabel, footerRowLink, footerRowText } from "@/components/layout/footer-styles";
 import { Container } from "@/components/shared/container";
 import { businessConfig, siteConfig } from "@/config/site";
-import { menuCategories, menuPage } from "@/content/menu";
+import { menuPage } from "@/content/menu";
+import { listCategories } from "@/lib/products";
 import { whatsappUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 import { revealItem } from "@/lib/reveal";
@@ -25,16 +26,17 @@ const pageLinks: FooterLink[] = [
 
 const inquiry = (item: string) => whatsappUrl(`Halo Mbak Cun, saya mau tanya ketersediaan dan harga ${item}.`);
 
-const menuLinks: FooterLink[] = [
+const buildMenuLinks = (categories: readonly { id: string; label: string }[]): FooterLink[] => [
   { label: "Lumpia Mentah", href: "/#menu" },
   { label: "Lumpia Goreng", href: "/#menu" },
-  ...menuCategories
+  ...categories
     .filter(({ id }) => id !== "lumpia")
     .map(({ label }) => ({ label, href: inquiry(label), external: true })),
   { label: "Pesanan Acara", href: whatsappUrl(menuPage.cta.message), external: true },
 ];
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const menuLinks = buildMenuLinks(await listCategories());
   return (
     <footer className="bg-brand-deep text-cream">
       <div className="relative overflow-hidden">

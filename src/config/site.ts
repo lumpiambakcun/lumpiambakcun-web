@@ -43,16 +43,15 @@ export const businessConfig = {
   rating: { value: 4.9, count: 49, source: "Google" },
 } as const;
 
-const packSize = 10;
 const bulkMinPcs = 50;
 
 export const bulkOrder = {
-  packSize,
   minPcs: bulkMinPcs,
-  minPacks: bulkMinPcs / packSize,
-  maxOnlinePacks: bulkMinPcs / packSize - 1,
   rule: `${bulkMinPcs} pcs atau lebih lewat WhatsApp, minimal H-1 dengan DP.`,
 } as const;
+
+export const maxOnlinePacks = (pcs: number) => Math.max(1, Math.floor((bulkMinPcs - 1) / pcs));
+export const isBulk = (packs: number, pcs: number) => packs * pcs >= bulkMinPcs;
 
 export const orderChannels: ReadonlyArray<{
   id: string;

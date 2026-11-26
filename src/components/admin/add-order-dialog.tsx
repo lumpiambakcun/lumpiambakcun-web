@@ -4,11 +4,9 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ManualOrderForm, type ProductOption } from "@/components/admin/manual-order-form";
+import { ResponsiveDialog } from "@/components/shared/responsive-dialog";
 import type { SelectOption } from "@/components/shared/select-field";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { wibDate } from "@/lib/format";
 
 type AddOrderDialogProps = {
@@ -20,7 +18,6 @@ type AddOrderDialogProps = {
 const title = "Tambah pesanan";
 
 export function AddOrderDialog({ products, methods, hours }: AddOrderDialogProps) {
-  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [today, setToday] = useState("");
 
@@ -49,25 +46,9 @@ export function AddOrderDialog({ products, methods, hours }: AddOrderDialogProps
         <Plus data-icon="inline-start" aria-hidden="true" />
         {title}
       </Button>
-      {isMobile ? (
-        <Sheet open={open} onOpenChange={handleOpenChange}>
-          <SheetContent side="bottom" aria-describedby={undefined} className="max-h-[92dvh] overflow-y-auto rounded-t-2xl px-4 pb-6">
-            <SheetHeader className="px-0">
-              <SheetTitle>{title}</SheetTitle>
-            </SheetHeader>
-            {form}
-          </SheetContent>
-        </Sheet>
-      ) : (
-        <Dialog open={open} onOpenChange={handleOpenChange}>
-          <DialogContent aria-describedby={undefined} className="max-h-[calc(100dvh-2rem)] gap-5 overflow-y-auto p-6 sm:max-w-2xl">
-            <DialogHeader>
-              <DialogTitle className="text-lg">{title}</DialogTitle>
-            </DialogHeader>
-            {form}
-          </DialogContent>
-        </Dialog>
-      )}
+      <ResponsiveDialog open={open} onOpenChange={handleOpenChange} title={title}>
+        {form}
+      </ResponsiveDialog>
     </>
   );
 }

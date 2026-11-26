@@ -78,7 +78,7 @@ const manualOrderSchema = z
 export type ManualOrderState = { errors?: Record<string, string>; message?: string; code?: string };
 
 export async function createManualOrder(formData: FormData): Promise<ManualOrderState> {
-  const parsed = manualOrderSchema.safeParse(formToObject(formData));
+  const parsed = await manualOrderSchema.safeParseAsync(formToObject(formData));
   if (!parsed.success) return { errors: fieldErrors(parsed.error) };
 
   const { produk, jumlah, nama, whatsapp, catatan, metode, status, pickupAt } = parsed.data;
@@ -86,6 +86,7 @@ export async function createManualOrder(formData: FormData): Promise<ManualOrder
     product_id: produk.product.id,
     product_name: produk.product.card.name,
     variant: produk.product.card.variant,
+    unit: produk.product.pack.unit,
     unit_price: produk.unitPrice,
     quantity: jumlah,
     total: produk.unitPrice * jumlah,

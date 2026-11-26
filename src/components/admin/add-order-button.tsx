@@ -1,14 +1,16 @@
 import { AddOrderDialog } from "@/components/admin/add-order-dialog";
 import { businessConfig } from "@/config/site";
 import { manualPaymentMethods } from "@/content/checkout";
-import { menuProducts, packagingOf } from "@/content/menu";
 import { parseRupiah } from "@/lib/currency";
+import { listProducts } from "@/lib/products";
 
-const products = menuProducts.flatMap(({ id, card }) =>
-  card.price ? [{ value: id, label: `${card.name} ${card.variant} · ${card.price} / ${packagingOf(card.variant)}`, price: parseRupiah(card.price) }] : [],
-);
 const methods = manualPaymentMethods.map(({ id, label }) => ({ value: id, label }));
 
-export function AddOrderButton() {
+export async function AddOrderButton() {
+  const products = (await listProducts()).flatMap(({ id, card, pack }) =>
+    card.price
+      ? [{ value: id, label: `${card.name} ${card.variant} · ${card.price} / ${pack.unit} (isi ${pack.pcs})`, price: parseRupiah(card.price), unit: pack.unit }]
+      : [],
+  );
   return <AddOrderDialog products={products} methods={methods} hours={businessConfig.hours} />;
 }
