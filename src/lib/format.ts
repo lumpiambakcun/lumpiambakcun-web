@@ -18,3 +18,7 @@ export function maskPhone(phone: string) {
 }
 
 export const wibDate = (date: Date) => new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Jakarta" }).format(date);
+
+const dayFormat = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta" });
+
+export const formatDay = (iso: string) => dayFormat.format(new Date(iso));

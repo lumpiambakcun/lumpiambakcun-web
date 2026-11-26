@@ -84,3 +84,21 @@ export function breadcrumbJsonLd(items: readonly { label: string; href: string }
     })),
   };
 }
+
+type ArticleLd = { title: string; description: string; url: string; image?: string | null; publishedAt: string | null; modifiedAt: string };
+
+export function articleJsonLd(article: ArticleLd) {
+  const publisher = { "@type": "Organization", name: siteConfig.name, url: siteConfig.url };
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.description,
+    mainEntityOfPage: absoluteUrl(article.url),
+    ...(article.image && { image: absoluteUrl(article.image) }),
+    ...(article.publishedAt && { datePublished: article.publishedAt }),
+    dateModified: article.modifiedAt,
+    author: publisher,
+    publisher,
+  };
+}

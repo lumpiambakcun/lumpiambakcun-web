@@ -10,3 +10,10 @@ export const artikelPage = {
     cta: { label: "Lihat Paket", href: "/#menu" },
   },
 };
+
+export const artikelCta = {
+  title: "Mau coba lumpianya?",
+  text: "Pesan lewat WhatsApp, kami siapkan frozen atau goreng.",
+  button: "Pesan via WhatsApp",
+  message: "Halo Mbak Cun, saya mau pesan lumpia.",
+};

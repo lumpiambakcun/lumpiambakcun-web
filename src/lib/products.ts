@@ -3,6 +3,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import type { MenuCategory, MenuProduct } from "@/components/sections/menu-browser";
 import type { QuickOrderProduct } from "@/components/sections/quick-order-product-card";
 import { formatRupiah } from "@/lib/currency";
+import { slugify } from "@/lib/slug";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export type ProductRow = {
@@ -24,13 +25,7 @@ export type ProductRow = {
 
 export const PRODUCTS_TAG = "products";
 
-export const categorySlug = (label: string) =>
-  label
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+export const categorySlug = slugify;
 
 const blurb = ({ summary, pcs, unit }: ProductRow) => summary || `Isi ${pcs} pcs per ${unit}.`;
 

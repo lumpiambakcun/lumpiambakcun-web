@@ -35,11 +35,12 @@ Tidak ada package tambahan; semua memakai fitur bawaan Next.
 2. Daftarkan di `sitePages` (`src/config/site.ts`). Otomatis masuk sitemap.
 3. Di `page.tsx`: `export const metadata = pageMetadata("/path")` (dari `@/lib/seo`). Title otomatis diberi akhiran nama situs; isi `canonical` dan Open Graph ikut dibuat.
 4. Halaman dinamis (mis. `/menu/[slug]`): tidak masuk `sitePages`. Tambahkan URL-nya ke `src/app/sitemap.ts`, isi `generateStaticParams`, dan buat metadata di `generateMetadata` dengan `shareMetadata()`. Slug yang tidak dikenal memanggil `notFound()`; karena `cacheComponents` mengalirkan halaman, statusnya tetap 200 tetapi tampilannya 404 dengan `noindex`.
+   Artikel (`/artikel/[slug]`) mengikuti pola ini: URL terbit ditambahkan di `src/app/sitemap.ts` dengan `lastModified` dari `updated_at` database, metadata di `generateMetadata`, JSON-LD `Article` (`articleJsonLd`) dan `BreadcrumbList`. `generateStaticParams` mengembalikan placeholder `_` bila belum ada artikel (array kosong membuat build gagal dengan `cacheComponents`); slug itu menjadi 404.
 5. Halaman yang tidak boleh diindeks (login, dashboard): jangan masukkan ke `sitePages`, dan set `robots: { index: false }` pada metadata-nya.
 
 ## Keputusan dan batasan
 
-- **Sitemap tanpa `lastModified`.** Dengan `cacheComponents: true`, `new Date()` saat prerender membuat build gagal (contoh di doc Next memakainya, tapi tidak berlaku di setup ini). Isi `lastModified` hanya dari data nyata, mis. `updatedAt` konten dari database.
+- **Sitemap: `lastModified` hanya untuk URL dari database (artikel).** Dengan `cacheComponents: true`, `new Date()` saat prerender membuat build gagal (contoh di doc Next memakainya, tapi tidak berlaku di setup ini). Isi `lastModified` hanya dari data nyata, mis. `updatedAt` konten dari database.
 - **Canonical diset per halaman, bukan di layout.** Canonical di layout akan menunjuk semua halaman ke `/`.
 - **`twitter:card` = `summary_large_image`** memakai gambar OG yang sama.
 - **Open Graph lewat `shareMetadata()` + `opengraph-image.tsx`.** `openGraph` di level halaman menimpa seluruh `openGraph` layout (termasuk gambar file convention), jadi halaman statis memanggil `pageMetadata()` yang menulis `images: /opengraph-image` eksplisit. Halaman detail menu memanggil `shareMetadata(..., null)` tanpa `images` supaya Next menambahkan OG per produk (`/menu/{id}/opengraph-image-<hash>`) otomatis.

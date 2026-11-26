@@ -1,17 +1,19 @@
 import { Breadcrumb, type Crumb } from "@/components/shared/breadcrumb";
+import { cn } from "@/lib/utils";
 import { Section } from "@/components/shared/section";
 
 type PageShellProps = {
   crumbs: readonly Crumb[];
   title: string;
   hideTitle?: boolean;
+  className?: string;
   doodles?: React.ComponentProps<typeof Section>["doodles"];
   children: React.ReactNode;
 };
 
-export function PageShell({ crumbs, title, hideTitle, doodles, children }: PageShellProps) {
+export function PageShell({ crumbs, title, hideTitle, className, doodles, children }: PageShellProps) {
   return (
-    <Section doodles={doodles} aria-labelledby="halaman-judul" className="bg-cream pt-2 pb-6 md:pt-3 md:pb-12 lg:pt-[22px] lg:pb-16">
+    <Section doodles={doodles} aria-labelledby="halaman-judul" className={cn("bg-cream pt-2 pb-6 md:pt-3 md:pb-12 lg:pt-[22px] lg:pb-16", className)}>
       <Breadcrumb items={crumbs} className="relative" />
       <h1
         id="halaman-judul"

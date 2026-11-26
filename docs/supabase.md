@@ -38,6 +38,15 @@ Migrasi `20261126000000_cms.sql` (seed 4 FAQ dan 8 produk dari konten lama), lal
 
 Pembacaan publik ada di `src/lib/products.ts` dan `src/lib/faqs.ts` memakai `'use cache'` dengan tag `products` dan `faqs`. Server action admin memanggil `updateTag(...)` setelah menulis, jadi halaman statis ikut berubah. **Build butuh akses database** karena beranda dan footer membaca tabel ini saat prerender.
 
+## Tabel `articles` (Artikel)
+
+Migrasi `20261126030000_articles.sql`: tabel `articles` (RLS aktif tanpa policy, hanya `service_role`) dan bucket publik `articles` (JPG/PNG/WebP, maks 2 MB).
+
+- Kolom: `slug` (unik, tidak diubah setelah dibuat), `title`, `excerpt` (maks 160, jadi meta description dan teks kartu), `body` (HTML dari CKEditor, **disanitasi di server** lewat `src/lib/sanitize-article.ts` sebelum disimpan), `cover_url`, `cover_alt`, `status` (`draft`/`published`), `published_at` (diisi sekali saat pertama terbit), `updated_at`.
+- Pembacaan publik di `src/lib/articles.ts` (`'use cache'`, tag `articles`); server action admin memanggil `updateTag("articles")`. Hanya `published` yang tampil, termasuk di sitemap (`lastModified` = `updated_at`).
+- Upload/hapus foto dipakai bersama produk dan artikel lewat `src/lib/admin-storage.ts`.
+- **Seeder:** `bun run db:seed` memasukkan 4 artikel contoh (`scripts/seed/articles-data.ts`). Idempotent: artikel dengan slug yang sudah ada dilewati (tidak menimpa hasil edit); `bun run db:seed -- --force` menimpa. Naskah contoh hanya memakai fakta yang ada di situs, tetap perlu ditinjau pemilik. Cover contoh memakai foto lokal `/images/...`.
+
 ## Menerapkan migrasi
 
 Proyek sudah ter-link (`supabase/.temp`). Perintah:

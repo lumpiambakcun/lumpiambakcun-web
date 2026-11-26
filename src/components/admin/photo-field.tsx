@@ -12,9 +12,10 @@ type PhotoFieldProps = {
   label: string;
   initialSrc?: string;
   error?: string;
+  hint?: string;
 };
 
-export function PhotoField({ id, name, label, initialSrc, error }: PhotoFieldProps) {
+export function PhotoField({ id, name, label, initialSrc, error, hint = "JPG, PNG, atau WebP, maksimal 2 MB. Foto persegi paling pas." }: PhotoFieldProps) {
   const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(
@@ -31,7 +32,7 @@ export function PhotoField({ id, name, label, initialSrc, error }: PhotoFieldPro
       <div className="flex items-center gap-4">
         <div className="relative grid size-28 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-canvas text-ink-muted">
           {src ? (
-            <Image src={src} alt="Pratinjau foto produk" fill sizes="112px" unoptimized={Boolean(preview)} className="object-cover" />
+            <Image src={src} alt="Pratinjau foto" fill sizes="112px" unoptimized={Boolean(preview)} className="object-cover" />
           ) : (
             <ImageIcon className="size-6" aria-hidden="true" />
           )}
@@ -50,7 +51,7 @@ export function PhotoField({ id, name, label, initialSrc, error }: PhotoFieldPro
             aria-describedby={error ? `${id}-error` : undefined}
             className={`${fieldControlClass} cursor-pointer py-2.5 file:mr-3`}
           />
-          <p className="text-xs leading-[1.4] text-ink-muted">JPG, PNG, atau WebP, maksimal 2 MB. Foto persegi paling pas.</p>
+          <p className="text-xs leading-[1.4] text-ink-muted">{hint}</p>
         </div>
       </div>
     </FormField>

@@ -273,3 +273,60 @@
     transform: translateX(-50%);
   }
 }
+
+.article-body {
+  margin-top: 1rem;
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.65;
+  & > * + * {
+    margin-top: 0.75em;
+  }
+  & h2 {
+    margin-top: 1.4em;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  & h3 {
+    margin-top: 1.2em;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    line-height: 1.25;
+    font-weight: 700;
+  }
+  & h2 + *,
+  & h3 + * {
+    margin-top: 0.4em;
+  }
+  & ul,
+  & ol {
+    padding-left: 1.4em;
+  }
+  & ul {
+    list-style: disc;
+  }
+  & ol {
+    list-style: decimal;
+  }
+  & li + li {
+    margin-top: 0.15em;
+  }
+  & a {
+    color: var(--brand);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  & blockquote {
+    border-left: 3px solid var(--brand);
+    padding-left: 1rem;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+}
+
+.article-editor .ck-editor__editable {
+  min-height: 320px;
+  font-size: 1rem;
+}
