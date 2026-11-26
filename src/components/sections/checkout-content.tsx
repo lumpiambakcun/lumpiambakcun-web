@@ -2,11 +2,12 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { CheckoutForm } from "@/components/sections/checkout-form";
 import { SnapScript } from "@/components/shared/snap-script";
-import { businessConfig, siteConfig } from "@/config/site";
+import { siteConfig } from "@/config/site";
 import { paymentMethods } from "@/content/checkout";
 import { quantitySchema, wibDate } from "@/lib/checkout";
 import { getPurchasable } from "@/lib/products";
 import { snapScriptUrl } from "@/lib/midtrans";
+import { getContact } from "@/lib/site-settings";
 
 type CheckoutContentProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -26,7 +27,7 @@ export async function CheckoutContent({ searchParams }: CheckoutContentProps) {
 
   const { product, unitPrice } = purchasable;
   const { card } = product;
-  const { opens, closes } = businessConfig.hours;
+  const { hours: { opens, closes }, hoursLabel, fullLine } = await getContact();
 
   return (
     <>
@@ -36,7 +37,7 @@ export async function CheckoutContent({ searchParams }: CheckoutContentProps) {
         summary={{ name: card.name, variant: card.variant, quantity, unit: product.pack.unit, image: card.image, lineTotal: unitPrice * quantity }}
         paymentMethods={paymentMethods}
         pickup={{
-          address: `${businessConfig.address.fullLine}. ${businessConfig.hours.label}.`,
+          address: `${fullLine}. ${hoursLabel}.`,
           minDate: wibDate(new Date()),
           opens: clock(opens),
           closes: clock(closes),

@@ -1,6 +1,4 @@
-import { businessConfig } from "@/config/site";
-
-export function whatsappUrl(message?: string) {
-  const base = `https://wa.me/${businessConfig.phoneIntl}`;
+export function whatsappUrl(phoneIntl: string, message?: string) {
+  const base = `https://wa.me/${phoneIntl}`;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }

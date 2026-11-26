@@ -1,7 +1,8 @@
 import { businessConfig, siteConfig } from "@/config/site";
 import { absoluteUrl } from "@/lib/seo";
+import type { Contact, FooterSettings } from "@/lib/site-settings-schema";
 
-export function localBusinessJsonLd() {
+export function localBusinessJsonLd(contact: Contact, social: FooterSettings["social"]) {
   return {
     "@context": "https://schema.org",
     "@type": "Restaurant",
@@ -9,28 +10,28 @@ export function localBusinessJsonLd() {
     name: siteConfig.name,
     description: siteConfig.description,
     url: siteConfig.url,
-    telephone: `+${businessConfig.phoneIntl}`,
+    telephone: `+${contact.phoneIntl}`,
     image: absoluteUrl("/images/hero/piring-lumpia.webp"),
     servesCuisine: "Lumpia Semarang",
     address: {
       "@type": "PostalAddress",
-      streetAddress: `${businessConfig.address.street}, ${businessConfig.address.district}`,
-      addressLocality: businessConfig.address.city,
+      streetAddress: `${contact.address.street}, ${contact.address.district}`,
+      addressLocality: contact.address.city,
       addressCountry: "ID",
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: businessConfig.geo.latitude,
-      longitude: businessConfig.geo.longitude,
+      latitude: contact.geo.lat,
+      longitude: contact.geo.lng,
     },
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-      opens: businessConfig.hours.opens.replace(".", ":"),
-      closes: businessConfig.hours.closes.replace(".", ":"),
+      opens: contact.hours.opens.replace(".", ":"),
+      closes: contact.hours.closes.replace(".", ":"),
     },
-    hasMap: businessConfig.mapsUrl,
-    sameAs: [businessConfig.instagramUrl],
+    hasMap: contact.mapsUrl,
+    sameAs: social.map(({ url }) => url),
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: businessConfig.rating.value,

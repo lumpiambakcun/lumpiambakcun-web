@@ -1,7 +1,7 @@
 import type { VariantProps } from "class-variance-authority";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
+import { WhatsAppLink } from "@/components/shared/whatsapp-link";
 import { Button, type buttonVariants } from "@/components/ui/button";
-import { whatsappUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
 type WhatsAppButtonProps = Omit<React.ComponentProps<"a">, "href"> &
@@ -21,10 +21,10 @@ export function WhatsAppButton({
 }: WhatsAppButtonProps) {
   return (
     <Button asChild variant={variant} size={size} className={className}>
-      <a href={whatsappUrl(message)} target="_blank" rel="noopener noreferrer" {...props}>
+      <WhatsAppLink message={message} {...props}>
         {!hideIcon && <WhatsAppIcon className={cn("size-5 shrink-0")} />}
         {children}
-      </a>
+      </WhatsAppLink>
     </Button>
   );
 }

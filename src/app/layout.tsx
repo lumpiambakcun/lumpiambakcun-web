@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Mr_Dafoe, Nunito } from "next/font/google";
 import localFont from "next/font/local";
-import { JsonLd } from "@/components/seo/json-ld";
-import { businessConfig, siteConfig } from "@/config/site";
-import { absoluteUrl, shareMetadata } from "@/lib/seo";
+import { OrganizationJsonLd } from "@/components/seo/organization-json-ld";
+import { siteConfig } from "@/config/site";
+import { shareMetadata } from "@/lib/seo";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -49,28 +49,6 @@ export const viewport: Viewport = {
   themeColor: siteConfig.themeColor,
 };
 
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": `${siteConfig.url}/#organization`,
-      name: siteConfig.name,
-      url: siteConfig.url,
-      logo: absoluteUrl("/icons/icon-512.png"),
-      sameAs: [businessConfig.instagramUrl],
-    },
-    {
-      "@type": "WebSite",
-      "@id": `${siteConfig.url}/#website`,
-      name: siteConfig.name,
-      url: siteConfig.url,
-      inLanguage: siteConfig.language,
-      publisher: { "@id": `${siteConfig.url}/#organization` },
-    },
-  ],
-};
-
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -78,7 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${nunito.variable} ${dafoe.variable} ${kido.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <JsonLd data={organizationJsonLd} />
+        <OrganizationJsonLd />
         {children}
       </body>
     </html>

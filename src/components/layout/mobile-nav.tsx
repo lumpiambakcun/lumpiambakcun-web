@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRight, MapPin, Phone } from "lucide-react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { memo, useCallback, useRef } from "react";
 import { InstagramIcon } from "@/components/icons/brand-icons";
@@ -19,16 +18,28 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { businessConfig, navLinks } from "@/config/site";
+import { SiteLink } from "@/components/layout/site-link";
+import type { ResolvedLink } from "@/lib/site-links";
+import type { HeaderSettings } from "@/lib/site-settings-schema";
 import { cn } from "@/lib/utils";
 
-export function MobileNav({ className }: { className?: string }) {
+type MobileNavProps = {
+  className?: string;
+  brand: HeaderSettings["brand"];
+  topBar: HeaderSettings["topBar"];
+  nav: readonly ResolvedLink[];
+  cta: HeaderSettings["cta"];
+  extraCtas: readonly (ResolvedLink & { style: "primary" | "outline" })[];
+  contact: { phoneDisplay: string; phoneIntl: string; mapsUrl: string; fullLine: string; instagramUrl: string | null };
+};
+
+export function MobileNav({ className, brand, topBar, nav, cta, extraCtas, contact }: MobileNavProps) {
   const pathname = usePathname();
   const content = useRef<HTMLDivElement>(null);
-  const topBar = useRef<HTMLDivElement>(null);
+  const topBarRef = useRef<HTMLDivElement>(null);
 
   const handleOpenChange = useCallback((open: boolean) => {
-    if (open && topBar.current) topBar.current.hidden = !((document.querySelector("header")?.getBoundingClientRect().top ?? 0) > 1);
+    if (open && topBarRef.current) topBarRef.current.hidden = !((document.querySelector("header")?.getBoundingClientRect().top ?? 0) > 1);
   }, []);
   const handleOpenAutoFocus = useCallback((event: Event) => {
     event.preventDefault();
@@ -50,11 +61,11 @@ export function MobileNav({ className }: { className?: string }) {
         <SheetTitle className="sr-only">Menu</SheetTitle>
         <SheetDescription className="sr-only">Navigasi utama, tombol pesan, dan kontak.</SheetDescription>
 
-        <div ref={topBar} hidden>
-          <TopBar />
+        <div ref={topBarRef} hidden>
+          <TopBar messages={topBar} />
         </div>
         <HeaderRow>
-          <BrandLogo />
+          <BrandLogo brand={brand} />
           <div className="flex items-center justify-end gap-2.5">
             <SheetClose asChild>
               <MenuToggle open />
@@ -65,13 +76,13 @@ export function MobileNav({ className }: { className?: string }) {
         <div className="flex min-h-0 flex-1 flex-col motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-top-3 motion-safe:duration-300">
         <nav aria-label="Menu utama" className="border-t border-border px-5 pt-2 md:px-8">
           <ul>
-            {navLinks.map((link) => {
+            {nav.map((link) => {
               const active = link.href === pathname;
               return (
-                <li key={link.href} className="border-b border-border last:border-b-0">
+                <li key={`${link.label}-${link.href}`} className="border-b border-border last:border-b-0">
                   <SheetClose asChild>
-                    <Link
-                      href={link.href}
+                    <SiteLink
+                      link={link}
                       aria-current={active ? "page" : undefined}
                       className="group flex items-center justify-between gap-3 rounded-md py-4"
                     >
@@ -90,7 +101,7 @@ export function MobileNav({ className }: { className?: string }) {
                           strokeWidth={2}
                         />
                       </span>
-                    </Link>
+                    </SiteLink>
                   </SheetClose>
                 </li>
               );
@@ -100,28 +111,32 @@ export function MobileNav({ className }: { className?: string }) {
 
         <div className="flex flex-col gap-3 px-5 pt-4 pb-6 md:px-8">
           <SheetClose asChild>
-            <WhatsAppButton message="Halo Mbak Cun, saya mau pesan lumpia." className="h-14 w-full rounded-full text-base">
-              Pesan via WhatsApp
+            <WhatsAppButton message={cta.message} className="h-14 w-full rounded-full text-base">
+              {cta.label}
             </WhatsAppButton>
           </SheetClose>
-          <SheetClose asChild>
-            <Button asChild variant="outline-ink" size="cta" className="h-14 w-full rounded-full text-base">
-              <Link href="/#menu">Lihat Paket</Link>
-            </Button>
-          </SheetClose>
+          {extraCtas.map((extra) => (
+            <SheetClose asChild key={`${extra.label}-${extra.href}`}>
+              <Button asChild variant={extra.style === "outline" ? "outline-ink" : "brand"} size="cta" className="h-14 w-full rounded-full text-base">
+                <SiteLink link={extra}>{extra.label}</SiteLink>
+              </Button>
+            </SheetClose>
+          ))}
         </div>
 
         <div className="mt-auto flex flex-col gap-3 bg-cream px-5 pt-5 pb-7 md:px-8">
           <p className="text-xs leading-[1.2] font-extrabold tracking-[0.08em] text-brand uppercase">Hubungi kami</p>
-          <ContactRow icon={Phone} href={`tel:+${businessConfig.phoneIntl}`}>
-            {businessConfig.phoneDisplay}
+          <ContactRow icon={Phone} href={`tel:+${contact.phoneIntl}`}>
+            {contact.phoneDisplay}
           </ContactRow>
-          <ContactRow icon={MapPin} href={businessConfig.mapsUrl} external>
-            {businessConfig.address.fullLine}
+          <ContactRow icon={MapPin} href={contact.mapsUrl} external>
+            {contact.fullLine}
           </ContactRow>
-          <ContactRow icon={InstagramIcon} href={businessConfig.instagramUrl} external>
-            @lumpiambakcun
-          </ContactRow>
+          {contact.instagramUrl && (
+            <ContactRow icon={InstagramIcon} href={contact.instagramUrl} external>
+              {`@${contact.instagramUrl.split("/").filter(Boolean).pop()}`}
+            </ContactRow>
+          )}
         </div>
         </div>
       </SheetContent>

@@ -1,10 +1,11 @@
 import { ImageResponse } from "next/og";
-import { brandColors, businessConfig, siteConfig } from "@/config/site";
+import { brandColors, siteConfig } from "@/config/site";
 import { orderStages, orderStatusInfo } from "@/content/checkout";
 import { formatRupiah } from "@/lib/currency";
 import { formatPickupTime, maskPhone } from "@/lib/format";
 import { ogFonts, ogSize } from "@/lib/og";
 import { getOrderByCode, isOrderCode, syncOrderStatus } from "@/lib/orders";
+import { getContact } from "@/lib/site-settings";
 
 const PAPER_WIDTH = 1120;
 const TEETH = PAPER_WIDTH / 20;
@@ -23,7 +24,7 @@ export async function renderOrderNota(code: string) {
   const found = await getOrderByCode(code);
   if (!found) return null;
 
-  const [order, fonts] = await Promise.all([syncOrderStatus(found), ogFonts]);
+  const [order, fonts, contact] = await Promise.all([syncOrderStatus(found), ogFonts, getContact()]);
   if (order.status !== "paid") return null;
   const info = orderStatusInfo[order.status];
   const stage = orderStages[order.status];
@@ -84,7 +85,7 @@ export async function renderOrderNota(code: string) {
             <div style={{ display: "flex", marginTop: 14, fontSize: 28, fontWeight: 500, lineHeight: 1.35 }}>{info.description}</div>
             {stage && (
               <div style={{ display: "flex", marginTop: 16, fontSize: 26, fontWeight: 500, lineHeight: 1.35 }}>
-                {`Ambil ${formatPickupTime(order.pickup_at)} di ${businessConfig.address.fullLine}.`}
+                {`Ambil ${formatPickupTime(order.pickup_at)} di ${contact.fullLine}.`}
               </div>
             )}
           </div>
@@ -123,7 +124,7 @@ export async function renderOrderNota(code: string) {
             <div style={{ flex: 1 }} />
             <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 16, borderTop: dashed, fontSize: 24, fontWeight: 700, color: brandColors.brand }}>
               <div style={{ display: "flex" }}>{siteConfig.name}</div>
-              <div style={{ display: "flex" }}>{businessConfig.phoneDisplay}</div>
+              <div style={{ display: "flex" }}>{contact.phoneDisplay}</div>
             </div>
           </div>
         </div>

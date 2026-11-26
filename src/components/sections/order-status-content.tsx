@@ -7,6 +7,7 @@ import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { Button } from "@/components/ui/button";
 import { snapScriptUrl } from "@/lib/midtrans";
 import { getOrderByCode, isOrderCode, syncOrderStatus } from "@/lib/orders";
+import { getContact } from "@/lib/site-settings";
 
 type OrderStatusContentProps = {
   params: Promise<{ kode: string }>;
@@ -18,7 +19,7 @@ export async function OrderStatusContent({ params }: OrderStatusContentProps) {
   const found = await getOrderByCode(kode);
   if (!found) notFound();
 
-  const order = await syncOrderStatus(found);
+  const [order, contact] = await Promise.all([syncOrderStatus(found), getContact()]);
   const retry = order.status === "failed" || order.status === "expired" || order.status === "cancelled";
 
   const paid = order.status === "paid";
@@ -28,6 +29,7 @@ export async function OrderStatusContent({ params }: OrderStatusContentProps) {
       {order.status === "pending" && <SnapScript src={snapScriptUrl} clientKey={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY} />}
       <OrderStatusCard
         order={order}
+        pickup={{ mapsUrl: contact.mapsUrl, address: contact.fullLine }}
         actions={
           <>
             {order.status === "pending" && order.snap_token && <ResumePayment token={order.snap_token} />}

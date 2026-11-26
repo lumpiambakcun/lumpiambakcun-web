@@ -6,25 +6,26 @@ import { OrderBanner } from "@/components/sections/order-banner";
 import { Testimonials } from "@/components/sections/testimonials";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/config/site";
-import { faq, features, hero, menu, orderBanner, testimonials } from "@/content/beranda";
+import { buildFeatures, buildOrderBanner, faq, hero, menu, testimonials } from "@/content/beranda";
 import { listActiveFaqs } from "@/lib/faqs";
 import { listQuickOrder } from "@/lib/products";
 import { pageMetadata } from "@/lib/seo";
+import { getContact, getFooter } from "@/lib/site-settings";
 import { faqJsonLd, localBusinessJsonLd } from "@/lib/structured-data";
 
 export const metadata = pageMetadata("/", `Lumpia Semarang Khas Legendaris | ${siteConfig.name}`);
 
 export default async function BerandaPage() {
-  const [faqItems, products] = await Promise.all([listActiveFaqs(), listQuickOrder()]);
+  const [faqItems, products, contact, footer] = await Promise.all([listActiveFaqs(), listQuickOrder(), getContact(), getFooter()]);
   return (
     <>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(contact, footer.social)} />
       {faqItems.length > 0 && <JsonLd data={faqJsonLd(faqItems)} />}
       <Hero {...hero} />
-      <Features {...features} />
+      <Features {...buildFeatures(contact)} />
       <MenuSection {...menu} products={products} />
       <Testimonials {...testimonials} />
-      <OrderBanner {...orderBanner} />
+      <OrderBanner {...buildOrderBanner(contact)} />
       <Faq {...faq} items={faqItems} />
     </>
   );

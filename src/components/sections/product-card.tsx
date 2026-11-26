@@ -3,7 +3,7 @@ import Link from "next/link";
 import { memo } from "react";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { Button } from "@/components/ui/button";
-import { whatsappUrl } from "@/lib/whatsapp";
+import { WhatsAppLink } from "@/components/shared/whatsapp-link";
 
 export type ProductCardProps = {
   href: string;
@@ -62,14 +62,9 @@ export const ProductCard = memo(function ProductCard({
           variant="accent"
           className="relative z-10 size-[46px] shrink-0 rounded-[10px] md:size-[46px]"
         >
-          <a
-            href={whatsappUrl(whatsappMessage)}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Pesan ${name} ${variant} lewat WhatsApp`}
-          >
+          <WhatsAppLink message={whatsappMessage} aria-label={`Pesan ${name} ${variant} lewat WhatsApp`}>
             <WhatsAppIcon className="size-6" />
-          </a>
+          </WhatsAppLink>
         </Button>
       </div>
     </article>

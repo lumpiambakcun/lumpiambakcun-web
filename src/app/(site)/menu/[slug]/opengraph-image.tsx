@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
-import { brandColors, businessConfig, siteConfig } from "@/config/site";
+import { brandColors, siteConfig } from "@/config/site";
 import { ogAsset, ogContentType, ogFonts, ogSize } from "@/lib/og";
 import { getProduct, listProducts } from "@/lib/products";
+import { getContact } from "@/lib/site-settings";
 
 export const alt = siteConfig.name;
 export const size = ogSize;
@@ -20,7 +21,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   if (!product) return new Response(null, { status: 404 });
 
   const { card } = product;
-  const [emblem, photo, fonts] = await Promise.all([emblemAsset, photoAssets[product.category] ?? photoAssets.lumpia, ogFonts]);
+  const [emblem, photo, fonts, { phoneDisplay }] = await Promise.all([emblemAsset, photoAssets[product.category] ?? photoAssets.lumpia, ogFonts, getContact()]);
 
   return new ImageResponse(
     (
@@ -123,7 +124,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             fontWeight: 700,
           }}
         >
-          {`Pesan lewat WhatsApp ${businessConfig.phoneDisplay}`}
+          {`Pesan lewat WhatsApp ${phoneDisplay}`}
         </div>
       </div>
     ),

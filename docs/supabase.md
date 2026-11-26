@@ -47,6 +47,16 @@ Migrasi `20261126030000_articles.sql`: tabel `articles` (RLS aktif tanpa policy,
 - Upload/hapus foto dipakai bersama produk dan artikel lewat `src/lib/admin-storage.ts`.
 - **Seeder:** `bun run db:seed` memasukkan 4 artikel contoh (`scripts/seed/articles-data.ts`). Idempotent: artikel dengan slug yang sudah ada dilewati (tidak menimpa hasil edit); `bun run db:seed -- --force` menimpa. Naskah contoh hanya memakai fakta yang ada di situs, tetap perlu ditinjau pemilik. Cover contoh memakai foto lokal `/images/...`.
 
+## Tabel `site_settings` (Header dan Footer)
+
+Migrasi `20261126040000_site_settings.sql`: tabel `site_settings (key, data jsonb, updated_at)` dengan dua baris, `header` dan `footer` (RLS aktif tanpa policy, hanya `service_role`), diisi dari nilai awal di `src/config/site-defaults.ts`; plus bucket publik `branding` (JPG/PNG/WebP, maks 2 MB) untuk logo.
+
+- Bentuk dan validasi data ada di `src/lib/site-settings-schema.ts` (zod). Pembacaan publik di `src/lib/site-settings.ts` (`getHeader`, `getFooter`, `getContact`; `'use cache'`, tag `site-settings`). Bila baris kosong atau tidak lolos skema, situs memakai `site-defaults.ts` (tabel yang belum ada tetap memunculkan galat, jadi terapkan migrasi sebelum deploy).
+- **Kontak adalah satu sumber**: nomor, alamat, jam, peta, koordinat, sosmed, dan nomor halal di `footer.contact`/`footer.social`/`footer.halal`. `businessConfig` di `src/config/site.ts` hanya menyisakan rating dan logo halal.
+- Tautan (menu, tombol, kolom footer) bertipe `internal` (path), `external` (https), atau `whatsapp` (teks pesan). Tautan WhatsApp dibuat dari nomor saat ini (`whatsappUrl(phoneIntl, pesan)` di `src/lib/whatsapp.ts`), jadi mengganti nomor tidak membuat tautan lama basi. Komponen client mengambil nomor dari `SiteContactProvider` (dipasang di `SiteShell`) lewat `useWhatsappUrl` atau `WhatsAppLink`/`WhatsAppButton`.
+- Logo diunggah dari form dan tersimpan di bucket `branding`; nilai `logoUrl` dari klien diabaikan saat simpan (server memakai nilai di DB atau hasil unggah) supaya host gambar tetap dalam `images.remotePatterns`.
+- Nama brand di header/footer (`brand.name`) tidak mengubah `siteConfig.name` (SEO, nota, OG image).
+
 ## Menerapkan migrasi
 
 Proyek sudah ter-link (`supabase/.temp`). Perintah:

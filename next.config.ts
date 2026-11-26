@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: supabaseHost
-      ? ["products", "articles"].map((bucket) => ({
+      ? ["products", "articles", "branding"].map((bucket) => ({
           protocol: "https" as const,
           hostname: supabaseHost,
           pathname: `/storage/v1/object/public/${bucket}/**`,

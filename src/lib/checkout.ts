@@ -1,8 +1,9 @@
 import { z } from "zod";
-import { bulkOrder, businessConfig, maxOnlinePacks } from "@/config/site";
+import { bulkOrder, maxOnlinePacks } from "@/config/site";
 import { paymentMethods, type PaymentMethod } from "@/content/checkout";
 import { getPurchasable } from "@/lib/products";
 import { wibDate } from "@/lib/format";
+import { getContact } from "@/lib/site-settings";
 
 export type CheckoutField = "nama" | "whatsapp" | "email" | "tanggal" | "jam" | "catatan" | "metode" | "produk";
 export type CheckoutErrors = Partial<Record<CheckoutField, string>>;
@@ -54,13 +55,15 @@ export const quantitySchema = (pcs: number) =>
     .min(1, "Jumlah tidak valid.")
     .max(maxOnlinePacks(pcs), `Pesanan ${bulkOrder.rule}`);
 
-const { opens, closes } = businessConfig.hours;
-const clock = z
-  .string("Pilih jam ambil.")
-  .regex(/^\d{2}:\d{2}$/, "Pilih jam ambil.")
-  .refine((time) => toMinutes(time) >= toMinutes(opens) && toMinutes(time) <= toMinutes(closes), `Jam ambil antara ${opens} dan ${closes}.`);
+type OpeningHours = { opens: string; closes: string };
 
-const checkoutSchema = (now: Date) =>
+const clockSchema = ({ opens, closes }: OpeningHours) =>
+  z
+    .string("Pilih jam ambil.")
+    .regex(/^\d{2}:\d{2}$/, "Pilih jam ambil.")
+    .refine((time) => toMinutes(time) >= toMinutes(opens) && toMinutes(time) <= toMinutes(closes), `Jam ambil antara ${opens} dan ${closes}.`);
+
+const checkoutSchema = (now: Date, hours: OpeningHours) =>
   z
     .object({
       produk: purchasableSchema,
@@ -71,7 +74,7 @@ const checkoutSchema = (now: Date) =>
       catatan: z.string().max(200, "Catatan maksimal 200 karakter.").optional(),
       metode: methodSchema,
       tanggal: z.string("Pilih tanggal ambil.").regex(/^\d{4}-\d{2}-\d{2}$/, "Pilih tanggal ambil."),
-      jam: clock,
+      jam: clockSchema(hours),
     })
     .transform((data, ctx) => {
       if (data.jumlah > maxOnlinePacks(data.produk.product.pack.pcs)) {
@@ -105,7 +108,8 @@ const checkoutSchema = (now: Date) =>
 
 export async function validateCheckout(formData: FormData, now: Date) {
   const input = Object.fromEntries([...formData].map(([key, value]) => [key, typeof value === "string" ? value.trim() : value]));
-  const parsed = await checkoutSchema(now).safeParseAsync(input);
+  const { hours } = await getContact();
+  const parsed = await checkoutSchema(now, hours).safeParseAsync(input);
   if (parsed.success) return { ok: true as const, value: parsed.data };
 
   const errors: CheckoutErrors = {};

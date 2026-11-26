@@ -4,17 +4,22 @@ import { InstagramIcon } from "@/components/icons/brand-icons";
 import type { LocationInfoCardProps } from "@/components/sections/location-info-card";
 import type { ChannelCard } from "@/components/shared/channel-card";
 import { businessConfig, orderChannels } from "@/config/site";
-import { location } from "@/content/beranda";
+import { buildLocation } from "@/content/beranda";
+import type { Contact } from "@/lib/site-settings-schema";
 
-export const lokasiPage = {
+export const buildLokasiPage = (contact: Contact) => {
+  const location = buildLocation(contact);
+  return {
   card: {
     name: "Lumpia Mbak Cun",
     rating: `${String(businessConfig.rating.value).replace(".", ",")} dari ${businessConfig.rating.count} ulasan ${businessConfig.rating.source}`,
     rows: [
-      { icon: MapPin, label: "Alamat", value: businessConfig.address.postalLine, href: businessConfig.mapsUrl, external: true },
-      { icon: Clock, label: "Jam buka", value: `Setiap hari, ${businessConfig.hours.opens} sampai ${businessConfig.hours.closes}` },
-      { icon: Phone, label: "Telepon dan WhatsApp", value: businessConfig.phoneDisplay, href: location.contactHref, external: true },
-      { icon: InstagramIcon, label: "Instagram", value: "@lumpiambakcun", href: businessConfig.instagramUrl, external: true },
+      { icon: MapPin, label: "Alamat", value: contact.address.postalLine, href: contact.mapsUrl, external: true },
+      { icon: Clock, label: "Jam buka", value: `Setiap hari, ${contact.hours.opens} sampai ${contact.hours.closes}` },
+      { icon: Phone, label: "Telepon dan WhatsApp", value: contact.phoneDisplay, href: location.contactHref, external: true },
+      ...(contact.instagramUrl
+        ? [{ icon: InstagramIcon, label: "Instagram", value: `@${contact.instagramUrl.split("/").filter(Boolean).pop()}`, href: contact.instagramUrl, external: true }]
+        : []),
     ],
     whatsappLabel: location.whatsappLabel,
     whatsappMessage: location.whatsappMessage,
@@ -26,6 +31,7 @@ export const lokasiPage = {
     eyebrow: "Malas keluar rumah?",
     title: "Pesan lewat aplikasi",
   },
+  };
 };
 
 const logoWidth: Record<string, number> = { gofood: 52, grabfood: 68, shopeefood: 52 };

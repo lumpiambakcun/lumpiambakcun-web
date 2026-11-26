@@ -38,6 +38,8 @@ Tidak ada package tambahan; semua memakai fitur bawaan Next.
    Artikel (`/artikel/[slug]`) mengikuti pola ini: URL terbit ditambahkan di `src/app/sitemap.ts` dengan `lastModified` dari `updated_at` database, metadata di `generateMetadata`, JSON-LD `Article` (`articleJsonLd`) dan `BreadcrumbList`. `generateStaticParams` mengembalikan placeholder `_` bila belum ada artikel (array kosong membuat build gagal dengan `cacheComponents`); slug itu menjadi 404.
 5. Halaman yang tidak boleh diindeks (login, dashboard): jangan masukkan ke `sitePages`, dan set `robots: { index: false }` pada metadata-nya.
 
+JSON-LD `Restaurant` (alamat, telepon, jam, koordinat, `sameAs`) dan `Organization` kini dibuat dari data kontak/sosmed di tabel `site_settings` (lihat `docs/supabase.md`), bukan dari konstanta kode.
+
 ## Keputusan dan batasan
 
 - **Sitemap: `lastModified` hanya untuk URL dari database (artikel).** Dengan `cacheComponents: true`, `new Date()` saat prerender membuat build gagal (contoh di doc Next memakainya, tapi tidak berlaku di setup ini). Isi `lastModified` hanya dari data nyata, mis. `updatedAt` konten dari database.

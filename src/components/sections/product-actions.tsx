@@ -6,7 +6,7 @@ import { useCallback, useState } from "react";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { Button } from "@/components/ui/button";
 import { bulkOrder, isBulk } from "@/config/site";
-import { whatsappUrl } from "@/lib/whatsapp";
+import { WhatsAppLink } from "@/components/shared/whatsapp-link";
 
 const MIN_QUANTITY = 1;
 const MAX_QUANTITY = 99;
@@ -76,9 +76,7 @@ export function ProductActions({ productId, pcs, purchasable, itemLabel, askMess
           Pesan via WhatsApp
         </WhatsAppButton>
         <Button asChild variant="outline-ink" size="cta" className="h-11 w-full bg-white md:flex-1">
-          <a href={whatsappUrl(askMessage)} target="_blank" rel="noopener noreferrer">
-            Tanya dulu
-          </a>
+          <WhatsAppLink message={askMessage}>Tanya dulu</WhatsAppLink>
         </Button>
       </div>
     </div>

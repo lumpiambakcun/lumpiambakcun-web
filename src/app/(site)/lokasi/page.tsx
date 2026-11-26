@@ -4,17 +4,19 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { MapLink } from "@/components/shared/map-link";
 import { Section } from "@/components/shared/section";
 import { doodleLayout } from "@/content/doodles";
-import { lokasiPage, orderAppChannels } from "@/content/lokasi";
+import { buildLokasiPage, orderAppChannels } from "@/content/lokasi";
 import { pageMetadata } from "@/lib/seo";
+import { getContact, getFooter } from "@/lib/site-settings";
 import { localBusinessJsonLd } from "@/lib/structured-data";
 
 export const metadata = pageMetadata("/lokasi");
 
-export default function LokasiPage() {
-  const { card, map, apps } = lokasiPage;
+export default async function LokasiPage() {
+  const [contact, footer] = await Promise.all([getContact(), getFooter()]);
+  const { card, map, apps } = buildLokasiPage(contact);
   return (
     <>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(contact, footer.social)} />
       <Section doodles={doodleLayout.lokasiInfo} className="bg-white pt-6 pb-6 md:pt-9 md:pb-10 lg:pt-14 lg:pb-16">
         <div className="relative grid gap-3 md:gap-4 lg:grid-cols-[520px_minmax(0,1fr)] lg:gap-10">
           <LocationInfoCard {...card} />

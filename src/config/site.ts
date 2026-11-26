@@ -20,26 +20,7 @@ export const siteConfig = {
 
 export const businessConfig = {
   tagline: "Lumpia khas Semarang",
-  brandLine: "Lumpia Khas Semarang Sejak 1998",
-  phoneDisplay: "0857-1364-4140",
-  phoneIntl: "6285713644140",
-  address: {
-    street: "Jl. Meranti Barat I No. 322",
-    district: "Srondol Wetan, Banyumanik",
-    city: "Semarang",
-    shortLine: "Jl. Meranti Barat 1 No. 322, Banyumanik",
-    fullLine: "Jl. Meranti Barat I No. 322, Srondol Wetan, Banyumanik, Semarang",
-    postalLine: "Jl. Meranti Bar. I No.322, Srondol Wetan, Kec. Banyumanik, Kota Semarang, Jawa Tengah 50264",
-  },
-  geo: { latitude: -7.0712887, longitude: 110.4210899 },
-  hours: { opens: "09.00", closes: "20.30", label: "Buka setiap hari, 09.00 sampai 20.30" },
-  mapsUrl: "https://maps.app.goo.gl/jigyJhSDkJSNxhyL6",
-  instagramUrl: "https://www.instagram.com/lumpiambakcun",
-  tiktokUrl: "https://www.tiktok.com/@lumpiambakcun",
-  halalNumber: "ID3511000210992322",
-  halalCertificate: "Halal BPJPH No. ID3511000210992322",
   halalLogo: { src: "/images/brand/halal.webp", width: 89, height: 160, alt: "Logo Halal Indonesia (BPJPH)" },
-  copyrightYear: 2026,
   rating: { value: 4.9, count: 49, source: "Google" },
 } as const;
 
@@ -64,13 +45,6 @@ export const orderChannels: ReadonlyArray<{
   { id: "grabfood", label: "GrabFood", href: "https://grab.onelink.me/2695613898", chipClass: "bg-white", icon: { src: "/images/icons/grabfood.webp", width: 18, height: 14 } },
   { id: "shopeefood", label: "ShopeeFood", href: "https://shopee.co.id/universal-link/now-food/shop/21830343", chipClass: "bg-white", icon: { src: "/images/icons/shopeefood.webp", width: 16, height: 16 } },
 ];
-
-export const navLinks = [
-  { label: "Beranda", href: "/" },
-  { label: "Paket Lumpia", href: "/#menu" },
-  { label: "Keunggulan", href: "/#keunggulan" },
-  { label: "Testimoni", href: "/#testimoni" },
-] as const;
 
 export const sitePages = [
   { path: "/", title: "Beranda", description: siteConfig.description },

@@ -2,12 +2,13 @@ import { BadgeCheck, Globe, MapPin, MessageCircle, Search, ShoppingCart, User, W
 import type { DeliveryOption } from "@/components/sections/delivery-options";
 import type { OrderMethod } from "@/components/sections/order-methods";
 import type { OrderStepsTab } from "@/components/sections/order-steps";
-import { bulkOrder, businessConfig } from "@/config/site";
-import { order } from "@/content/beranda";
+import { bulkOrder } from "@/config/site";
+import { buildOrder } from "@/content/beranda";
+import type { Contact } from "@/lib/site-settings-schema";
 
-const phone = businessConfig.phoneDisplay;
-
-export const caraPesanPage = {
+export const buildCaraPesanPage = (contact: Contact) => {
+  const phone = contact.phoneDisplay;
+  return {
   heading: "Cara pesan Lumpia Mbak Cun",
   methods: {
     eyebrow: "Tiga cara",
@@ -69,8 +70,8 @@ export const caraPesanPage = {
         icon: MapPin,
         title: "Ambil di tempat",
         text: [
-          "Jl. Meranti Bar. I No.322, Srondol Wetan, Banyumanik, Semarang.",
-          "Buka setiap hari 09.00 sampai 20.30. Chat dulu supaya pesananmu sudah siap.",
+          `${contact.address.postalLine}.`,
+          `Buka setiap hari ${contact.hours.opens} sampai ${contact.hours.closes}. Chat dulu supaya pesananmu sudah siap.`,
         ],
       },
       {
@@ -86,6 +87,7 @@ export const caraPesanPage = {
     eyebrow: "Bantuan",
     title: "Butuh bantuan memesan?",
     text: "Chat Mbak Cun, kami bantu pilih produk, jumlah, dan pengiriman.",
-    card: order.card,
+    card: buildOrder(contact).card,
   },
+  };
 };

@@ -1,7 +1,7 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export type ImageBucket = "products" | "articles";
+export type ImageBucket = "products" | "articles" | "branding";
 
 const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 const imageExtensions: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };

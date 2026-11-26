@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
-import { brandColors, businessConfig, siteConfig } from "@/config/site";
+import { brandColors, siteConfig } from "@/config/site";
 import { hero } from "@/content/beranda";
 import { ogAsset, ogContentType, ogFonts, ogSize } from "@/lib/og";
+import { getContact } from "@/lib/site-settings";
 
 export const alt = `${siteConfig.name}: ${hero.label}`;
 export const size = ogSize;
@@ -10,7 +11,7 @@ export const contentType = ogContentType;
 const assets = Promise.all([ogAsset("emblem.png"), ogAsset("plate.png"), ogFonts]);
 
 export default async function Image() {
-  const [emblem, plate, fonts] = await assets;
+  const [[emblem, plate, fonts], { phoneDisplay }] = await Promise.all([assets, getContact()]);
 
   return new ImageResponse(
     (
@@ -76,7 +77,7 @@ export default async function Image() {
             fontWeight: 700,
           }}
         >
-          {`${hero.whatsappLabel} ${businessConfig.phoneDisplay}`}
+          {`${hero.whatsappLabel} ${phoneDisplay}`}
         </div>
       </div>
     ),

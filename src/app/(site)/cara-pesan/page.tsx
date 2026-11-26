@@ -2,13 +2,15 @@ import { DeliveryOptions } from "@/components/sections/delivery-options";
 import { OrderMethods } from "@/components/sections/order-methods";
 import { OrderSection } from "@/components/sections/order-section";
 import { OrderSteps } from "@/components/sections/order-steps";
-import { caraPesanPage } from "@/content/cara-pesan";
+import { buildCaraPesanPage } from "@/content/cara-pesan";
 import { doodleLayout } from "@/content/doodles";
 import { pageMetadata } from "@/lib/seo";
+import { getContact } from "@/lib/site-settings";
 
 export const metadata = pageMetadata("/cara-pesan");
 
-export default function CaraPesanPage() {
+export default async function CaraPesanPage() {
+  const caraPesanPage = buildCaraPesanPage(await getContact());
   const { methods, steps, delivery, help } = caraPesanPage;
   return (
     <>

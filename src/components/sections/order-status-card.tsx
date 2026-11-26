@@ -1,4 +1,3 @@
-import { businessConfig } from "@/config/site";
 import { orderStages, orderStatusInfo } from "@/content/checkout";
 import { formatRupiah } from "@/lib/currency";
 import { formatPickupTime, maskPhone } from "@/lib/format";
@@ -11,13 +10,14 @@ type OrderStatusCardProps = {
     "code" | "status" | "product_name" | "variant" | "unit" | "unit_price" | "quantity" | "total" | "customer_name" | "customer_phone" | "pickup_at"
   >;
   actions: React.ReactNode;
+  pickup: { mapsUrl: string; address: string };
 };
 
 const dashed = "border-dashed border-ink/25";
 const figure = "font-mono tabular-nums";
 const tornEdge = "[mask:conic-gradient(from_-45deg_at_bottom,transparent,black_1deg_89deg,transparent_90deg)_50%/20px_100%]";
 
-export function OrderStatusCard({ order, actions }: OrderStatusCardProps) {
+export function OrderStatusCard({ order, actions, pickup }: OrderStatusCardProps) {
   const info = orderStatusInfo[order.status];
   const stage = orderStages[order.status];
 
@@ -41,12 +41,12 @@ export function OrderStatusCard({ order, actions }: OrderStatusCardProps) {
               <p className="text-[15px] leading-[1.45] md:leading-[1.35] text-ink">
                 Ambil {formatPickupTime(order.pickup_at)} di{" "}
                 <a
-                  href={businessConfig.mapsUrl}
+                  href={pickup.mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-semibold underline decoration-ink/40 underline-offset-2 hover:text-brand"
                 >
-                  {businessConfig.address.fullLine}
+                  {pickup.address}
                 </a>
                 .
               </p>

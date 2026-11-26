@@ -5,6 +5,8 @@ import type { PriceCardProps } from "@/components/sections/price-card";
 import type { Testimonial } from "@/components/sections/testimonial-card";
 import type { WhatsAppCardProps } from "@/components/sections/whatsapp-card";
 import { bulkOrder, businessConfig } from "@/config/site";
+import type { Contact } from "@/lib/site-settings-schema";
+import { whatsappUrl } from "@/lib/whatsapp";
 
 export const hero: HeroProps = {
   label: "Khas Semarang",
@@ -47,7 +49,7 @@ export const catalog = {
   ] satisfies PriceCardProps[],
 };
 
-export const features = {
+export const buildFeatures = ({ halalNumber }: Pick<Contact, "halalNumber">) => ({
   title: "Kenapa pilih Lumpia Mbak Cun?",
   items: [
     {
@@ -67,18 +69,18 @@ export const features = {
     },
     {
       title: "Bersertifikat Halal",
-      description: `Terjamin halal oleh BPJPH dengan No. ${businessConfig.halalNumber}.`,
+      description: `Terjamin halal oleh BPJPH dengan No. ${halalNumber}.`,
       icon: ShieldCheck,
     },
   ] satisfies Omit<FeatureCardProps, "className">[],
-};
+});
 
 export const menu = {
   title: "Pilih paket lumpia favoritmu",
   text: "Atur jumlahnya, lalu kirim lewat WhatsApp. Isi pesananmu sudah tertulis otomatis, tinggal kirim.",
 };
 
-export const order = {
+export const buildOrder = ({ phoneDisplay }: Pick<Contact, "phoneDisplay">) => ({
   eyebrow: "Cara pesan",
   title: "Pilih cara yang paling enak buatmu",
   steps: [
@@ -97,18 +99,21 @@ export const order = {
     ],
     eventLabel: "Pesan untuk acara",
     eventText: `Arisan, pengajian, rapat kantor, hajatan? Min. ${bulkOrder.minPcs} pcs · Pesan H-1 · DP di awal`,
-    ctaLabel: `Chat ${businessConfig.phoneDisplay}`,
+    ctaLabel: `Chat ${phoneDisplay}`,
     ctaMessage: "Halo Mbak Cun, saya mau pesan lumpia.",
   } satisfies WhatsAppCardProps,
-};
+});
 
-export const orderBanner = {
+export const buildOrderBanner = (contact: Pick<Contact, "phoneDisplay">) => {
+  const { card } = buildOrder(contact);
+  return {
   title: "Ada rapat, arisan, atau acara?",
   highlight: "Pesan lumpia dalam jumlah banyak!",
   text: "Kami siap melayani pesanan untuk berbagai acara, dengan harga spesial.",
   tags: ["Rapat Kantor", "Arisan", "Ulang Tahun", "Acara Keluarga"],
-  ctaLabel: order.card.ctaLabel,
-  ctaMessage: order.card.ctaMessage,
+  ctaLabel: card.ctaLabel,
+  ctaMessage: card.ctaMessage,
+  };
 };
 
 export const testimonials = {
@@ -155,17 +160,17 @@ export const faq = {
   title: "Pertanyaan yang sering ditanyakan",
 };
 
-export const location = {
+export const buildLocation = (contact: Contact) => ({
   eyebrow: "Mampir langsung",
   title: "Mau camilan kriuk hari ini, atau oleh-oleh untuk dibawa pulang?",
   body: "Chat Mbak Cun sekarang, pesananmu langsung disiapkan. Atau mampir, kami searah jalur ke Ungaran, Solo & Jogja.",
-  address: businessConfig.address.fullLine,
-  hours: businessConfig.hours.label,
+  address: contact.fullLine,
+  hours: contact.hoursLabel,
   whatsappLabel: "via WhatsApp",
   whatsappMessage: "Halo Mbak Cun, saya mau pesan lumpia.",
   mapsLabel: "Buka di Google Maps",
-  mapsUrl: businessConfig.mapsUrl,
-  contactLine: `WhatsApp ${businessConfig.phoneDisplay}`,
-  contactHref: `https://wa.me/${businessConfig.phoneIntl}`,
+  mapsUrl: contact.mapsUrl,
+  contactLine: `WhatsApp ${contact.phoneDisplay}`,
+  contactHref: whatsappUrl(contact.phoneIntl),
   mapImage: { src: "/images/peta/peta-google.webp", alt: "Peta lokasi Lumpia Mbak Cun di Banyumanik, Semarang" },
-};
+});
