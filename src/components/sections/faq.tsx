@@ -27,7 +27,7 @@ export function Faq({ eyebrow, title, items }: FaqProps) {
   const tallestIndex = items.reduce((best, item, index) => (item.answer.length > items[best].answer.length ? index : best), 0);
 
   return (
-    <Section doodles={doodleLayout.faq} id="faq" aria-labelledby="faq-judul" className="bg-cream py-24 lg:pt-28 lg:pb-28">
+    <Section doodles={doodleLayout.faq} id="faq" aria-labelledby="faq-judul" className="bg-highlight py-24 lg:pt-28 lg:pb-28">
 
       <SectionHeading id="faq-judul" eyebrow={eyebrow} title={title} />
       <div {...revealItem}>

@@ -36,7 +36,7 @@ export function Hero({
     <Section
       doodles={doodleLayout.hero}
       aria-label="Pengantar"
-      className="bg-cream py-14 lg:h-[calc(100svh-7.3rem)] lg:min-h-[480px] lg:py-0"
+      className="bg-highlight py-14 lg:h-[calc(100svh-7.3rem)] lg:min-h-[480px] lg:py-0"
       containerClassName="grid items-center gap-8 lg:h-full lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-10"
     >
       <div className="relative z-10 flex flex-col items-start gap-5 lg:gap-6">
@@ -47,7 +47,7 @@ export function Hero({
           <span className="block">{titleTop}</span>
           <span className="block">
             {accentLead}{" "}
-            <span className="text-brand underline decoration-highlight decoration-wavy decoration-[3px] underline-offset-[10px] lg:decoration-4">
+            <span className="text-brand underline decoration-brand decoration-wavy decoration-[3px] underline-offset-[10px] lg:decoration-4">
               {accentLast}
             </span>
           </span>

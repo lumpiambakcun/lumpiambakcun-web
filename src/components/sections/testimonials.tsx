@@ -13,7 +13,7 @@ type TestimonialsProps = {
 
 export function Testimonials({ title, rating, reviews }: TestimonialsProps) {
   return (
-    <Section doodles={doodleLayout.testimonials} id="testimoni" aria-labelledby="testimoni-judul" className="bg-cream pt-4 pb-24 lg:pt-4 lg:pb-28">
+    <Section doodles={doodleLayout.testimonials} id="testimoni" aria-labelledby="testimoni-judul" className="bg-highlight pt-4 pb-24 lg:pt-4 lg:pb-28">
       <div className="relative flex flex-col items-center gap-0.5 text-center">
         <SectionHeading id="testimoni-judul" title={title} size="md" />
         <p {...revealItem} className="text-sm leading-[1.3] font-semibold text-ink">

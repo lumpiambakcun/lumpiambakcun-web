@@ -12,7 +12,7 @@ type MenuSectionProps = {
 
 export function MenuSection({ title, text, products }: MenuSectionProps) {
   return (
-    <Section doodles={doodleLayout.menu} id="menu" aria-labelledby="menu-judul" className="bg-cream pt-28 pb-24 lg:pt-36 lg:pb-28">
+    <Section doodles={doodleLayout.menu} id="menu" aria-labelledby="menu-judul" className="bg-highlight pt-28 pb-24 lg:pt-36 lg:pb-28">
       <SectionHeading id="menu-judul" title={title} size="md" />
       <p className="relative mx-auto mt-3 max-w-[560px] text-center text-base leading-[1.45] text-ink-muted">{text}</p>
       <QuickOrder products={products} />
