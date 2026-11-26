@@ -11,8 +11,8 @@ export type TableColumn = {
   skeleton: React.ReactNode;
 };
 
-export const cellClass = "px-3 py-2.5";
-export const actionCellClass = "px-2 py-2";
+export const cellClass = "px-4 py-3";
+export const actionCellClass = "px-3 py-2";
 
 export function SkeletonLines({ widths }: { widths: readonly string[] }) {
   return (

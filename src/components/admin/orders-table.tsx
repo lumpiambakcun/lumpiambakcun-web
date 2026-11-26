@@ -82,7 +82,7 @@ export function OrdersTable({ orders, filtered, footer }: OrdersTableProps) {
           </TableHeader>
           <TableBody>
             {orders.map((order) => (
-              <TableRow key={order.id} className="align-top hover:bg-canvas">
+              <TableRow key={order.id} className="align-top hover:bg-muted/50">
                 <TableCell className={kode.cellClassName}>
                   <Link href={`/pesanan/${order.code}`} target="_blank" className="font-mono text-xs font-medium tabular-nums hover:underline">
                     {order.code}
@@ -106,7 +106,7 @@ export function OrdersTable({ orders, filtered, footer }: OrdersTableProps) {
                   {order.notes && <div className="mt-1 max-w-48 text-xs text-ink-muted italic">{order.notes}</div>}
                 </TableCell>
                 <TableCell className={`${ambil.cellClassName} whitespace-normal`}>{formatPickupTime(order.pickup_at)}</TableCell>
-                <TableCell className={`${total.cellClassName} font-mono tabular-nums`}>{formatRupiah(order.total)}</TableCell>
+                <TableCell className={`${total.cellClassName} tabular-nums`}>{formatRupiah(order.total)}</TableCell>
                 <TableCell className={status.cellClassName}>
                   <OrderStatusBadge status={order.status} />
                   <div className="mt-1 text-xs text-ink-muted">{paymentLabel(order.payment_method)}</div>

@@ -1,173 +1,162 @@
 "use client";
 
-import { useState } from "react";
 import { saveHeaderAction } from "@/app/admin/(panel)/header/actions";
-import { LinkFields } from "@/components/admin/link-fields";
-import { PhotoField } from "@/components/admin/photo-field";
-import { RepeatableList } from "@/components/admin/repeatable-list";
-import { SettingsCard, SettingsForm } from "@/components/admin/settings-form";
-import { FormField, fieldControlClass, fieldTextareaClass } from "@/components/shared/form-field";
-import { SelectField } from "@/components/shared/select-field";
+import { ChoiceChips } from "@/components/admin/choice-chips";
+import { EditableList } from "@/components/admin/editable-list";
+import { IconPicker, topBarIconMap } from "@/components/admin/icon-picker";
+import { LinkFields, LinkPill } from "@/components/admin/link-fields";
+import { PhotoDropzone } from "@/components/admin/photo-dropzone";
+import { errorIndexes, SettingsForm, TextSetting, type SettingsBlock } from "@/components/admin/settings-form";
+import { FormField, fieldControlClass } from "@/components/shared/form-field";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 import type { HeaderSettings } from "@/lib/site-settings-schema";
 
 type TopBarItem = HeaderSettings["topBar"][number];
+type NavItem = HeaderSettings["nav"][number];
 type ExtraCta = HeaderSettings["extraCtas"][number];
 
-const iconOptions = [
-  { value: "truck", label: "Truk (pengiriman)" },
-  { value: "check", label: "Centang (jaminan)" },
-  { value: "info", label: "Info" },
-];
-
 const styleOptions = [
-  { value: "primary", label: "Merah (utama)" },
-  { value: "outline", label: "Garis (sekunder)" },
+  { value: "primary", label: "Isi" },
+  { value: "outline", label: "Garis" },
 ];
 
-const checkboxClass = "size-4 rounded border-border accent-brand";
+const blocks: readonly SettingsBlock<HeaderSettings>[] = [
+  {
+    id: "merek",
+    title: "Merek",
+    description: "Logo, nama, dan tagline di header. Nama untuk SEO dan nota tidak ikut berubah.",
+    render: ({ values, baseline, update, errors, markFile }) => (
+      <div className="flex items-start gap-5">
+        <PhotoDropzone id="logo" name="logo" label="Logo" initialSrc={baseline.brand.logoUrl} error={errors.logo} onFileChange={markFile} boxClassName="size-14 rounded-full" sizes="56px" className="shrink-0" hideLabel compact />
+        <div className="flex min-w-0 flex-1 flex-col gap-4">
+          <TextSetting id="brand-name" label="Nama brand" maxLength={40} value={values.brand.name} onChange={(name) => update((current) => ({ ...current, brand: { ...current.brand, name } }))} error={errors["brand.name"]} />
+          <TextSetting id="brand-tagline" label="Tagline" maxLength={60} value={values.brand.tagline} onChange={(tagline) => update((current) => ({ ...current, brand: { ...current.brand, tagline } }))} error={errors["brand.tagline"]} />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "bar-atas",
+    title: "Bar atas",
+    description: "Pesan berjalan di bar merah paling atas. Pesan yang dimatikan tidak tampil.",
+    render: ({ baseline, update, errors }) => (
+      <EditableList<TopBarItem>
+        defaultItems={baseline.topBar}
+        onChange={(topBar) => update((current) => ({ ...current, topBar }))}
+        createItem={() => ({ icon: "info", text: "", active: true })}
+        itemLabel={(item, index) => item.text || `Pesan ${index + 1}`}
+        addLabel="Tambah pesan"
+        max={6}
+        error={errors.topBar}
+        errorIndexes={errorIndexes(errors, "topBar")}
+        emptyText="Belum ada pesan. Bar atas disembunyikan."
+        rowSwitch={{ label: "Tampilkan", checked: (item) => item.active, patch: (active) => ({ active }) }}
+        renderSummary={(item) => {
+          const { Icon } = topBarIconMap[item.icon];
+          return (
+            <>
+              <Icon className="size-4 shrink-0 text-ink-muted" aria-hidden="true" />
+              <span className={cn("truncate text-sm", item.active ? "text-ink" : "text-ink-muted line-through")}>{item.text || "Pesan kosong"}</span>
+            </>
+          );
+        }}
+        renderEditor={(item, patch, index) => (
+          <FormField id={`topBar-${index}-text`} label="Teks pesan" error={errors[`topBar.${index}.text`]} tone="admin">
+            <div className="flex gap-2">
+              <IconPicker value={item.icon} onChange={(icon) => patch({ icon })} />
+              <Input
+                id={`topBar-${index}-text`}
+                value={item.text}
+                maxLength={140}
+                autoComplete="off"
+                autoFocus={item.text === ""}
+                onChange={(event) => patch({ text: event.target.value })}
+                className={fieldControlClass}
+                aria-invalid={errors[`topBar.${index}.text`] ? true : undefined}
+                aria-describedby={errors[`topBar.${index}.text`] ? `topBar-${index}-text-error` : undefined}
+              />
+            </div>
+          </FormField>
+        )}
+      />
+    ),
+  },
+  {
+    id: "menu",
+    title: "Menu",
+    description: "Tautan di header desktop dan menu layar kecil. Seret untuk mengubah urutan.",
+    render: ({ baseline, update, errors }) => (
+      <EditableList<NavItem>
+        defaultItems={baseline.nav}
+        onChange={(nav) => update((current) => ({ ...current, nav }))}
+        createItem={() => ({ label: "", kind: "internal", value: "/" })}
+        itemLabel={(item, index) => item.label || `Menu ${index + 1}`}
+        addLabel="Tambah menu"
+        max={8}
+        error={errors.nav}
+        errorIndexes={errorIndexes(errors, "nav")}
+        emptyText="Belum ada menu."
+        renderSummary={(item) => (
+          <>
+            <span className="min-w-0 flex-1 truncate text-sm text-ink">{item.label || "Tanpa nama"}</span>
+            <LinkPill link={item} />
+          </>
+        )}
+        renderEditor={(item, patch, index) => <LinkFields path={`nav.${index}`} value={item} onChange={patch} errors={errors} />}
+      />
+    ),
+  },
+  {
+    id: "whatsapp",
+    title: "Tombol WhatsApp",
+    description: "Tombol utama di header. Nomor tujuan diatur di halaman Footer.",
+    render: ({ values, update, errors }) => (
+      <>
+        <TextSetting id="cta-label" label="Teks tombol" maxLength={30} value={values.cta.label} onChange={(label) => update((current) => ({ ...current, cta: { ...current.cta, label } }))} error={errors["cta.label"]} />
+        <TextSetting id="cta-message" label="Pesan awal WhatsApp" rows={2} maxLength={200} value={values.cta.message} onChange={(message) => update((current) => ({ ...current, cta: { ...current.cta, message } }))} error={errors["cta.message"]} />
+      </>
+    ),
+  },
+  {
+    id: "tombol-tambahan",
+    title: "Tombol tambahan",
+    description: "Selalu tampil di menu layar kecil; di header desktop hanya bila saklar menyala.",
+    render: ({ baseline, update, errors }) => (
+      <EditableList<ExtraCta>
+        defaultItems={baseline.extraCtas}
+        onChange={(extraCtas) => update((current) => ({ ...current, extraCtas }))}
+        createItem={() => ({ link: { label: "", kind: "internal", value: "/" }, style: "outline", showInHeader: false })}
+        itemLabel={(item, index) => item.link.label || `Tombol ${index + 1}`}
+        addLabel="Tambah tombol"
+        max={3}
+        error={errors.extraCtas}
+        errorIndexes={errorIndexes(errors, "extraCtas")}
+        emptyText="Belum ada tombol tambahan."
+        renderSummary={(item) => (
+          <>
+            <span className="min-w-0 flex-1 truncate text-sm text-ink">{item.link.label || "Tanpa nama"}</span>
+            <LinkPill link={item.link} />
+          </>
+        )}
+        renderEditor={(item, patch, index) => (
+          <div className="flex flex-col gap-4">
+            <LinkFields path={`extraCtas.${index}.link`} value={item.link} onChange={(link) => patch({ link: { ...item.link, ...link } })} errors={errors} />
+            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+              <ChoiceChips label="Gaya tombol" value={item.style} onChange={(style) => patch({ style: style as ExtraCta["style"] })} options={styleOptions} className="w-auto" />
+              <label className="flex items-center gap-2 text-sm text-ink">
+                <Switch checked={item.showInHeader} onCheckedChange={(showInHeader) => patch({ showInHeader })} />
+                Tampil juga di desktop
+              </label>
+            </div>
+          </div>
+        )}
+      />
+    ),
+  },
+];
 
 export function SiteHeaderForm({ initial }: { initial: HeaderSettings }) {
-  const [settings, setSettings] = useState(initial);
-  const patch = (next: Partial<HeaderSettings>) => setSettings((current) => ({ ...current, ...next }));
-  const invalid = (errors: Record<string, string>, path: string) => (errors[path] ? { "aria-invalid": true as const, "aria-describedby": `${path.replaceAll(".", "-")}-error` } : {});
-
-  return (
-    <SettingsForm action={saveHeaderAction} payload={settings}>
-      {(errors) => (
-        <>
-          <SettingsCard title="Merek" description="Logo, nama, dan tagline di header. Nama untuk SEO dan nota tidak ikut berubah.">
-            <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2">
-              <PhotoField id="logo" name="logo" label="Logo" initialSrc={initial.brand.logoUrl} error={errors.logo} hint="JPG, PNG, atau WebP, maksimal 2 MB. Kosongkan untuk tetap memakai logo sekarang." />
-              <FormField id="brand-name" label="Nama brand" error={errors["brand.name"]} tone="admin">
-                <Input
-                  id="brand-name"
-                  value={settings.brand.name}
-                  maxLength={40}
-                  autoComplete="off"
-                  onChange={(event) => patch({ brand: { ...settings.brand, name: event.target.value } })}
-                  className={fieldControlClass}
-                  {...invalid(errors, "brand.name")}
-                />
-              </FormField>
-              <FormField id="brand-tagline" label="Tagline" error={errors["brand.tagline"]} tone="admin">
-                <Input
-                  id="brand-tagline"
-                  value={settings.brand.tagline}
-                  maxLength={60}
-                  autoComplete="off"
-                  onChange={(event) => patch({ brand: { ...settings.brand, tagline: event.target.value } })}
-                  className={fieldControlClass}
-                  {...invalid(errors, "brand.tagline")}
-                />
-              </FormField>
-            </div>
-          </SettingsCard>
-
-          <SettingsCard title="Bar atas" description="Pesan berjalan di bar merah paling atas. Pesan yang dinonaktifkan tidak tampil.">
-            <RepeatableList<TopBarItem>
-              defaultItems={initial.topBar}
-              onChange={(topBar) => patch({ topBar })}
-              createItem={() => ({ icon: "info", text: "", active: true })}
-              itemLabel={(index) => `Pesan ${index + 1}`}
-              addLabel="Tambah pesan"
-              max={6}
-              error={errors.topBar}
-              emptyText="Belum ada pesan. Bar atas disembunyikan."
-              renderItem={(item, update, index) => (
-                <div className="grid gap-x-3 gap-y-3 sm:grid-cols-2">
-                  <FormField id={`topBar-${index}-icon`} label="Ikon" error={errors[`topBar.${index}.icon`]} tone="admin">
-                    <SelectField id={`topBar-${index}-icon`} name={`topBar-${index}-icon`} options={iconOptions} value={item.icon} onValueChange={(icon) => update({ icon: icon as TopBarItem["icon"] })} />
-                  </FormField>
-                  <label className="flex items-center gap-2 self-end pb-3 text-sm text-ink">
-                    <input type="checkbox" className={checkboxClass} checked={item.active} onChange={(event) => update({ active: event.target.checked })} />
-                    Tampilkan pesan ini
-                  </label>
-                  <FormField id={`topBar-${index}-text`} label="Teks pesan" error={errors[`topBar.${index}.text`]} tone="admin" className="sm:col-span-2">
-                    <Input
-                      id={`topBar-${index}-text`}
-                      value={item.text}
-                      maxLength={140}
-                      autoComplete="off"
-                      onChange={(event) => update({ text: event.target.value })}
-                      className={fieldControlClass}
-                      {...invalid(errors, `topBar.${index}.text`)}
-                    />
-                  </FormField>
-                </div>
-              )}
-            />
-          </SettingsCard>
-
-          <SettingsCard title="Menu navigasi" description="Tautan di header (desktop) dan menu layar kecil.">
-            <RepeatableList<HeaderSettings["nav"][number]>
-              defaultItems={initial.nav}
-              onChange={(nav) => patch({ nav })}
-              createItem={() => ({ label: "", kind: "internal", value: "/" })}
-              itemLabel={(index) => `Menu ${index + 1}`}
-              addLabel="Tambah menu"
-              max={8}
-              error={errors.nav}
-              emptyText="Belum ada menu."
-              renderItem={(item, update, index) => <LinkFields path={`nav.${index}`} value={item} onChange={update} errors={errors} />}
-            />
-          </SettingsCard>
-
-          <SettingsCard title="Tombol WhatsApp" description="Tombol utama di header dan menu layar kecil. Tautan dibuat dari nomor WhatsApp di halaman Footer.">
-            <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2">
-              <FormField id="cta-label" label="Teks tombol" error={errors["cta.label"]} tone="admin">
-                <Input
-                  id="cta-label"
-                  value={settings.cta.label}
-                  maxLength={30}
-                  autoComplete="off"
-                  onChange={(event) => patch({ cta: { ...settings.cta, label: event.target.value } })}
-                  className={fieldControlClass}
-                  {...invalid(errors, "cta.label")}
-                />
-              </FormField>
-              <FormField id="cta-message" label="Pesan awal WhatsApp" error={errors["cta.message"]} tone="admin" className="sm:col-span-2">
-                <textarea
-                  id="cta-message"
-                  value={settings.cta.message}
-                  rows={2}
-                  maxLength={200}
-                  onChange={(event) => patch({ cta: { ...settings.cta, message: event.target.value } })}
-                  className={fieldTextareaClass}
-                  {...invalid(errors, "cta.message")}
-                />
-              </FormField>
-            </div>
-          </SettingsCard>
-
-          <SettingsCard title="Tombol tambahan" description="Tombol selain WhatsApp. Selalu tampil di menu layar kecil; di header desktop hanya bila dicentang.">
-            <RepeatableList<ExtraCta>
-              defaultItems={initial.extraCtas}
-              onChange={(extraCtas) => patch({ extraCtas })}
-              createItem={() => ({ link: { label: "", kind: "internal", value: "/" }, style: "outline", showInHeader: false })}
-              itemLabel={(index) => `Tombol ${index + 1}`}
-              addLabel="Tambah tombol"
-              max={3}
-              error={errors.extraCtas}
-              emptyText="Belum ada tombol tambahan."
-              renderItem={(item, update, index) => (
-                <div className="flex flex-col gap-3">
-                  <LinkFields path={`extraCtas.${index}.link`} value={item.link} onChange={(link) => update({ link: { ...item.link, ...link } })} errors={errors} />
-                  <div className="grid gap-x-3 gap-y-3 sm:grid-cols-2">
-                    <FormField id={`extraCtas-${index}-style`} label="Gaya tombol" error={errors[`extraCtas.${index}.style`]} tone="admin">
-                      <SelectField id={`extraCtas-${index}-style`} name={`extraCtas-${index}-style`} options={styleOptions} value={item.style} onValueChange={(style) => update({ style: style as ExtraCta["style"] })} />
-                    </FormField>
-                    <label className="flex items-center gap-2 self-end pb-3 text-sm text-ink">
-                      <input type="checkbox" className={checkboxClass} checked={item.showInHeader} onChange={(event) => update({ showInHeader: event.target.checked })} />
-                      Tampilkan juga di header desktop
-                    </label>
-                  </div>
-                </div>
-              )}
-            />
-          </SettingsCard>
-        </>
-      )}
-    </SettingsForm>
-  );
+  return <SettingsForm initial={initial} action={saveHeaderAction} blocks={blocks} />;
 }

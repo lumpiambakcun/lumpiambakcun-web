@@ -53,12 +53,16 @@
   --color-ink-muted: var(--ink-muted);
   --color-ink-soft: var(--ink-soft);
   --color-whatsapp: #25d366;
+  --color-serp-title: #1a0dab;
+  --color-serp-url: #006621;
+  --color-serp-desc: #4d5156;
   --color-canvas: var(--canvas);
   --color-status-paid: var(--status-paid);
   --color-status-pending: var(--status-pending);
   --color-status-void: var(--status-void);
   --color-status-failed: var(--status-failed);
   --shadow-card: 0 1px 2px 0 rgb(10 10 10 / 0.05), 0 1px 3px 0 rgb(10 10 10 / 0.04);
+  --shadow-panel: 0 1px 2px 0 rgb(10 10 10 / 0.05), 0 4px 14px -6px rgb(10 10 10 / 0.12);
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -77,6 +81,10 @@
 }
 
 :root {
+  --control-h: 45px;
+  --control-radius: var(--radius-lg);
+  --control-px: 1rem;
+  --control-py: 0.75rem;
   --brand: #a80000;
   --brand-hover: #6b0000;
   --brand-deep: #6b0000;
@@ -164,6 +172,42 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+body:has([data-admin-root]) {
+  --control-h: 2.5rem;
+  --control-radius: var(--radius-md);
+  --control-px: 0.75rem;
+  --control-py: 0.5rem;
+  --canvas: #fafafa;
+  --border: #e5e5e5;
+  --input: #d4d4d4;
+  --muted: #f5f5f5;
+  --accent: #f5f5f5;
+  --secondary: #f5f5f5;
+  --primary-foreground: #ffffff;
+  --highlight: #ffffff;
+  --highlight-hover: #f5f5f5;
+  --cream: #fafafa;
+  --cream-soft: #fafafa;
+  --cream-tint: #f5f5f5;
+  --cream-line: #e5e5e5;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: var(--brand);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgb(255 255 255 / 0.1);
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgb(255 255 255 / 0.12);
+  --sidebar-ring: #ffffff;
+}
+body:has([data-admin-root]) :where(a[href], button, summary, input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline-color: var(--brand);
+  box-shadow: 0 0 0 3px #ffffff;
+}
+body:has([data-admin-root]) [data-sidebar="sidebar"] :where(a[href], button, [role="button"]):focus-visible {
+  outline-color: #ffffff;
+  box-shadow: 0 0 0 3px #0a0a0a;
 }
 
 @layer base {
@@ -326,7 +370,29 @@
   }
 }
 
-.article-editor .ck-editor__editable {
-  min-height: 320px;
-  font-size: 1rem;
+.article-editor .ck-editor__top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
+.article-editor .ck.ck-toolbar {
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0.5rem 1rem;
+  background: var(--card);
+}
+.article-editor .ck.ck-editor__main > .ck-editor__editable {
+  min-height: 60vh;
+  padding: 1.25rem 1.5rem 1.5rem;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+.article-editor .ck.ck-editor__editable > .ck-placeholder::before {
+  color: color-mix(in oklab, var(--muted-foreground) 50%, transparent);
+}
+

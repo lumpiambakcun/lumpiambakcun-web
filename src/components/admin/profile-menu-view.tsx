@@ -40,11 +40,11 @@ export function ProfileMenuView({ name, email, avatarUrl }: ProfileMenuViewProps
       <DropdownMenu>
         <DropdownMenuTrigger
           ref={triggerRef}
-          className="flex items-center gap-2 rounded-lg p-1 pr-2 transition-colors outline-none hover:bg-canvas focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-canvas"
+          className="flex items-center gap-2 rounded-lg p-1 pr-2 transition-colors outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-muted"
         >
           <Avatar className="size-8">
             {avatarUrl && <AvatarImage src={avatarUrl} alt="" />}
-            <AvatarFallback className="bg-canvas text-xs font-semibold text-ink">{initialsOf(name) || "A"}</AvatarFallback>
+            <AvatarFallback className="bg-brand text-xs font-bold text-primary-foreground">{initialsOf(name) || "A"}</AvatarFallback>
           </Avatar>
           <span className="hidden max-w-40 truncate text-sm font-medium text-ink sm:block">{name}</span>
           <ChevronDown className="size-4 text-ink-muted" aria-hidden="true" />

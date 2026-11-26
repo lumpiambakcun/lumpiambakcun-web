@@ -73,7 +73,7 @@ export function ArticleTable({ articles }: { articles: readonly ArticleListItem[
           </TableHeader>
           <TableBody>
             {articles.map((article) => (
-              <TableRow key={article.id} className="hover:bg-canvas">
+              <TableRow key={article.id} className="hover:bg-muted/50">
                 <TableCell className={`${artikel.cellClassName} whitespace-normal`}>
                   <div className="flex items-center gap-3">
                     {article.cover_url ? (

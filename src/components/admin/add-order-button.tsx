@@ -9,9 +9,7 @@ const methods = manualPaymentMethods.map(({ id, label }) => ({ value: id, label 
 export async function AddOrderButton() {
   const [productList, { hours }] = await Promise.all([listProducts(), getContact()]);
   const products = productList.flatMap(({ id, card, pack }) =>
-    card.price
-      ? [{ value: id, label: `${card.name} ${card.variant} · ${card.price} / ${pack.unit} (isi ${pack.pcs})`, price: parseRupiah(card.price), unit: pack.unit }]
-      : [],
+    card.price ? [{ value: id, name: `${card.name} ${card.variant}`, price: parseRupiah(card.price), unit: pack.unit, pcs: pack.pcs, image: card.image.src }] : [],
   );
   return <AddOrderDialog products={products} methods={methods} hours={hours} />;
 }

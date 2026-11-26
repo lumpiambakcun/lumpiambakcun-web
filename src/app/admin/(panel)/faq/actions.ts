@@ -2,7 +2,7 @@
 
 import { revalidatePath, updateTag } from "next/cache";
 import { requireAdmin } from "@/lib/admin-auth";
-import { deleteFaq, moveFaq, saveFaq } from "@/lib/admin-faqs";
+import { deleteFaq, reorderFaqs, saveFaq } from "@/lib/admin-faqs";
 import type { CmsState } from "@/lib/cms";
 import { FAQS_TAG } from "@/lib/faqs";
 
@@ -24,8 +24,9 @@ export async function deleteFaqAction(id: string) {
   refresh();
 }
 
-export async function moveFaqAction(id: string, direction: "up" | "down") {
+export async function reorderFaqAction(ids: string[]) {
   await requireAdmin();
-  await moveFaq(id, direction);
+  if (!Array.isArray(ids) || ids.some((id) => typeof id !== "string")) return;
+  await reorderFaqs(ids);
   refresh();
 }

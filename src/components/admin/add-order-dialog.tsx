@@ -3,7 +3,8 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ManualOrderForm, type ProductOption } from "@/components/admin/manual-order-form";
+import { ManualOrderForm } from "@/components/admin/manual-order-form";
+import type { ProductOption } from "@/components/admin/product-picker";
 import { ResponsiveDialog } from "@/components/shared/responsive-dialog";
 import type { SelectOption } from "@/components/shared/select-field";
 import { Button } from "@/components/ui/button";

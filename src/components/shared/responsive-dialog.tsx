@@ -21,9 +21,9 @@ export function ResponsiveDialog({ open, onOpenChange, title, trigger, className
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
         {trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
-        <SheetContent side="bottom" aria-describedby={undefined} className="flex max-h-[92dvh] flex-col gap-3 overflow-hidden rounded-t-2xl px-4 pb-4">
+        <SheetContent side="bottom" aria-describedby={undefined} className="flex max-h-[92dvh] flex-col gap-3 overflow-hidden rounded-t-2xl border-t border-border px-5 pb-5">
           <SheetHeader className="shrink-0 px-0">
-            <SheetTitle>{title}</SheetTitle>
+            <SheetTitle className="text-xl font-bold">{title}</SheetTitle>
           </SheetHeader>
           {children}
         </SheetContent>
@@ -34,9 +34,9 @@ export function ResponsiveDialog({ open, onOpenChange, title, trigger, className
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DialogContent aria-describedby={undefined} className={cn("flex max-h-[calc(100dvh-2rem)] flex-col gap-4 overflow-hidden p-6 sm:max-w-2xl", className)}>
+      <DialogContent aria-describedby={undefined} className={cn("flex max-h-[calc(100dvh-2rem)] flex-col gap-4 overflow-hidden border border-border p-5 shadow-panel md:p-6 sm:max-w-2xl", className)}>
         <DialogHeader className="shrink-0">
-          <DialogTitle className="text-lg">{title}</DialogTitle>
+          <DialogTitle className="font-heading text-xl font-bold">{title}</DialogTitle>
         </DialogHeader>
         {children}
       </DialogContent>

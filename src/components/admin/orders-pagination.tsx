@@ -58,7 +58,7 @@ export function OrdersPagination({ filters, total }: OrdersPaginationProps) {
                 asChild
                 variant="outline"
                 size="icon"
-                className={cn(pageButton, item === current && "border-ink bg-canvas font-semibold text-ink")}
+                className={cn(pageButton, item === current && "border-brand bg-muted font-semibold text-ink")}
               >
                 <Link href={hrefFor(item as number)} aria-label={`Halaman ${item}`} aria-current={item === current ? "page" : undefined}>
                   {item}

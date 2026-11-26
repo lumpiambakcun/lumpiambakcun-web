@@ -45,15 +45,8 @@ export async function deleteFaq(id: string) {
   if (error) console.error("deleteFaq: gagal menghapus", error);
 }
 
-export async function moveFaq(id: string, direction: "up" | "down") {
-  const rows = await listAllFaqs();
-  const from = rows.findIndex((row) => row.id === id);
-  const to = direction === "up" ? from - 1 : from + 1;
-  if (from < 0 || to < 0 || to >= rows.length) return;
-  [rows[from], rows[to]] = [rows[to], rows[from]];
+export async function reorderFaqs(ids: string[]) {
   const supabase = createAdminClient();
-  const results = await Promise.all(
-    rows.map((row, index) => (row.sort === index + 1 ? null : supabase.from("faqs").update({ sort: index + 1 }).eq("id", row.id))),
-  );
-  for (const result of results) if (result?.error) console.error("moveFaq: gagal mengurutkan", result.error);
+  const results = await Promise.all(ids.map((id, index) => supabase.from("faqs").update({ sort: index + 1 }).eq("id", id)));
+  for (const result of results) if (result.error) console.error("reorderFaqs: gagal mengurutkan", result.error);
 }

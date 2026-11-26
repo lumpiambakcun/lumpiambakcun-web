@@ -1,6 +1,7 @@
+import { adminCardClass } from "@/components/admin/styles";
 import { cn } from "@/lib/utils";
 
-export const tableHeadClass = "sticky top-0 z-10 h-10 bg-card px-3 text-xs font-semibold text-ink-muted shadow-[inset_0_-1px_0_var(--border)]";
+export const tableHeadClass = "sticky top-0 z-10 h-11 bg-muted px-4 text-[11px] font-extrabold tracking-[0.08em] text-ink-muted uppercase shadow-[inset_0_-1px_0_var(--border)]";
 
 type TableCardProps = {
   footer?: React.ReactNode;
@@ -10,9 +11,9 @@ type TableCardProps = {
 
 export function TableCard({ footer, className, children }: TableCardProps) {
   return (
-    <div className={cn("flex min-h-0 flex-col overflow-hidden rounded-md border border-border bg-card shadow-card", className)}>
+    <div className={cn("flex min-h-0 flex-col overflow-hidden", adminCardClass, className)}>
       {children}
-      {footer && <div className="shrink-0 border-t border-border px-3 py-2">{footer}</div>}
+      {footer && <div className="shrink-0 border-t border-border bg-card px-4 py-3">{footer}</div>}
     </div>
   );
 }

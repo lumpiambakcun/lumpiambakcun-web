@@ -52,12 +52,12 @@ export function AuthForm({ action, fields, submitLabel, forgotHref }: AuthFormPr
         );
       })}
       {state.message && (
-        <p role="alert" className="rounded-lg bg-white px-4 py-3 text-sm leading-[1.35] font-semibold text-brand">
+        <p role="alert" className="rounded-lg bg-muted px-4 py-3 text-sm leading-[1.35] font-semibold text-brand">
           {state.message}
         </p>
       )}
       {state.notice && (
-        <p role="status" className="rounded-lg bg-white px-4 py-3 text-sm leading-[1.35] font-semibold text-ink">
+        <p role="status" className="rounded-lg bg-muted px-4 py-3 text-sm leading-[1.35] font-semibold text-ink">
           {state.notice}
         </p>
       )}

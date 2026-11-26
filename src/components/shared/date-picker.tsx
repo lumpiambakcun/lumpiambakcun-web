@@ -35,7 +35,7 @@ export function DatePicker({ id, name, defaultValue, placeholder = "Pilih tangga
           id={id}
           type="button"
           variant="outline"
-          className={cn("h-[45px] w-full justify-between rounded-lg bg-white px-4 text-sm font-normal", !selected && "text-ink-muted", className)}
+          className={cn("h-(--control-h) w-full justify-between rounded-(--control-radius) bg-white px-(--control-px) text-sm font-normal", !selected && "text-ink-muted", className)}
           {...aria}
         >
           {selected ? longDate.format(selected) : placeholder}

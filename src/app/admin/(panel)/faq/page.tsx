@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { FaqContent } from "@/components/admin/faq-content";
 import { FaqDialog } from "@/components/admin/faq-dialog";
-import { FaqTableSkeleton } from "@/components/admin/faq-table";
+import { FaqListSkeleton } from "@/components/admin/faq-list";
 import { PageHeader } from "@/components/admin/page-header";
 import { Button } from "@/components/ui/button";
 
@@ -25,7 +25,7 @@ export default function AdminFaqPage() {
           />
         }
       />
-      <Suspense fallback={<FaqTableSkeleton />}>
+      <Suspense fallback={<FaqListSkeleton />}>
         <FaqContent />
       </Suspense>
     </>

@@ -4,13 +4,13 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { Autoformat, BlockQuote, Bold, ClassicEditor, Essentials, Heading, Italic, Link, List, Paragraph, Undo, type EditorConfig } from "ckeditor5";
 import translations from "ckeditor5/translations/id.js";
 import { useState } from "react";
-import { FormField } from "@/components/shared/form-field";
 import "ckeditor5/ckeditor5.css";
 
 type ArticleEditorProps = {
   name: string;
   defaultValue?: string;
   error?: string;
+  onChange?: () => void;
 };
 
 const config: EditorConfig = {
@@ -18,6 +18,7 @@ const config: EditorConfig = {
   language: "id",
   translations: [translations],
   label: "Isi artikel",
+  placeholder: "Mulai menulis...",
   plugins: [Essentials, Paragraph, Heading, Bold, Italic, Link, List, BlockQuote, Undo, Autoformat],
   toolbar: ["undo", "redo", "|", "heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "blockQuote"],
   heading: {
@@ -30,15 +31,28 @@ const config: EditorConfig = {
   link: { defaultProtocol: "https://" },
 };
 
-export function ArticleEditor({ name, defaultValue = "", error }: ArticleEditorProps) {
+export function ArticleEditor({ name, defaultValue = "", error, onChange }: ArticleEditorProps) {
   const [value, setValue] = useState(defaultValue);
 
   return (
-    <FormField id="body" label="Isi artikel" error={error} tone="admin" className="sm:col-span-2">
+    <div className="flex flex-col">
       <div className="article-editor" aria-invalid={error ? true : undefined}>
-        <CKEditor editor={ClassicEditor} config={config} data={defaultValue} onChange={(_, editor) => setValue(editor.getData())} />
+        <CKEditor
+          editor={ClassicEditor}
+          config={config}
+          data={defaultValue}
+          onChange={(_, editor) => {
+            setValue(editor.getData());
+            onChange?.();
+          }}
+        />
       </div>
       <input type="hidden" name={name} value={value} />
-    </FormField>
+      {error && (
+        <p id="body-error" role="alert" className="px-5 pb-4 text-xs leading-[1.28] text-brand md:px-6">
+          {error}
+        </p>
+      )}
+    </div>
   );
 }

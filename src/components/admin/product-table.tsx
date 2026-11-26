@@ -1,6 +1,7 @@
 import { PackageOpen } from "lucide-react";
 import Image from "next/image";
 import { ActiveBadge } from "@/components/admin/active-badge";
+import { productChoices } from "@/lib/product-options";
 import { ProductRowActions } from "@/components/admin/product-row-actions";
 import { TableCard } from "@/components/admin/table-card";
 import { actionCellClass, cellClass, TableHeadRow, TableSkeleton, type TableColumn } from "@/components/admin/table-skeleton";
@@ -70,6 +71,7 @@ export function ProductTableSkeleton() {
 }
 
 export function ProductTable({ products }: { products: readonly ProductRow[] }) {
+  const choices = productChoices(products);
   return (
     <TableCard>
       {products.length === 0 ? (
@@ -81,7 +83,7 @@ export function ProductTable({ products }: { products: readonly ProductRow[] }) 
           </TableHeader>
           <TableBody>
             {products.map((product) => (
-              <TableRow key={product.id} className="hover:bg-canvas">
+              <TableRow key={product.id} className="hover:bg-muted/50">
                 <TableCell className={`${produk.cellClassName} whitespace-normal`}>
                   <div className="flex items-center gap-3">
                     <Image src={product.image_url} alt="" width={40} height={40} sizes="40px" className="size-10 shrink-0 rounded-md bg-canvas object-cover" />
@@ -92,7 +94,7 @@ export function ProductTable({ products }: { products: readonly ProductRow[] }) 
                   </div>
                 </TableCell>
                 <TableCell className={kategori.cellClassName}>{product.category}</TableCell>
-                <TableCell className={`${harga.cellClassName} font-mono tabular-nums`}>
+                <TableCell className={`${harga.cellClassName} tabular-nums`}>
                   {formatRupiah(product.price)}
                   <span className="text-xs text-ink-muted">{` / ${product.unit}`}</span>
                 </TableCell>
@@ -100,7 +102,7 @@ export function ProductTable({ products }: { products: readonly ProductRow[] }) 
                   <ActiveBadge active={product.active} />
                 </TableCell>
                 <TableCell className={aksi.cellClassName}>
-                  <ProductRowActions product={product} />
+                  <ProductRowActions product={product} choices={choices} />
                 </TableCell>
               </TableRow>
             ))}

@@ -16,9 +16,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import type { ProductChoices } from "@/lib/product-options";
 import type { ProductRow } from "@/lib/products";
 
-export function ProductRowActions({ product }: { product: ProductRow }) {
+export function ProductRowActions({ product, choices }: { product: ProductRow; choices: ProductChoices }) {
   const [pending, startTransition] = useTransition();
   const [editing, setEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -55,7 +56,7 @@ export function ProductRowActions({ product }: { product: ProductRow }) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <ProductDialog product={product} open={editing} onOpenChange={setEditing} />
+      <ProductDialog product={product} choices={choices} open={editing} onOpenChange={setEditing} />
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
