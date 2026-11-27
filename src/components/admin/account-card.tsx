@@ -16,7 +16,7 @@ type AccountCardProps = {
 
 export function AccountCard({ name, email, pendingEmail, avatarUrl }: AccountCardProps) {
   return (
-    <div className={cn("flex w-full max-w-2xl flex-col divide-y divide-border px-5 md:px-6", adminCardClass)}>
+    <div className={cn("flex w-full flex-col divide-y divide-border px-5 md:px-6", adminCardClass)}>
       <div className="flex items-center gap-3 py-4">
         <Avatar className="size-11">
           {avatarUrl && <AvatarImage src={avatarUrl} alt="" />}

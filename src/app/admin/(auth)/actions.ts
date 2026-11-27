@@ -2,8 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { siteConfig } from "@/config/site";
 import { requireAdmin } from "@/lib/admin-auth";
+import { sendAuthLink } from "@/lib/email/auth-emails";
 import { fieldErrors, formToObject } from "@/lib/form-data";
 import { passwordMax, passwordMin } from "@/lib/password-rules";
 import { createClient } from "@/lib/supabase/server";
@@ -39,9 +39,10 @@ export async function requestReset(_state: AuthState, formData: FormData): Promi
   const parsed = resetSchema.safeParse(input);
   if (!parsed.success) return { errors: fieldErrors(parsed.error), email: input.email };
 
-  const supabase = await createClient();
-  const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, { redirectTo: `${siteConfig.url}/auth/confirm` });
-  if (error) {
+  try {
+    // Hasil "unknown_user" sengaja dijawab sama agar tidak membocorkan email yang terdaftar.
+    await sendAuthLink({ type: "recovery", email: parsed.data.email });
+  } catch (error) {
     console.error("requestReset: gagal meminta reset kata sandi", error);
     return { message: "Permintaan belum bisa diproses. Coba lagi beberapa menit lagi.", email: parsed.data.email };
   }

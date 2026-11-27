@@ -60,13 +60,8 @@ Kata sandi ditanya di terminal (tidak tampil, minimal 10 karakter, diulang dua k
    update auth.users set raw_app_meta_data = raw_app_meta_data || '{"role":"admin"}' where email = '<email pemilik>';
    ```
 4. Authentication, URL Configuration: Site URL = domain produksi. Redirect URLs: `http://localhost:3000/**` dan `https://<domain>/**`.
-5. Authentication, Email Templates, **Reset password**: isi tautan dengan
-   ```html
-   <a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=recovery&next=/admin/atur-password">Atur password baru</a>
-   ```
-   Kode mengirim `redirectTo = {NEXT_PUBLIC_SITE_URL}/auth/confirm`, jadi dev dan produksi memakai template yang sama.
-6. **SMTP**: tanpa SMTP kustom Supabase hanya mengirim ke anggota tim organisasi dan maksimal 2 email per jam. Untuk pemilik tunggal yang emailnya anggota tim itu cukup; selain itu pasang SMTP (mis. Resend).
-7. (Opsional) Authentication, Password: panjang minimal 10.
+5. **Email**: reset password dan ganti email dikirim lewat Resend dari aplikasi, bukan email Supabase. Setup (API key, domain pengirim, matikan "Secure email change") ada di `docs/resend.md`. Email Templates dan SMTP Supabase tidak dipakai.
+6. (Opsional) Authentication, Password: panjang minimal 10.
 
 Tautan email bisa "terpakai" bila penyedia email memindai tautan; minta tautan baru.
 

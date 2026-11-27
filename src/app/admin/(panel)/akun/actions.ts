@@ -1,9 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { siteConfig } from "@/config/site";
 import { requireAdmin } from "@/lib/admin-auth";
 import type { CmsState } from "@/lib/cms";
+import { sendAuthLink } from "@/lib/email/auth-emails";
 import { fieldErrors, formToObject } from "@/lib/form-data";
 import { passwordMax, passwordMin } from "@/lib/password-rules";
 import { createClient } from "@/lib/supabase/server";
@@ -17,8 +17,6 @@ const passwordSchema = z
     konfirmasi: z.string(),
   })
   .refine((data) => data.password === data.konfirmasi, { path: ["konfirmasi"], message: "Isian tidak sama dengan kata sandi baru." });
-
-const redirectTo = `${siteConfig.url}/admin/akun`;
 
 async function verifyCurrent(email: string | undefined, password: string) {
   const supabase = await createClient();
@@ -37,12 +35,19 @@ export async function updateEmail(formData: FormData): Promise<CmsState> {
   const supabase = await verifyCurrent(user.email, password);
   if (!supabase) return { errors: { current: "Kata sandi saat ini salah." } };
 
-  const { error } = await supabase.auth.updateUser({ email }, { emailRedirectTo: redirectTo });
-  if (error) {
-    console.error("updateEmail: gagal mengganti email", error);
-    return { message: "Email belum bisa diganti. Pastikan email belum dipakai akun lain, lalu coba lagi." };
+  return requestEmailChange(user.email ?? "", email);
+}
+
+async function requestEmailChange(email: string, newEmail: string): Promise<CmsState> {
+  try {
+    const result = await sendAuthLink({ type: "email_change", email, newEmail });
+    if (result === "email_taken") return { errors: { email: "Email ini sudah dipakai akun lain." } };
+    if (result === "unknown_user") return { message: "Akun tidak ditemukan. Masuk ulang lalu coba lagi." };
+    return { ok: true };
+  } catch (error) {
+    console.error("requestEmailChange: gagal mengirim tautan konfirmasi", error);
+    return { message: "Link konfirmasi belum bisa dikirim. Coba lagi beberapa menit lagi." };
   }
-  return { ok: true };
 }
 
 export async function updatePassword(formData: FormData): Promise<CmsState> {
@@ -65,11 +70,5 @@ export async function resendEmailChange(): Promise<CmsState> {
   const user = await requireAdmin();
   if (!user.new_email) return { message: "Tidak ada perubahan email yang menunggu konfirmasi." };
 
-  const supabase = await createClient();
-  const { error } = await supabase.auth.resend({ type: "email_change", email: user.new_email, options: { emailRedirectTo: redirectTo } });
-  if (error) {
-    console.error("resendEmailChange: gagal mengirim ulang", error);
-    return { message: "Link belum bisa dikirim ulang. Tunggu sebentar lalu coba lagi." };
-  }
-  return { ok: true };
+  return requestEmailChange(user.email ?? "", user.new_email);
 }
