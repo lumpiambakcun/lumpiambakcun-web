@@ -1,5 +1,6 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
+import { siteConfig } from "@/config/site";
 import { createClient } from "@/lib/supabase/server";
 
 const safeNext = (value: string | null) => (value && /^\/admin(\/[\w-]+)*$/.test(value) ? value : "/admin");
@@ -8,19 +9,13 @@ export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
-  const target = request.nextUrl.clone();
-  target.search = "";
+  const redirectTo = (path: string) => NextResponse.redirect(new URL(path, siteConfig.url));
 
   if (tokenHash && (type === "recovery" || type === "email_change")) {
     const supabase = await createClient();
     const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
-    if (!error) {
-      target.pathname = safeNext(searchParams.get("next"));
-      return NextResponse.redirect(target);
-    }
+    if (!error) return redirectTo(safeNext(searchParams.get("next")));
   }
 
-  target.pathname = "/admin/lupa-password";
-  target.searchParams.set("galat", "1");
-  return NextResponse.redirect(target);
+  return redirectTo("/admin/lupa-password?galat=1");
 }
