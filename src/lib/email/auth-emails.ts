@@ -24,7 +24,12 @@ export async function sendAuthLink(input: AuthLink): Promise<AuthLinkResult> {
   }
 
   const link = new URL("/auth/confirm", siteConfig.url);
-  link.searchParams.set("token_hash", data.properties.hashed_token);
+  if (input.type === "email_change") {
+    link.searchParams.set("token", data.properties.email_otp);
+    link.searchParams.set("email", input.newEmail);
+  } else {
+    link.searchParams.set("token_hash", data.properties.hashed_token);
+  }
   link.searchParams.set("type", input.type);
   link.searchParams.set("next", input.type === "recovery" ? "/admin/atur-password" : "/admin/akun");
 

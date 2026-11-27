@@ -5,7 +5,7 @@ Email reset password dan konfirmasi ganti email dikirim dari aplikasi lewat Rese
 ## Alur
 
 1. `supabase.auth.admin.generateLink` (service role) membuat token **tanpa mengirim email**.
-2. `src/lib/email/auth-emails.ts` (`sendAuthLink`) membentuk tautan `{NEXT_PUBLIC_SITE_URL}/auth/confirm?token_hash=...&type=recovery|email_change&next=...`.
+2. `src/lib/email/auth-emails.ts` (`sendAuthLink`) membentuk tautan ke `{NEXT_PUBLIC_SITE_URL}/auth/confirm`. Reset password: `?type=recovery&token_hash=...`. Ganti email: `?type=email_change&email=<email baru>&token=<email_otp>`. Untuk `email_change_new`, `hashed_token` dari `generateLink` ditolak `verifyOtp` (`otp_expired`, sudah diuji), sedangkan `email_otp` + email baru berhasil.
 3. `src/lib/email/layout.ts` (`renderEmail`) membuat HTML berbasis tabel dengan style inline. Warna dari `brandColors` di `src/config/site.ts`; tanpa gambar karena webp tidak aman di Outlook.
 4. `sendEmail` mengirimnya. Route `src/app/auth/confirm/route.ts` menukar `token_hash` jadi sesi.
 
