@@ -1,4 +1,4 @@
-import { ClipboardList, MessageCircleQuestion, Newspaper, PackageOpen, PanelBottom, PanelTop, type LucideIcon } from "lucide-react";
+import { ClipboardList, MessageCircleQuestion, Newspaper, PackageOpen, PanelBottom, PanelTop, UserRound, type LucideIcon } from "lucide-react";
 
 export type AdminNavItem = { label: string; href: string; icon: LucideIcon };
 
@@ -9,4 +9,5 @@ export const adminNav: readonly AdminNavItem[] = [
   { label: "FAQ", href: "/admin/faq", icon: MessageCircleQuestion },
   { label: "Header", href: "/admin/header", icon: PanelTop },
   { label: "Footer", href: "/admin/footer", icon: PanelBottom },
+  { label: "Akun", href: "/admin/akun", icon: UserRound },
 ];

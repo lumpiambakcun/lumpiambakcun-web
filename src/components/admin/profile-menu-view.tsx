@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ExternalLink, LogOut } from "lucide-react";
+import { ChevronDown, ExternalLink, LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { signOut } from "@/app/admin/(auth)/actions";
@@ -16,20 +16,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { initialsOf } from "@/lib/initials";
 
 type ProfileMenuViewProps = {
   name: string;
   email: string;
   avatarUrl?: string;
 };
-
-const initialsOf = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((word) => word[0].toUpperCase())
-    .join("");
 
 export function ProfileMenuView({ name, email, avatarUrl }: ProfileMenuViewProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -56,6 +49,12 @@ export function ProfileMenuView({ name, email, avatarUrl }: ProfileMenuViewProps
             <span className="truncate text-xs text-ink-muted">{email}</span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link href="/admin/akun">
+              <UserRound aria-hidden="true" />
+              Pengaturan Akun
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/" target="_blank" rel="noopener">
               <ExternalLink aria-hidden="true" />

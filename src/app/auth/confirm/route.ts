@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   const target = request.nextUrl.clone();
   target.search = "";
 
-  if (tokenHash && type === "recovery") {
+  if (tokenHash && (type === "recovery" || type === "email_change")) {
     const supabase = await createClient();
     const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
     if (!error) {

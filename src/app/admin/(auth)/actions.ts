@@ -5,6 +5,7 @@ import { z } from "zod";
 import { siteConfig } from "@/config/site";
 import { requireAdmin } from "@/lib/admin-auth";
 import { fieldErrors, formToObject } from "@/lib/form-data";
+import { passwordMax, passwordMin } from "@/lib/password-rules";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthState = { errors?: Record<string, string>; message?: string; notice?: string; email?: string };
@@ -14,7 +15,7 @@ const loginSchema = z.object({ email, password: z.string().min(1, "Isi kata sand
 const resetSchema = z.object({ email });
 const newPasswordSchema = z
   .object({
-    password: z.string().min(10, "Kata sandi minimal 10 karakter.").max(72, "Kata sandi maksimal 72 karakter."),
+    password: z.string().min(passwordMin, `Kata sandi minimal ${passwordMin} karakter.`).max(passwordMax, `Kata sandi maksimal ${passwordMax} karakter.`),
     konfirmasi: z.string(),
   })
   .refine((data) => data.password === data.konfirmasi, { path: ["konfirmasi"], message: "Isian tidak sama dengan kata sandi baru." });
