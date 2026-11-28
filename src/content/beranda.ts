@@ -16,7 +16,7 @@ export const hero: HeroProps = {
   whatsappLabel: "Pesan Sekarang",
   whatsappMessage: "Halo Mbak Cun, saya mau pesan lumpia.",
   menuLabel: "Lihat Paket",
-  image: { src: "/images/hero/piring-lumpia.webp", alt: "Sepiring lumpia mini goreng dengan cabai rawit dan selada" },
+  image: { src: "/images/hero/piring-lumpia.webp", alt: "Sepiring lumpia goreng, satu potong terbelah memperlihatkan isian rebung" },
 };
 
 export const catalog = {
